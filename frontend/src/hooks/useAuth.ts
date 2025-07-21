@@ -25,6 +25,7 @@ const useAuth = () => {
     mutationFn: login,
     onSuccess: (data: AuthResponse) => {
       setUser(data.user, data.token);
+      navigate("/");
     },
     onError: (error: any) => {
       console.error("Login failed:", error);

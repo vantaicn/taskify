@@ -15,6 +15,22 @@ import {
 import useAuth from "@/hooks/useAuth";
 
 const LoginPage = () => {
+  const { login, isLoggingIn } = useAuth();
+  const [loginData, setLoginData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setLoginData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    login(loginData);
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md">
@@ -33,6 +49,8 @@ const LoginPage = () => {
                   type="email"
                   required
                   placeholder="Enter your email"
+                  value={loginData.email}
+                  onChange={handleChange}
                 />
               </div>
               <div className="space-y-2">
@@ -43,28 +61,37 @@ const LoginPage = () => {
                   type="password"
                   required
                   placeholder="Enter your password"
+                  value={loginData.password}
+                  onChange={handleChange}
                 />
               </div>
             </CardContent>
             <CardFooter className="flex flex-col space-y-4">
-              <Button type="submit" className="w-full">
-                Login
+              <Button
+                type="submit"
+                className="w-full"
+                onClick={handleSubmit}
+                disabled={isLoggingIn}
+              >
+                {isLoggingIn ? "Logging in..." : "Login"}
               </Button>
               <div className="text-center text-sm">
                 <CardAction>
                   Don't have an account?{" "}
-                  <Link to="/register" className="text-blue-500 hover:underline">
+                  <Link
+                    to="/register"
+                    className="text-blue-500 hover:underline"
+                  >
                     Register here
                   </Link>
                 </CardAction>
               </div>
             </CardFooter>
           </form>
-
         </Card>
       </div>
     </div>
   );
-}
+};
 
 export default LoginPage;

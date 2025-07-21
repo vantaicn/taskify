@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import {jwtDecode } from 'jwt-decode';
 import { useAuthStore } from '@/stores/authStore';
 
-const PUBLIC_ROUTES = ['/login', '/register'];
+const PUBLIC_ROUTES = ['/', '/login', '/register'];
 
 const AuthShield = ({ children } : { children: React.ReactNode }) => {
   const { setUser, clearUser } = useAuthStore();
