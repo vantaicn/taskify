@@ -12,7 +12,7 @@ const AuthShield = ({ children } : { children: React.ReactNode }) => {
   const location = useLocation();
   const currentPath = location.pathname;
 
-  const [ isAuthenticated, setIsAuthenticated ] = useState(false);
+  const [ shouldRender, setShouldRender ] = useState(false);
 
   const isValidToken = (token: string) => {
     try {
@@ -33,7 +33,7 @@ const AuthShield = ({ children } : { children: React.ReactNode }) => {
       if (isValidToken(token)) {
         const user = JSON.parse(localStorage.getItem('user') || 'null');
         setUser(user, token);
-        setIsAuthenticated(true);
+        setShouldRender(true);
       } else {
         clearUser();
         if (!isPublicRoute) {
@@ -43,11 +43,13 @@ const AuthShield = ({ children } : { children: React.ReactNode }) => {
     } else if (!isPublicRoute) {
       clearUser();
       navigate('/login', { state: { from: location } });
+    } else {
+      setShouldRender(true);
     }
   }, [location.pathname]);
 
   return (
-    <>{isAuthenticated ? children : null}</>
+    <>{shouldRender ? children : null}</>
   )
 };
 

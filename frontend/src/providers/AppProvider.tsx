@@ -13,14 +13,14 @@ type AppProviderProps = {
 const AppProvider = ({ children }: AppProviderProps) => {
   return (
     <React.StrictMode>
-        <AuthShield>
           <QueryClientProvider client={queryClient}>
             <Router>
-              {children}
+              <AuthShield>
+                {children}
+              </AuthShield>
             </Router>
             <ReactQueryDevtools initialIsOpen={false} />
           </QueryClientProvider>
-        </AuthShield>
     </React.StrictMode>
   )
 }

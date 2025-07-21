@@ -1,17 +1,18 @@
 import { register, login } from "@/api/authApi";
 import { useMutation } from "@tanstack/react-query";
 import type { RegisterRequest, LoginRequest, AuthResponse } from "@/api/authApi";
-
-const { useAuthStore } = require('@/stores/authStore');
+import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "@/stores/authStore";
 
 const useAuth = () => {
   
   const { user, token, setUser } = useAuthStore();
+  const navigate = useNavigate();
 
   const registerMutation = useMutation({
     mutationFn: register,
     onSuccess: (data: AuthResponse) => {
-      setUser(data.user, data.token);
+      navigate("/login");
     },
     onError: (error: any) => {
       console.error("Registration failed:", error);
