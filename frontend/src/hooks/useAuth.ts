@@ -3,6 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 import type { RegisterRequest, LoginRequest, AuthResponse } from "@/api/authApi";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/stores/authStore";
+import {toast} from "sonner"
 
 const useAuth = () => {
   
@@ -15,7 +16,8 @@ const useAuth = () => {
       navigate("/login");
     },
     onError: (error: any) => {
-      console.error("Registration failed:", error);
+      console.log("Registration failed:", error);
+      toast.error(`Registration failed: ${error.response?.data?.error || "Please try again."}`);
     }
   });
 
@@ -26,6 +28,7 @@ const useAuth = () => {
     },
     onError: (error: any) => {
       console.error("Login failed:", error);
+      toast.error(`Login failed: ${error.response?.data?.error || "Please try again."}`);
     }
   });
 

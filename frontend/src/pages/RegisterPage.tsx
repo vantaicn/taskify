@@ -42,7 +42,7 @@ const RegisterPage = () => {
             <CardDescription>Create a new account</CardDescription>
           </CardHeader>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <CardContent>
+            <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="fullName">Full Name</Label>
                 <Input
@@ -84,10 +84,11 @@ const RegisterPage = () => {
               <Button type="submit" disabled={isRegistering} className="w-full">
                 {isRegistering ? "Registering..." : "Register"}
               </Button>
-              <div className="text-center">
+              <div className="text-center text-sm">
                 <CardAction>
-                  <Link to="/login" className="text-sm">
-                    Already have an account?
+                  Already have an account?{" "}
+                  <Link to="/login" className="text-blue-500 hover:underline">
+                    Login here
                   </Link>
                 </CardAction>
               </div>

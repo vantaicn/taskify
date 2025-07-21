@@ -4,6 +4,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import queryClient from '../lib/react-query';
 import AuthShield from '../components/auth/AuthShield';
+import { Toaster } from '../components/ui/sonner';
 
 
 type AppProviderProps = {
@@ -13,14 +14,15 @@ type AppProviderProps = {
 const AppProvider = ({ children }: AppProviderProps) => {
   return (
     <React.StrictMode>
-          <QueryClientProvider client={queryClient}>
-            <Router>
-              <AuthShield>
-                {children}
-              </AuthShield>
-            </Router>
-            <ReactQueryDevtools initialIsOpen={false} />
-          </QueryClientProvider>
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <AuthShield>
+            {children}
+          </AuthShield>
+        </Router>
+        <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider>
+      <Toaster richColors position='top-right' />
     </React.StrictMode>
   )
 }
