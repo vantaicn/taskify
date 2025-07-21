@@ -2,13 +2,13 @@ const Joi = require('joi');
 
 const registerRequest = Joi.object({
   email: Joi.string().email().required(),
-  password: Joi.string().min(6).required(),
-  fullName: Joi.string().min(2).required(),
+  password: Joi.string().required(),
+  fullName: Joi.string().required(),
 })
 
 const loginRequest = Joi.object({
   email: Joi.string().email().required(),
-  password: Joi.string().min(6).required(),
+  password: Joi.string().required(),
 })
 
 module.exports = {
