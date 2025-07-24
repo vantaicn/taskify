@@ -12,6 +12,7 @@ const App = () => {
       <Route path="/register" element={<RegisterPage />} />
       {/* Add more routes as needed */}
       <Route path="/" element={<div>Welcome to Taskify!</div>} />
+      <Route path="/board" element={<div>Kanban Board</div>} />
     </Routes>
   )
 }
