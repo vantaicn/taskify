@@ -7,7 +7,7 @@ import AuthShield from "../components/auth/AuthShield";
 import { Toaster } from "../components/ui/sonner";
 import { SidebarProvider } from "../components/ui/sidebar";
 import AppSidebar from "../components/layout/AppSidebar";
-import { AppHeader } from "../components/layout/AppHeader";
+import AppHeader from "../components/layout/AppHeader";
 import { ThemeProvider } from "../components/darkmode/theme-provider";
 
 type AppProviderProps = {
