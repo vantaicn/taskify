@@ -1,0 +1,50 @@
+DROP TABLE IF EXISTS task_assignees;
+DROP TABLE IF EXISTS board_members;
+DROP TABLE IF EXISTS comments;
+DROP TABLE IF EXISTS tasks;
+DROP TABLE IF EXISTS columns;
+DROP TABLE IF EXISTS boards;
+DROP TABLE IF EXISTS users;
+
+CREATE TABLE users (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  full_name VARCHAR(255) NOT NULL,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  avatar_url VARCHAR(255),
+  created_at TIMESTAMP DEFAULT NOW() NOT NULL
+);
+
+CREATE TABLE boards (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  title VARCHAR(255) NOT NULL,
+  description TEXT,
+  owner UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  created_at TIMESTAMP DEFAULT NOW() NOT NULL
+);
+
+CREATE TABLE lists (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  title VARCHAR(255) NOT NULL,
+  board UUID NOT NULL REFERENCES boards(id) ON DELETE CASCADE,
+  position DOUBLE PRECISION NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW() NOT NULL
+);
+
+CREATE TABLE tasks (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  title VARCHAR(255) NOT NULL,
+  description TEXT,
+  list UUID NOT NULL REFERENCES lists(id) ON DELETE CASCADE,
+  position DOUBLE PRECISION NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW() NOT NULL,
+  due_date TIMESTAMP
+);
+
+-- CREATE TABLE task_comments (
+--   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+--   task UUID NOT NULL REFERENCES tasks(id) ON DELETE CASCADE,
+--   user UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+--   content TEXT NOT NULL,
+--   created_at TIMESTAMP DEFAULT NOW() NOT NULL,
+-- );
