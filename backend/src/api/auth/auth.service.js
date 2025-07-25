@@ -34,16 +34,16 @@ const register = async (userData) => {
 const login = async (email, password) => {
   const user = await authRepository.findUserByEmail(email);
   if (!user) {
-    throw new Error("Invalid email");
+    throw new Error("Invalid email or password");
   } else {
     const isPasswordValid = await bcrypt.compare(password, user.password);
-      if (!isPasswordValid) {
-      throw new Error("Invalid password");
+    if (!isPasswordValid) {
+      throw new Error("Invalid email or password");
     }
   }
 
   const tokenPayload = {
-    sub: user.id,
+    id: user.id,
     email: user.email,
   };
 

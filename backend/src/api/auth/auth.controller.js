@@ -48,7 +48,6 @@ const login = async (req, res) => {
     } else {
       res.status(500).json({
         message: "Internal server error",
-        error: error.message,
       });
     }
   }

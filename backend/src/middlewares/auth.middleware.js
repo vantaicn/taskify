@@ -4,17 +4,21 @@ const config = require("../config");
 const authenticate = async (req, res, next) => {
   let token;
   if (
-    req.header.authorization &&
-    req.header.authorization.startWith("Bearer")
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer ")
   ) {
-    token = req.header.authorization.split("")[1];
+    token = req.headers.authorization.split(" ")[1];
   }
   if (!token) {
-    throw new Error("Authentication token is missing");
+    return res.status(401).json({ error: "Authentication token is missing" });
   }
-  const decoded = jwt.verify(token, config.jwt.secret);
-  req.user = decoded;
-  next();
+  try {
+    const decoded = jwt.verify(token, config.jwt.secret);
+    req.user = decoded;
+    next();
+  } catch (error) {
+    return res.status(401).json({ error: "Invalid token" });
+  }
 };
 
 module.exports = authenticate;
