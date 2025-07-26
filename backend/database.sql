@@ -1,10 +1,9 @@
-DROP TABLE IF EXISTS task_assignees;
-DROP TABLE IF EXISTS board_members;
-DROP TABLE IF EXISTS comments;
-DROP TABLE IF EXISTS tasks;
-DROP TABLE IF EXISTS columns;
-DROP TABLE IF EXISTS boards;
-DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS board_members CASCADE;
+DROP TABLE IF EXISTS task_comments CASCADE;
+DROP TABLE IF EXISTS tasks CASCADE;
+DROP TABLE IF EXISTS lists CASCADE;
+DROP TABLE IF EXISTS boards CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
 
 CREATE TABLE users (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -26,7 +25,7 @@ CREATE TABLE boards (
 CREATE TABLE lists (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   title VARCHAR(255) NOT NULL,
-  board UUID NOT NULL REFERENCES boards(id) ON DELETE CASCADE,
+  board_id UUID NOT NULL REFERENCES boards(id) ON DELETE CASCADE,
   position DOUBLE PRECISION NOT NULL,
   created_at TIMESTAMP DEFAULT NOW() NOT NULL
 );
@@ -41,10 +40,25 @@ CREATE TABLE tasks (
   due_date TIMESTAMP
 );
 
--- CREATE TABLE task_comments (
---   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
---   task UUID NOT NULL REFERENCES tasks(id) ON DELETE CASCADE,
---   user UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
---   content TEXT NOT NULL,
---   created_at TIMESTAMP DEFAULT NOW() NOT NULL,
--- );
+CREATE TABLE task_comments (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  task_id UUID NOT NULL REFERENCES tasks(id) ON DELETE CASCADE,
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  content TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW() NOT NULL
+);
+
+CREATE TABLE board_members (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  board_id UUID NOT NULL REFERENCES boards(id) ON DELETE CASCADE,
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  role VARCHAR(50) NOT NULL CHECK (role IN ('admin', 'member')),
+  created_at TIMESTAMP DEFAULT NOW() NOT NULL
+);
+
+SELECT * FROM users;
+SELECT * FROM boards;
+SELECT * FROM lists;
+SELECT * FROM tasks;
+SELECT * FROM task_comments;
+SELECT * FROM board_members;
