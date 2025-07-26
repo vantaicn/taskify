@@ -1,10 +1,26 @@
-const e = require('express');
 const boardRepository = require('./board.repository');
+const memberService = require('../member/member.service');
+
+const createBoard = async (boardData) => {
+  try {
+    const { title, description, owner } = boardData;
+    const newBoard = await boardRepository.createBoard(title, description, owner);
+    memberService.addMemberToBoard(newBoard.id, owner, 'admin');
+    return {
+      id: newBoard.id,
+      title: newBoard.title,
+      description: newBoard.description,
+      owner: newBoard.owner,
+      createdAt: newBoard.created_at,
+    }
+  } catch (error) {
+    throw new Error(error.message || 'Error creating board');
+  }
+}
 
 const getBoardsByUserId = async (userId) => {
   try {
     const boards = await boardRepository.getBoardsByUserId(userId);
-    console.log('Fetched boards for user:', userId, 'Boards:', boards);
     return boards.map(board => ({
       id: board.id,
       title: board.title,
@@ -35,27 +51,15 @@ const getBoardById = async (boardId) => {
   }
 }
 
-const createBoard = async (boardData) => {
+const updateBoard = async (boardId, title, description) => {
   try {
-    const { title, description, owner } = boardData;
-    const newBoard = await boardRepository.createBoard(title, description, owner);
-    return {
-      id: newBoard.id,
-      title: newBoard.title,
-      description: newBoard.description,
-      owner: newBoard.owner,
-      createdAt: newBoard.created_at,
+    const board = await boardRepository.getBoardById(boardId);
+    if (!board) {
+      throw new Error('Board not found');
     }
-  } catch (error) {
-    throw new Error(error.message || 'Error creating board');
-  }
-}
-
-const updateBoard = async (id, title, description) => {
-  try {
-    const updatedBoard = await boardRepository.updateBoard(id, title, description);
+    const updatedBoard = await boardRepository.updateBoard(boardId, title, description);
     if (!updatedBoard) {
-      throw new Error('Board not found or update failed');
+      throw new Error('Update failed');
     }
     return {
       id: updatedBoard.id,
@@ -69,9 +73,13 @@ const updateBoard = async (id, title, description) => {
   }
 };
 
-const deleteBoardById = async (id) => {
+const deleteBoardById = async (boardId) => {
   try {
-    const result = await boardRepository.deleteBoardById(id);
+    const board = await boardRepository.getBoardById(boardId);
+    if (!board) {
+      throw new Error('Board not found');
+    }
+    const result = await boardRepository.deleteBoardById(boardId);
     return result;
   } catch (error) {
     throw new Error(error.message || 'Error deleting board');

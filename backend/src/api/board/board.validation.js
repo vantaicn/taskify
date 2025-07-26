@@ -6,17 +6,16 @@ const createBoardRequest = joi.object({
 })
 
 const getBoardRequest = joi.object({
-  id: joi.string().required(),
+  boardId: joi.string().required(),
 })
 
 const updateBoardRequest = joi.object({
-  id: joi.string().required(),
   title: joi.string().required(),
   description: joi.string().optional(),
 })
 
 const deleteBoardRequest = joi.object({
-  id: joi.string().required(),
+  boardId: joi.string().required(),
 })
 
 module.exports = {
