@@ -33,9 +33,9 @@ const getList = async (req, res) => {
 
 const updateList = async (req, res) => {
   const { listId } = req.params;
-  const { title, position } = req.body;
+  const { title } = req.body;
   try {
-    const updatedList = await listService.updateList(listId, title, position);
+    const updatedList = await listService.updateList(listId, title);
     res.status(200).json(updatedList);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -52,10 +52,22 @@ const deleteList = async (req, res) => {
   }
 }
 
+const updateListPosition = async (req, res) => {
+  const { listId } = req.params;
+  const { position } = req.body;
+  try {
+    const updatedList = await listService.updateListPosition(listId, position);
+    res.status(200).json(updatedList);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
 module.exports = {
   createList,
   getLists,
   getList,
   updateList,
   deleteList,
+  updateListPosition,
 }

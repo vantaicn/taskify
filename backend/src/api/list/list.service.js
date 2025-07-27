@@ -47,9 +47,9 @@ const getListById = async (listId) => {
   }
 }
 
-const updateList = async (listId, title, position) => {
+const updateList = async (listId, title) => {
   try {
-    const updatedList = await listRepository.updateList(listId, title, position);
+    const updatedList = await listRepository.updateList(listId, title);
     if (!updatedList) {
       throw new Error('List not found');
     }
@@ -73,10 +73,28 @@ const deleteListById = async (listId) => {
   }
 }
 
+const updateListPosition = async (listId, position) => {
+  try {
+    const updatedList = await listRepository.updateListPosition(listId, position);
+    if (!updatedList) {
+      throw new Error('List not found');
+    }
+    return {
+      id: updatedList.id,
+      title: updatedList.title,
+      boardId: updatedList.board_id,
+      position: updatedList.position,
+    };
+  } catch (error) {
+    throw new Error(error.message || 'Error updating list position');
+  }
+}
+
 module.exports = {
   createList,
   getListsByBoardId,
   getListById,
   updateList,
   deleteListById,
+  updateListPosition,
 }

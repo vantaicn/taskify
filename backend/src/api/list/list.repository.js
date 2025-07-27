@@ -31,14 +31,14 @@ const getListById = async (listId) => {
   return list.rows[0];
 }
 
-const updateList = async (listId, title, position) => {
+const updateList = async (listId, title) => {
   const query = `
     UPDATE lists
-    SET title = $1, position = $2
-    WHERE id = $3
+    SET title = $1
+    WHERE id = $2
     RETURNING *
   `;
-  const { rows } = await pool.query(query, [title, position, listId]);
+  const { rows } = await pool.query(query, [title, listId]);
   return rows[0];
 }
 
@@ -51,10 +51,22 @@ const deleteListById = async (listId) => {
   return { message: 'List deleted successfully' };
 }
 
+const updateListPosition = async (listId, position) => {
+  const query = `
+    UPDATE lists
+    SET position = $1
+    WHERE id = $2
+    RETURNING *
+  `;
+  const { rows } = await pool.query(query, [position, listId]);
+  return rows[0];
+}
+
 module.exports = {
   createList,
   getListsByBoardId,
   getListById,
   updateList,
   deleteListById,
+  updateListPosition,
 }

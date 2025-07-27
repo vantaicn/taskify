@@ -17,5 +17,10 @@ router.delete(
   boardMiddleware.checkBoardAdmin,
   listController.deleteList
 );
+router.put(
+  "/:listId/position",
+  boardMiddleware.checkBoardAdmin,
+  listController.updateListPosition
+);
 
 module.exports = router;
