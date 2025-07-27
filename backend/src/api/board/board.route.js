@@ -3,9 +3,10 @@ const router = express.Router();
 const boardController = require("./board.controller");
 const boardValidation = require("./board.validation");
 const validateMiddleware = require("../../middlewares/validate.middleware");
+const boardMiddleware = require("../../middlewares/board.middleware");
 const listRoutes = require("../list/list.route");
 const memberRoutes = require("../member/member.route");
-const boardMiddleware = require("../../middlewares/board.middleware");
+const taskRoutes = require("../task/task.route");
 
 // Board CRUD
 router.get("/", boardController.getBoards);
@@ -35,6 +36,7 @@ router.delete(
 
 // Nested routes
 router.use("/:boardId/lists", boardMiddleware.checkBoardAccess, listRoutes);
+router.use("/:boardId/tasks", boardMiddleware.checkBoardAccess, taskRoutes);
 router.use("/:boardId/members", boardMiddleware.checkBoardAccess, memberRoutes);
 
 module.exports = router;
