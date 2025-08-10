@@ -1,18 +1,16 @@
+const sequelize = require('../../../db/sequelize');
 const boardRepository = require('./board.repository');
 const memberService = require('../member/member.service');
 
 const createBoard = async (boardData) => {
   try {
-    const { title, description, owner } = boardData;
-    const newBoard = await boardRepository.createBoard(title, description, owner);
-    memberService.addMemberToBoard(newBoard.id, owner, 'admin');
-    return {
-      id: newBoard.id,
-      title: newBoard.title,
-      description: newBoard.description,
-      owner: newBoard.owner,
-      createdAt: newBoard.created_at,
-    }
+    const newBoard = await sequelize.transaction(async (t) => {
+      const { title, description, ownerId } = boardData;
+      const newBoard = await boardRepository.createBoard(title, description, ownerId, {transaction: t});
+      memberService.addMemberToBoard(newBoard.id, ownerId, 'admin', {transaction: t});
+      return newBoard;
+    })
+    return newBoard;
   } catch (error) {
     throw new Error(error.message || 'Error creating board');
   }
@@ -21,13 +19,7 @@ const createBoard = async (boardData) => {
 const getBoardsByUserId = async (userId) => {
   try {
     const boards = await boardRepository.getBoardsByUserId(userId);
-    return boards.map(board => ({
-      id: board.id,
-      title: board.title,
-      description: board.description,
-      owner: board.owner,
-      createdAt: board.created_at,
-    }))
+    return boards;
   } catch (error) {
     throw new Error(error.message || 'Error fetching boards by user ID');
   }
@@ -39,13 +31,7 @@ const getBoardById = async (boardId) => {
     if (!board) {
       throw new Error('Board not found');
     }
-    return {
-      id: board.id,
-      title: board.title,
-      description: board.description,
-      owner: board.owner,
-      createdAt: board.created_at,
-    };
+    return board;
   } catch (error) {
     throw new Error(error.message || 'Error fetching board by ID');
   }
@@ -53,13 +39,9 @@ const getBoardById = async (boardId) => {
 
 const updateBoard = async (boardId, title, description) => {
   try {
-    const board = await boardRepository.getBoardById(boardId);
-    if (!board) {
-      throw new Error('Board not found');
-    }
-    const updatedBoard = await boardRepository.updateBoard(boardId, title, description);
-    if (!updatedBoard) {
-      throw new Error('Update failed');
+    const result = await boardRepository.updateBoard(boardId, title, description);
+    if (result.affectedRows === 0) {
+      throw new Error('Board not found or not updated');
     }
     return {
       id: updatedBoard.id,

@@ -21,6 +21,12 @@ router.get(
   boardMiddleware.checkBoardAccess,
   boardController.getBoard
 );
+router.get(
+  "/:boardId/details",
+  validateMiddleware(boardValidation.getBoardRequest, "params"),
+  boardMiddleware.checkBoardAccess,
+  boardController.getBoardDetails
+)
 router.put(
   "/:boardId",
   validateMiddleware(boardValidation.updateBoardRequest),

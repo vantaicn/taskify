@@ -1,54 +1,24 @@
-const pool = require("../../db/pool");
+const db = require("../../db/sequelize");
 
 const getBoardsByUserId = async (userId) => {
-  const query = `
-    SELECT *
-    FROM boards
-    WHERE owner = $1
-  `;
-  const { rows } = await pool.query(query, [userId]);
-  return rows;
-}
+  return await db.Board.findAll({ where: { ownerId: userId } });
+};
 
 const getBoardById = async (boardId) => {
-  const query = `
-    SELECT *
-    FROM boards
-    WHERE id = $1
-  `;
-  const { rows } = await pool.query(query, [boardId]);
-  return rows[0];
-}
+  return await db.Board.findByPk(boardId);
+};
 
-const createBoard = async (title, description, owner) => {
-  const query = `
-    INSERT INTO boards (title, description, owner)
-    VALUES ($1, $2, $3)
-    RETURNING *
-  `;
-  const { rows } = await pool.query(query, [title, description, owner]);
-  return rows[0];
-}
+const createBoard = async (title, description, ownerId) => {
+  return await db.Board.create({ title, description, ownerId });
+};
 
 const updateBoard = async (id, title, description) => {
-  const query = `
-    UPDATE boards
-    SET title = $1, description = $2
-    WHERE id = $3
-    RETURNING *
-  `;
-  const { rows } = await pool.query(query, [title, description, id]);
-  return rows[0];
-}
+  return await db.Board.update({ title, description }, { where: { id } });
+};
 
 const deleteBoardById = async (id) => {
-  const query = `
-    DELETE FROM boards
-    WHERE id = $1
-  `;
-  await pool.query(query, [id]);
-  return { message: 'Board deleted successfully' };
-}
+  return await db.Board.destroy({ where: { id } });
+};
 
 module.exports = {
   getBoardsByUserId,

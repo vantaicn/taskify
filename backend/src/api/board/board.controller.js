@@ -31,6 +31,16 @@ const getBoard = async (req, res) => {
   }
 }
 
+const getBoardDetails = async (req, res) => {
+  const boardId = req.params.boardId;
+  try {
+    const boardDetails = await boardService.getBoardDetails(boardId);
+    res.status(200).json(boardDetails);
+  } catch (error) {
+    res.status(404).json({ error: error.message });
+  }
+}
+
 const updateBoard = async (req, res) => {
   const boardId = req.params.boardId;
   const { title, description } = req.body;
