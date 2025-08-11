@@ -7,7 +7,7 @@ const createBoard = async (req, res) => {
     const newBoard = await boardService.createBoard({ title, description, owner: userId });
     res.status(201).json(newBoard);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(error.statusCode || 500).json({ error: error.message });
   }
 }
 
@@ -17,7 +17,7 @@ const getBoards = async (req, res) => {
     const boards = await boardService.getBoardsByUserId(userId);
     res.status(200).json(boards);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(error.statusCode || 500).json({ error: error.message });
   }
 }
 
@@ -27,7 +27,7 @@ const getBoard = async (req, res) => {
     const board = await boardService.getBoardById(boardId);
     res.status(200).json(board);
   } catch (error) {
-    res.status(404).json({ error: error.message });
+    res.status(error.statusCode || 500).json({ error: error.message });
   }
 }
 
@@ -37,7 +37,7 @@ const getBoardDetails = async (req, res) => {
     const boardDetails = await boardService.getBoardDetails(boardId);
     res.status(200).json(boardDetails);
   } catch (error) {
-    res.status(404).json({ error: error.message });
+    res.status(error.statusCode || 500).json({ error: error.message });
   }
 }
 
@@ -48,7 +48,7 @@ const updateBoard = async (req, res) => {
     const updatedBoard = await boardService.updateBoard(boardId, title, description);
     res.status(200).json(updatedBoard);
   } catch (error) {
-    res.status(404).json({ error: error.message });
+    res.status(error.statusCode || 500).json({ error: error.message });
   }
 }
 
@@ -58,7 +58,7 @@ const deleteBoard = async (req, res) => {
     const result = await boardService.deleteBoardById(boardId);
     res.status(200).json(result);
   } catch (error) {
-    res.status(404).json({ error: error.message });
+    res.status(error.statusCode || 500).json({ error: error.message });
   }
 }
 
