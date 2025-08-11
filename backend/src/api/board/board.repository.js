@@ -8,8 +8,8 @@ const getBoardById = async (boardId) => {
   return await db.Board.findByPk(boardId);
 };
 
-const createBoard = async (title, description, ownerId) => {
-  return await db.Board.create({ title, description, ownerId });
+const createBoard = async(title, description, ownerId, option = {}) => {
+  return await db.Board.create({ title, description, ownerId }, option);
 };
 
 const updateBoard = async (id, title, description) => {
