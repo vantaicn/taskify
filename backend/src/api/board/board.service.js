@@ -1,6 +1,7 @@
 const sequelize = require('../../../db/sequelize');
 const boardRepository = require('./board.repository');
 const memberService = require('../member/member.service');
+const {NotFoundError, InternalServerError} = require('../../utils/errors');
 
 const createBoard = async (boardData) => {
   try {
@@ -8,20 +9,20 @@ const createBoard = async (boardData) => {
       const { title, description, ownerId } = boardData;
       const newBoard = await boardRepository.createBoard(title, description, ownerId, {transaction: t});
       memberService.addMemberToBoard(newBoard.id, ownerId, 'admin', {transaction: t});
-      return newBoard;
+      return newBoard.toJSON();
     })
     return newBoard;
   } catch (error) {
-    throw new Error(error.message || 'Error creating board');
+    throw new InternalServerError(error.message || 'Error creating board');
   }
 }
 
 const getBoardsByUserId = async (userId) => {
   try {
     const boards = await boardRepository.getBoardsByUserId(userId);
-    return boards;
+    return boards.map(board => board.toJSON());
   } catch (error) {
-    throw new Error(error.message || 'Error fetching boards by user ID');
+    throw new InternalServerError(error.message || 'Error fetching boards by user ID');
   }
 }
 
@@ -29,42 +30,35 @@ const getBoardById = async (boardId) => {
   try {
     const board = await boardRepository.getBoardById(boardId);
     if (!board) {
-      throw new Error('Board not found');
+      throw new NotFoundError('Board not found');
     }
-    return board;
+    return board.toJSON();
   } catch (error) {
-    throw new Error(error.message || 'Error fetching board by ID');
+    throw new InternalServerError(error.message || 'Error fetching board by ID');
   }
 }
 
 const updateBoard = async (boardId, title, description) => {
   try {
     const result = await boardRepository.updateBoard(boardId, title, description);
-    if (result.affectedRows === 0) {
-      throw new Error('Board not found or not updated');
+    if (result.affectedCount === 0) {
+      throw new NotFoundError('Board not found');
     }
-    return {
-      id: updatedBoard.id,
-      title: updatedBoard.title,
-      description: updatedBoard.description,
-      owner: updatedBoard.owner,
-      createdAt: updatedBoard.created_at,
-    };
+    return result.affectedCount;
   } catch (error) {
-    throw new Error(error.message || 'Error updating board');
+    throw new InternalServerError(error.message || 'Error updating board');
   }
 };
 
 const deleteBoardById = async (boardId) => {
   try {
-    const board = await boardRepository.getBoardById(boardId);
-    if (!board) {
-      throw new Error('Board not found');
+    const deletedCount = await boardRepository.deleteBoardById(boardId);
+    if (deletedCount === 0) {
+      throw new NotFoundError('Board not found');
     }
-    const result = await boardRepository.deleteBoardById(boardId);
-    return result;
+    return deletedCount;
   } catch (error) {
-    throw new Error(error.message || 'Error deleting board');
+    throw new InternalServerError(error.message || 'Error deleting board');
   }
 }
 
