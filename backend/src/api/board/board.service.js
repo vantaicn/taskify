@@ -1,6 +1,6 @@
 const sequelize = require('../../../db/sequelize');
 const boardRepository = require('./board.repository');
-const memberService = require('../member/member.service');
+const memberService = require('../board_member/board_member.service');
 const {NotFoundError, InternalServerError} = require('../../utils/errors');
 
 const createBoard = async (boardData) => {

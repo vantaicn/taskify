@@ -3,18 +3,19 @@ const authRepository = require("./auth.repository");
 const config = require("../../config");
 const jwt = require("jsonwebtoken");
 const zxcvbn = require("zxcvbn");
+const { BadRequestError, UnauthorizedError, ConflictError } = require("../../utils/errors");
 
 const register = async (userData) => {
   const { email, password, fullName } = userData;
   const existingUser = await authRepository.findUserByEmail(email);
   if (existingUser) {
-    throw new Error("Email already exists");
+    throw new ConflictError("Email already exists");
   }
 
   // Validate password strength
   const passwordStrength = zxcvbn(password);
   if (passwordStrength.score < 3) {
-    throw new Error(`Password is too weak! ${passwordStrength.feedback.suggestions.join(", ")}`);
+    throw new BadRequestError(`Password is too weak! ${passwordStrength.feedback.suggestions.join(", ")}`);
   }
 
   const hashedPassword = await bcrypt.hash(password, config.hashSaltRounds);
@@ -24,21 +25,17 @@ const register = async (userData) => {
     hashedPassword,
     fullName
   );
-  return {
-    id: newUser.id,
-    email: newUser.email,
-    fullName: newUser.full_name,
-  };
+  return newUser.toJSON();
 };
 
 const login = async (email, password) => {
   const user = await authRepository.findUserByEmail(email);
   if (!user) {
-    throw new Error("Invalid email or password");
+    throw new UnauthorizedError("Invalid email or password");
   } else {
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      throw new Error("Invalid email or password");
+      throw new UnauthorizedError("Invalid email or password");
     }
   }
 
@@ -52,9 +49,7 @@ const login = async (email, password) => {
   });
 
   return {
-    id: user.id,
-    email: user.email,
-    fullName: user.full_name,
+    ...user.toJSON(),
     token: token,
   };
 };

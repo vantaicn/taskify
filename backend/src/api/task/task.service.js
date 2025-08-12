@@ -1,30 +1,21 @@
 const taskRepository = require('./task.repository');
+const { BadRequestError, UnauthorizedError, ForbiddenError, NotFoundError, InternalServerError } = require('../../utils/errors');
 
 const createTask = async (taskData) => {
   try {
     const newTask = await taskRepository.createTask(taskData);
-    return {
-      id: newTask.id,
-      title: newTask.title,
-      listId: newTask.list_id,
-      position: newTask.position,
-    };
+    return newTask.toJSON();
   } catch (error) {
-    throw new Error(error.message || 'Error creating task');
+    throw new InternalServerError(error.message || 'Error creating task');
   }
 }
 
 const getTasksByListId = async (listId) => {
   try {
     const tasks = await taskRepository.getTasksByListId(listId);
-    return tasks.map(task => ({
-      id: task.id,
-      title: task.title,
-      listId: task.list_id,
-      position: task.position,
-    }));
+    return tasks.map(task => task.toJSON());
   } catch (error) {
-    throw new Error(error.message || 'Error fetching tasks');
+    throw new InternalServerError(error.message || 'Error fetching tasks');
   }
 }
 
@@ -32,76 +23,59 @@ const getTaskById = async (taskId) => {
   try {
     const task = await taskRepository.getTaskById(taskId);
     if (!task) {
-      throw new Error('Task not found');
+      throw new NotFoundError('Task not found');
     }
-    return {
-      id: task.id,
-      title: task.title,
-      listId: task.list_id,
-      position: task.position,
-    };
+    return task.toJSON();
   } catch (error) {
-    throw new Error(error.message || 'Error fetching task by ID');
+    throw new InternalServerError(error.message || 'Error fetching task by ID');
   }
 }
 
-const updateTask = async (taskId, taskData) => {
+const updateTaskTitle = async (taskId, title) => {
   try {
-    const updatedTask = await taskRepository.updateTask(taskId, taskData);
-    if (!updatedTask) {
-      throw new Error('Task not found');
+    const result = await taskRepository.updateTaskTitle(taskId, title);
+    if (result.affectedCount === 0) {
+      throw new NotFoundError('Task not found');
     }
-    return {
-      id: updatedTask.id,
-      title: updatedTask.title,
-      listId: updatedTask.list_id,
-      position: updatedTask.position,
-    };
+    return result.affectedCount;
   } catch (error) {
-    throw new Error(error.message || 'Error updating task');
-  }
-}
-
-const deleteTaskById = async (taskId) => {
-  try {
-    const response = await taskRepository.deleteTaskById(taskId);
-    return response;
-  } catch (error) {
-    throw new Error(error.message || 'Error deleting task');
+    throw new InternalServerError(error.message || 'Error updating task');
   }
 }
 
 const updateTaskPosition = async (taskId, position) => {
   try {
-    const updatedTask = await taskRepository.updateTaskPosition(taskId, position);
-    if (!updatedTask) {
-      throw new Error('Task not found');
+    const result = await taskRepository.updateTaskPosition(taskId, position);
+    if (result.affectedCount === 0) {
+      throw new NotFoundError('Task not found');
     }
-    return {
-      id: updatedTask.id,
-      title: updatedTask.title,
-      listId: updatedTask.list_id,
-      position: updatedTask.position,
-    };
+    return result.affectedCount;
   } catch (error) {
-    throw new Error(error.message || 'Error updating task position');
+    throw new InternalServerError(error.message || 'Error updating task position');
   }
 }
 
 const moveTask = async (taskId, targetListId, position) => {
   try {
-    const movedTask = await taskRepository.moveTask(taskId, targetListId, position);
-    if (!movedTask) {
-      throw new Error('Task not found or move failed');
+    const result = await taskRepository.moveTask(taskId, targetListId, position);
+    if (result.affectedCount === 0) {
+      throw new NotFoundError('Task not found or move failed');
     }
-    return {
-      id: movedTask.id,
-      title: movedTask.title,
-      listId: movedTask.list_id,
-      position: movedTask.position,
-    };
+    return result.affectedCount;
   } catch (error) {
-    throw new Error(error.message || 'Error moving task');
+    throw new InternalServerError(error.message || 'Error moving task');
+  }
+}
+
+const deleteTaskById = async (taskId) => {
+  try {
+    const deletedCount = await taskRepository.deleteTaskById(taskId);
+    if (deletedCount === 0) {
+      throw new NotFoundError('Task not found');
+    }
+    return deletedCount;
+  } catch (error) {
+    throw new InternalServerError(error.message || 'Error deleting task');
   }
 }
 
@@ -109,8 +83,8 @@ module.exports = {
   createTask,
   getTasksByListId,
   getTaskById,
-  updateTask,
-  deleteTaskById,
+  updateTaskTitle,
   updateTaskPosition,
   moveTask,
+  deleteTaskById,
 };
