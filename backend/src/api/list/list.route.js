@@ -10,7 +10,7 @@ router.get("/:listId", listController.getList);
 router.put(
   "/:listId",
   boardMiddleware.checkBoardAdmin,
-  listController.updateList
+  listController.updateListTitle
 );
 router.delete(
   "/:listId",

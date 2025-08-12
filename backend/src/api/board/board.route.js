@@ -5,7 +5,7 @@ const boardValidation = require("./board.validation");
 const validateMiddleware = require("../../middlewares/validate.middleware");
 const boardMiddleware = require("../../middlewares/board.middleware");
 const listRoutes = require("../list/list.route");
-const memberRoutes = require("../member/member.route");
+const memberRoutes = require("../board_member/board_member.route");
 const taskRoutes = require("../task/task.route");
 
 // Board CRUD
@@ -21,12 +21,6 @@ router.get(
   boardMiddleware.checkBoardAccess,
   boardController.getBoard
 );
-router.get(
-  "/:boardId/details",
-  validateMiddleware(boardValidation.getBoardRequest, "params"),
-  boardMiddleware.checkBoardAccess,
-  boardController.getBoardDetails
-)
 router.put(
   "/:boardId",
   validateMiddleware(boardValidation.updateBoardRequest),
