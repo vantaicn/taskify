@@ -1,4 +1,4 @@
-const memberService = require('../api/member/member.service');
+const memberService = require('../api/board_member/board_member.service');
 
 const checkBoardAccess = (req, res, next) => {
   const boardId = req.params.boardId;
