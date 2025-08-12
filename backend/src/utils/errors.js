@@ -1,23 +1,15 @@
-class NotFoundError extends Error {
+class BadRequestError extends Error {
   constructor(message) {
     super(message);
-    this.name = "NotFoundError";
-    this.statusCode = 404;
-  }
-}
-
-class ValidationError extends Error {
-  constructor(message) {
-    super(message);
-    this.name = "ValidationError";
+    this.name = "BadRequestError";
     this.statusCode = 400;
   }
 }
 
-class AuthenticationError extends Error {
+class UnauthorizedError extends Error {
   constructor(message) {
     super(message);
-    this.name = "AuthenticationError";
+    this.name = "UnauthorizedError";
     this.statusCode = 401;
   }
 }
@@ -30,6 +22,22 @@ class ForbiddenError extends Error {
   }
 }
 
+class NotFoundError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = "NotFoundError";
+    this.statusCode = 404;
+  }
+}
+
+class ConflictError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = "ConflictError";
+    this.statusCode = 409;
+  }
+}
+
 class InternalServerError extends Error {
   constructor(message) {
     super(message);
@@ -39,9 +47,10 @@ class InternalServerError extends Error {
 }
 
 module.exports = {
-  NotFoundError,
-  ValidationError,
-  AuthenticationError,
+  BadRequestError,
+  UnauthorizedError,
   ForbiddenError,
+  NotFoundError,
+  ConflictError,
   InternalServerError,
 };
