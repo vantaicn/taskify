@@ -1,23 +1,11 @@
-const pool = require("../../db/pool");
+const db = require('../../db/sequelize');
 
 const createUser = async (email, password, fullName) => {
-  const query = `
-    INSERT INTO users (email, password, full_name)
-    VALUES($1, $2, $3)
-    RETURNING *
-  `;
-  const result = await pool.query(query, [email, password, fullName]);
-  return result.rows[0];
+  return await db.User.create({ email, password, fullName });
 };
 
 const findUserByEmail = async (email) => {
-  const query = `
-    SELECT *
-    FROM users
-    WHERE email = $1
-  `;
-  const result = await pool.query(query, [email]);
-  return result.rows[0];
+  return await db.User.findOne({ where: { email } });
 };
 
 module.exports = {

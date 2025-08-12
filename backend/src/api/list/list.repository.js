@@ -1,72 +1,34 @@
-const pool = require("../../db/pool");
+const db = require("../../db/sequelize");
 
 const createList = async (title, boardId, position) => {
-  const query = `
-    INSERT INTO lists (title, board_id, position)
-    VALUES ($1, $2, $3)
-    RETURNING *
-  `
-  const result = await pool.query(query, [title, boardId, position]);
-  return result.rows[0];
+  return await db.List.create({ title, boardId, position });
 }
 
 const getListsByBoardId = async (boardId) => {
-  const query = `
-    SELECT *
-    FROM lists
-    WHERE board_id = $1
-    ORDER BY position
-  `;
-  const lists = await pool.query(query, [boardId]);
-  return lists.rows;
+  return await db.List.findAll({ where: { boardId }, order: [['position', 'ASC']] });
 }
 
 const getListById = async (listId) => {
-  const query = `
-    SELECT *
-    FROM lists
-    WHERE ID = $1
-  `;
-  const list = await pool.query(query, [listId]);
-  return list.rows[0];
+  return await db.List.findByPk(listId);
 }
 
-const updateList = async (listId, title) => {
-  const query = `
-    UPDATE lists
-    SET title = $1
-    WHERE id = $2
-    RETURNING *
-  `;
-  const { rows } = await pool.query(query, [title, listId]);
-  return rows[0];
-}
-
-const deleteListById = async (listId) => {
-  const query = `
-    DELETE FROM lists
-    WHERE id = $1
-  `;
-  await pool.query(query, [listId]);
-  return { message: 'List deleted successfully' };
+const updateListTitle = async (listId, title) => {
+  return await db.List.update({ title }, { where: { id: listId } });
 }
 
 const updateListPosition = async (listId, position) => {
-  const query = `
-    UPDATE lists
-    SET position = $1
-    WHERE id = $2
-    RETURNING *
-  `;
-  const { rows } = await pool.query(query, [position, listId]);
-  return rows[0];
+  return await db.List.update({ position }, { where: { id: listId } });
+}
+
+const deleteListById = async (listId) => {
+  return await db.List.destroy({ where: { id: listId } });
 }
 
 module.exports = {
   createList,
   getListsByBoardId,
   getListById,
-  updateList,
-  deleteListById,
+  updateListTitle,
   updateListPosition,
+  deleteListById,
 }

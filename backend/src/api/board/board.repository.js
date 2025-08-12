@@ -5,11 +5,26 @@ const getBoardsByUserId = async (userId) => {
 };
 
 const getBoardById = async (boardId) => {
-  return await db.Board.findByPk(boardId);
+  return await db.Board.findByPk(boardId, {
+    include: [
+      {
+        model: db.Member,
+        as: 'members',
+        attributes: ['id', 'userId', 'role'],
+        include: [
+          {
+            model: db.User,
+            as: 'user',
+            attributes: ['id', 'email', 'fullName']
+          }
+        ]
+      }
+    ]
+  });
 };
 
-const createBoard = async(title, description, ownerId, option = {}) => {
-  return await db.Board.create({ title, description, ownerId }, option);
+const createBoard = async(title, description, ownerId, options = {}) => {
+  return await db.Board.create({ title, description, ownerId }, options);
 };
 
 const updateBoard = async (id, title, description) => {
