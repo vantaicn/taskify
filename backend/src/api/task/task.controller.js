@@ -7,7 +7,7 @@ const createTask = async (req, res) => {
     const newTask = await taskService.createTask({ ...taskData, listId });
     res.status(201).json(newTask);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(error.statusCode || 500).json({ error: error.message });
   }
 }
 
@@ -17,7 +17,7 @@ const getTasks = async (req, res) => {
     const tasks = await taskService.getTasksByListId(listId);
     res.status(200).json(tasks);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(error.statusCode || 500).json({ error: error.message });
   }
 }
 
@@ -27,28 +27,28 @@ const getTask = async (req, res) => {
     const task = await taskService.getTaskById(taskId);
     res.status(200).json(task);
   } catch (error) {
-    res.status(404).json({ error: error.message });
+    res.status(error.statusCode || 500).json({ error: error.message });
   }
 }
 
-const updateTask = async (req, res) => {
+const updateTaskTitle = async (req, res) => {
   const { taskId } = req.params;
-  const taskData = req.body;
+  const { title } = req.body;
   try {
-    const updatedTask = await taskService.updateTask(taskId, taskData);
+    const updatedTask = await taskService.updateTaskTitle(taskId, title);
     res.status(200).json(updatedTask);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(error.statusCode || 500).json({ error: error.message });
   }
 }
 
 const deleteTask = async (req, res) => {
   const { taskId } = req.params;
   try {
-    const response = await taskService.deleteTaskById(taskId);
-    res.status(200).json(response);
+    const deletedCount = await taskService.deleteTaskById(taskId);
+    res.status(200).json({ message: `${deletedCount} task(s) deleted` });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(error.statusCode || 500).json({ error: error.message });
   }
 }
 
@@ -56,10 +56,10 @@ const updateTaskPosition = async (req, res) => {
   const { taskId } = req.params;
   const { position } = req.body;
   try {
-    const updatedTask = await taskService.updateTaskPosition(taskId, position);
-    res.status(200).json(updatedTask);
+    const updatedCount = await taskService.updateTaskPosition(taskId, position);
+    res.status(200).json({ message: `${updatedCount} task(s) updated` });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(error.statusCode || 500).json({ error: error.message });
   }
 }
 
@@ -67,10 +67,10 @@ const moveTask = async (req, res) => {
   const { taskId } = req.params;
   const { targetListId, position } = req.body;
   try {
-    const movedTask = await taskService.moveTask(taskId, targetListId, position);
-    res.status(200).json(movedTask);
+    const movedCount = await taskService.moveTask(taskId, targetListId, position);
+    res.status(200).json({ message: `${movedCount} task(s) moved` });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(error.statusCode || 500).json({ error: error.message });
   }
 }
 
@@ -78,8 +78,8 @@ module.exports = {
   createTask,
   getTasks,
   getTask,
-  updateTask,
-  deleteTask,
+  updateTaskTitle,
   updateTaskPosition,
   moveTask,
+  deleteTask,
 }

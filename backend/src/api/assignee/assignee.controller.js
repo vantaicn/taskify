@@ -7,7 +7,7 @@ const addAssignee = async (req, res) => {
     const newAssignee = await assigneeService.addAssignee(taskId, userId);
     res.status(201).json(newAssignee);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(error.statusCode || 500).json({ error: error.message });
   }
 }
 
@@ -17,17 +17,17 @@ const getAssignees = async (req, res) => {
     const assignees = await assigneeService.getAssigneesByTaskId(taskId);
     res.status(200).json(assignees);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(error.statusCode || 500).json({ error: error.message });
   }
 }
 
 const deleteAssignee = async (req, res) => {
   const { taskId, assigneeId } = req.params;
   try {
-    await assigneeService.deleteAssignee(taskId, assigneeId);
-    res.status(204).send();
+    const deletedCount = await assigneeService.deleteAssignee(taskId, assigneeId);
+    res.status(204).json({ message: `${deletedCount} assignee(s) deleted` });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(error.statusCode || 500).json({ error: error.message });
   }
 }
 

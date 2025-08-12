@@ -31,22 +31,12 @@ const getBoard = async (req, res) => {
   }
 }
 
-const getBoardDetails = async (req, res) => {
-  const boardId = req.params.boardId;
-  try {
-    const boardDetails = await boardService.getBoardDetails(boardId);
-    res.status(200).json(boardDetails);
-  } catch (error) {
-    res.status(error.statusCode || 500).json({ error: error.message });
-  }
-}
-
 const updateBoard = async (req, res) => {
   const boardId = req.params.boardId;
   const { title, description } = req.body;
   try {
-    const updatedBoard = await boardService.updateBoard(boardId, title, description);
-    res.status(200).json(updatedBoard);
+    const updatedCount = await boardService.updateBoard(boardId, title, description);
+    res.status(200).json({ message: `${updatedCount} board(s) updated` });
   } catch (error) {
     res.status(error.statusCode || 500).json({ error: error.message });
   }
@@ -55,8 +45,8 @@ const updateBoard = async (req, res) => {
 const deleteBoard = async (req, res) => {
   const boardId = req.params.boardId;
   try {
-    const result = await boardService.deleteBoardById(boardId);
-    res.status(200).json(result);
+    const deletedCount = await boardService.deleteBoardById(boardId);
+    res.status(200).json({ message: `${deletedCount} board(s) deleted` });
   } catch (error) {
     res.status(error.statusCode || 500).json({ error: error.message });
   }
