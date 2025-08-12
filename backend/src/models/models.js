@@ -178,6 +178,29 @@ db.BoardMember = sequelize.define(
   }
 );
 
+db.TaskAssignee = sequelize.define(
+  "TaskAssignee",
+  {
+    id: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true,
+    },
+    taskId: {
+      type: DataTypes.UUID,
+      allowNull: false,
+    },
+    userId: {
+      type: DataTypes.UUID,
+      allowNull: false,
+    },
+  },
+  {
+    timestamps: true,
+    underscored: true,
+  }
+);
+
 db.User.hasMany(db.Board, {
   foreignKey: "ownerId",
   onDelete: "CASCADE",
@@ -249,6 +272,22 @@ db.User.belongsToMany(db.Board, {
 db.Board.belongsToMany(db.User, {
   through: db.BoardMember,
   foreignKey: "boardId",
+  otherKey: "userId",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+
+db.User.belongsToMany(db.Task, {
+  through: db.TaskAssignee,
+  foreignKey: "userId",
+  otherKey: "taskId",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+
+db.Task.belongsToMany(db.User, {
+  through: db.TaskAssignee,
+  foreignKey: "taskId",
   otherKey: "userId",
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
