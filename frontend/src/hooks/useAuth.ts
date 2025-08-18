@@ -1,4 +1,4 @@
-import { register, login } from "@/api/authApi";
+import authApi from "@/api/authApi";
 import { useMutation } from "@tanstack/react-query";
 import type { RegisterRequest, LoginRequest, AuthResponse } from "@/api/authApi";
 import { useNavigate } from "react-router-dom";
@@ -11,8 +11,8 @@ const useAuth = () => {
   const navigate = useNavigate();
 
   const registerMutation = useMutation({
-    mutationFn: register,
-    onSuccess: (data: AuthResponse) => {
+    mutationFn: (data: RegisterRequest) => authApi.register(data),
+    onSuccess: () => {
       navigate("/login");
     },
     onError: (error: any) => {
@@ -22,7 +22,7 @@ const useAuth = () => {
   });
 
   const loginMutation = useMutation({
-    mutationFn: login,
+    mutationFn: (data: LoginRequest) => authApi.login(data),
     onSuccess: (data: AuthResponse) => {
       setUser(data.user, data.token);
       navigate("/");
@@ -36,10 +36,8 @@ const useAuth = () => {
   return {
     user,
     token,
-    isRegistering: registerMutation.isPending,
-    isLoggingIn: loginMutation.isPending,
-    register: (data: RegisterRequest) => registerMutation.mutate(data),
-    login: (data: LoginRequest) => loginMutation.mutate(data),
+    loginMutation,
+    registerMutation,
   }
 }
 
