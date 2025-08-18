@@ -23,7 +23,7 @@ import {
 const navigationItems = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard },
   { title: "Projects", url: "/projects", icon: FolderOpen },
-  { title: "Kanban Board", url: "/board", icon: KanbanSquare },
+  { title: "Kanban Board", url: "/boards", icon: KanbanSquare },
   { title: "Calendar", url: "/calendar", icon: Calendar },
   { title: "Members", url: "/members", icon: Users },
   { title: "Reports", url: "/reports", icon: BarChart3 },
@@ -49,8 +49,8 @@ const AppSidebar = () => {
             {!collapsed ? (
               <div className="flex items-center gap-2 p-2 border-b-1 mb-4">
                 <Link to="/" className="flex items-center gap-2">
-                  <div className="flex items-center justify-center bg-gradient-primary rounded-lg">
-                    <KanbanSquare className="w-10 h-10" />
+                  <div className="flex items-center justify-center bg-gradient-to-r from-primary to-secondary rounded-lg">
+                    <KanbanSquare className="w-10 h-10 p-2 text-white" />
                   </div>
                   <h2 className="text-lg font-semibold">Taskify</h2>
                 </Link>
