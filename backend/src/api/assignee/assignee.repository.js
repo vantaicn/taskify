@@ -1,4 +1,4 @@
-const db = require('../../db/sequelize');
+const db = require('../../models/models');
 
 const addAssignee = async (taskId, userId) => {
   return await db.task_assignees.create({ taskId, userId });

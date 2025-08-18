@@ -1,4 +1,4 @@
-const db = require('../../db/sequelize');
+const db = require('../../models/models');
 
 const createUser = async (email, password, fullName) => {
   return await db.User.create({ email, password, fullName });

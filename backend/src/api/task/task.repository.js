@@ -1,4 +1,4 @@
-const db = require('../../db/sequelize');
+const db = require('../../models/models');
 
 const createTask = async (title, listId, position) => {
   return await db.Task.create({ title, listId, position });

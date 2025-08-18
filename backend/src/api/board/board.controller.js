@@ -4,7 +4,7 @@ const createBoard = async (req, res) => {
   const userId = req.user.id;
   const { title, description } = req.body;
   try {
-    const newBoard = await boardService.createBoard({ title, description, owner: userId });
+    const newBoard = await boardService.createBoard({ title, description, ownerId: userId });
     res.status(201).json(newBoard);
   } catch (error) {
     res.status(error.statusCode || 500).json({ error: error.message });

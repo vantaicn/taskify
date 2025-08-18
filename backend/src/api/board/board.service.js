@@ -1,4 +1,4 @@
-const sequelize = require('../../../db/sequelize');
+const {sequelize} = require('../../db/sequelize');
 const boardRepository = require('./board.repository');
 const memberService = require('../board_member/board_member.service');
 const {NotFoundError, InternalServerError} = require('../../utils/errors');
@@ -8,7 +8,7 @@ const createBoard = async (boardData) => {
     const newBoard = await sequelize.transaction(async (t) => {
       const { title, description, ownerId } = boardData;
       const newBoard = await boardRepository.createBoard(title, description, ownerId, {transaction: t});
-      memberService.addMemberToBoard(newBoard.id, ownerId, 'admin', {transaction: t});
+      await memberService.addMemberToBoard(newBoard.id, ownerId, 'admin', {transaction: t});
       return newBoard.toJSON();
     })
     return newBoard;

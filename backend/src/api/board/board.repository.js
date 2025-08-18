@@ -1,4 +1,4 @@
-const db = require("../../db/sequelize");
+const db = require("../../models/models");
 
 const getBoardsByUserId = async (userId) => {
   return await db.Board.findAll({ where: { ownerId: userId } });
@@ -8,7 +8,7 @@ const getBoardById = async (boardId) => {
   return await db.Board.findByPk(boardId, {
     include: [
       {
-        model: db.Member,
+        model: db.BoardMember,
         as: 'members',
         attributes: ['id', 'userId', 'role'],
         include: [

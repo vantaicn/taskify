@@ -1,4 +1,4 @@
-const db = require('../../db/sequelize');
+const db = require('../../models/models');
 
 const addMemberToBoard = async (boardId, userId, role = 'member') => {
   return db.board_members.create({ boardId, userId, role });
