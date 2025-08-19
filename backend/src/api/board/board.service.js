@@ -5,13 +5,15 @@ const {NotFoundError, InternalServerError} = require('../../utils/errors');
 
 const createBoard = async (boardData) => {
   try {
-    const newBoard = await sequelize.transaction(async (t) => {
+    // const newBoard = await sequelize.transaction(async (t) => {
       const { title, description, ownerId } = boardData;
-      const newBoard = await boardRepository.createBoard(title, description, ownerId, {transaction: t});
-      await memberService.addMemberToBoard(newBoard.id, ownerId, 'admin', {transaction: t});
-      return newBoard.toJSON();
-    })
-    return newBoard;
+      // const newBoard = await boardRepository.createBoard(title, description, ownerId, {transaction: t});
+      // await memberService.addMemberToBoard(newBoard.id, ownerId, 'admin', {transaction: t});
+    const newBoard = await boardRepository.createBoard(title, description, ownerId);
+    await memberService.addMemberToBoard(newBoard.id, ownerId, 'admin');  
+    return newBoard.toJSON();
+    // })
+    // return newBoard;
   } catch (error) {
     throw new InternalServerError(error.message || 'Error creating board');
   }
@@ -23,6 +25,15 @@ const getBoardsByUserId = async (userId) => {
     return boards.map(board => board.toJSON());
   } catch (error) {
     throw new InternalServerError(error.message || 'Error fetching boards by user ID');
+  }
+}
+
+const getSharedBoardsByUserId = async (userId) => {
+  try {
+    const boards = await boardRepository.getSharedBoardsByUserId(userId);
+    return boards.map(board => board.toJSON());
+  } catch (error) {
+    throw new InternalServerError(error.message || 'Error fetching shared boards by user ID');
   }
 }
 
@@ -64,6 +75,7 @@ const deleteBoardById = async (boardId) => {
 
 module.exports = {
   getBoardsByUserId,
+  getSharedBoardsByUserId,
   getBoardById,
   createBoard,
   updateBoard,

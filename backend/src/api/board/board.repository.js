@@ -4,6 +4,19 @@ const getBoardsByUserId = async (userId) => {
   return await db.Board.findAll({ where: { ownerId: userId } });
 };
 
+const getSharedBoardsByUserId = async (userId) => {
+  return await db.Board.findAll({
+    include: [
+      {
+        model: db.BoardMember,
+        as: 'members',
+        where: { userId },
+        required: true
+      }
+    ]
+  });
+};
+
 const getBoardById = async (boardId) => {
   return await db.Board.findByPk(boardId, {
     include: [
@@ -23,7 +36,7 @@ const getBoardById = async (boardId) => {
   });
 };
 
-const createBoard = async(title, description, ownerId, options = {}) => {
+const createBoard = async (title, description, ownerId, options = {}) => {
   return await db.Board.create({ title, description, ownerId }, options);
 };
 
@@ -37,6 +50,7 @@ const deleteBoardById = async (id) => {
 
 module.exports = {
   getBoardsByUserId,
+  getSharedBoardsByUserId,
   getBoardById,
   createBoard,
   updateBoard,

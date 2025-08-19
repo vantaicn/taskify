@@ -10,6 +10,7 @@ const taskRoutes = require("../task/task.route");
 
 // Board CRUD
 router.get("/", boardController.getBoards);
+router.get("/shared", boardController.getSharedBoards);
 router.post(
   "/",
   validateMiddleware(boardValidation.createBoardRequest),

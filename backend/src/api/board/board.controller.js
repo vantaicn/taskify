@@ -21,6 +21,16 @@ const getBoards = async (req, res) => {
   }
 }
 
+const getSharedBoards = async (req, res) => {
+  const userId = req.user.id;
+  try {
+    const boards = await boardService.getSharedBoardsByUserId(userId);
+    res.status(200).json(boards);
+  } catch (error) {
+    res.status(error.statusCode || 500).json({ error: error.message });
+  }
+}
+
 const getBoard = async (req, res) => {
   const boardId = req.params.boardId;
   try {
@@ -54,6 +64,7 @@ const deleteBoard = async (req, res) => {
 
 module.exports = {
   getBoards,
+  getSharedBoards,
   getBoard,
   createBoard,
   updateBoard,
