@@ -1,31 +1,31 @@
 const db = require('../../models/models');
 
 const addMemberToBoard = async (boardId, userId, role = 'member') => {
-  return db.board_members.create({ boardId, userId, role });
+  return db.BoardMember.create({ boardId, userId, role });
 }
 
 const getMembersByBoardId = async (boardId) => {
-  return db.board_members.findAll({ where: { boardId }, include: [{ model: db.users, as: 'user' }] });
+  return db.BoardMember.findAll({ where: { boardId }, include: [{ model: db.User, as: 'user' }] });
 }
 
 const getAdminsByBoardId = async (boardId) => {
-  return db.board_members.findAll({ where: { boardId, role: 'admin' }, include: [{ model: db.users, as: 'user' }] });
+  return db.BoardMember.findAll({ where: { boardId, role: 'admin' }, include: [{ model: db.User, as: 'user' }] });
 }
 
 const getBoardsByMemberId = async (memberId) => {
-  return db.board_members.findAll({ where: { userId: memberId }, include: [{ model: db.boards, as: 'board' }] });
+  return db.BoardMember.findAll({ where: { userId: memberId }, include: [{ model: db.boards, as: 'board' }] });
 }
 
 const getRowByBoardAndUserId = async (boardId, userId) => {
-  return db.board_members.findOne({ where: { boardId, userId } });
+  return db.BoardMember.findOne({ where: { boardId, userId } });
 }
 
 const updateMemberRole = async (memberId, boardId, role, options = {}) => {
-  return db.board_members.update({ role }, { where: { id: memberId, boardId }, ...options });
+  return db.BoardMember.update({ role }, { where: { id: memberId, boardId }, ...options });
 }
 
 const deleteMemberById = async (memberId, boardId) => {
-  return db.board_members.destroy({ where: { id: memberId, boardId } });
+  return db.BoardMember.destroy({ where: { id: memberId, boardId } });
 }
 
 module.exports = {
