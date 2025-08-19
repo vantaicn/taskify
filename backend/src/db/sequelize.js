@@ -1,6 +1,6 @@
 const { Sequelize } = require('sequelize');
 
-const sequelize = new Sequelize('postgres://vantaicn:12345@localhost:5432/taskify');
+const sequelize = new Sequelize('postgres://vantaicn:12345@localhost:5432/taskify', { logging: false });
 
 const initDatabase = async () => {
   try {
