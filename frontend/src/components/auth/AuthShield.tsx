@@ -30,20 +30,25 @@ const AuthShield = ({ children } : { children: React.ReactNode }) => {
   
   useEffect(() => {
     if (token) {
+      console.log('Token found:', token);
       if (isValidToken(token)) {
         const user = JSON.parse(localStorage.getItem('user') || 'null');
+        console.log('Decoded user:', user);
         setUser(user, token);
         setShouldRender(true);
       } else {
+        console.warn('Invalid or expired token');
         clearUser();
         if (!isPublicRoute) {
           navigate('/login', { state: { from: location } });
         }
       }
     } else if (!isPublicRoute) {
+      console.log('No token found, redirecting to login');
       clearUser();
       navigate('/login', { state: { from: location } });
     } else {
+      console.log('Public route accessed');
       setShouldRender(true);
     }
   }, [location.pathname]);

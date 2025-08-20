@@ -2,8 +2,8 @@ import { create } from 'zustand'
 
 type User = {
   id: string;
-  fullName: string;
   email: string;
+  fullName: string;
 }
 
 type AuthStore = {

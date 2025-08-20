@@ -15,7 +15,7 @@ import {
 import useAuth from "@/hooks/useAuth";
 
 const RegisterPage = () => {
-  const { register, isRegistering } = useAuth();
+  const { registerMutation } = useAuth();
 
   const [registerData, setRegisterData] = useState({
     fullName: "",
@@ -30,7 +30,7 @@ const RegisterPage = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    register(registerData);
+    registerMutation.mutate(registerData);
   };
 
   return (
@@ -81,8 +81,8 @@ const RegisterPage = () => {
               </div>
             </CardContent>
             <CardFooter className="flex flex-col items-center space-y-4">
-              <Button type="submit" disabled={isRegistering} className="w-full">
-                {isRegistering ? "Registering..." : "Register"}
+              <Button type="submit" disabled={registerMutation.isPending} className="w-full">
+                {registerMutation.isPending ? "Registering..." : "Register"}
               </Button>
               <div className="text-center text-sm">
                 <CardAction>

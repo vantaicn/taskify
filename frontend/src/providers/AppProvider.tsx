@@ -23,12 +23,12 @@ const AppProvider = ({ children }: AppProviderProps) => {
             <SidebarProvider>
               <div className="flex min-h-screen bg-background w-full">
                 <AppSidebar />
-                {/* <AuthShield> */}
+                <AuthShield>
                   <div className="flex-1 flex flex-col">
                     <AppHeader />
                     {children}
                   </div>
-                {/* </AuthShield> */}
+                </AuthShield>
               </div>
             </SidebarProvider>
           </Router>

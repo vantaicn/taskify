@@ -15,7 +15,7 @@ import {
 import useAuth from "@/hooks/useAuth";
 
 const LoginPage = () => {
-  const { login, isLoggingIn } = useAuth();
+  const {loginMutation} = useAuth();
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
@@ -28,7 +28,7 @@ const LoginPage = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    login(loginData);
+    loginMutation.mutate(loginData);
   };
 
   return (
@@ -71,9 +71,9 @@ const LoginPage = () => {
                 type="submit"
                 className="w-full"
                 onClick={handleSubmit}
-                disabled={isLoggingIn}
+                disabled={loginMutation.isPending}
               >
-                {isLoggingIn ? "Logging in..." : "Login"}
+                {loginMutation.isPending ? "Logging in..." : "Login"}
               </Button>
               <div className="text-center text-sm">
                 <CardAction>
