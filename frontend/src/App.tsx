@@ -5,8 +5,13 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import BoardsPage from "./pages/BoardsPage";
 import BoardDetailsPage from "./pages/BoardDetailsPage";
+import { useAuthStore } from "./stores/authStore";
 
 const App = () => {
+  const {user} = useAuthStore();
+  React.useEffect(() => {
+    console.log('Current user:', user);
+  }, []);
 
   return (
     <Routes>

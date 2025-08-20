@@ -1,23 +1,22 @@
 
 import BoardsCard from "./BoardsCard";
-import type { BoardsListItem } from "@/types/board.types";
+import type { Board } from "@/types/board.types";
 import {Link} from "react-router-dom";
 
 interface BoardsGridProps {
-  boards: BoardsListItem[];
-  type: "guest" | "owner";
-
+  boards: Board[];
+  title: string;
 }
 
 const BoardsGrid = ({
   boards,
-  type
+  title
 }: BoardsGridProps) => {
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold">{type === "owner" ? "Your Boards" : "Guest Boards"}</h2>
+        <h2 className="text-lg font-semibold">{title}</h2>
       </div>
 
       {/* Filter and Search */}
