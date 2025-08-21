@@ -202,66 +202,77 @@ db.TaskAssignee = sequelize.define(
 );
 
 db.User.hasMany(db.Board, {
+  as: "ownedBoards",
   foreignKey: "ownerId",
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
 
 db.Board.belongsTo(db.User, {
+  as: "owner",
   foreignKey: "ownerId",
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
 
 db.Board.hasMany(db.List, {
+  as: "lists",
   foreignKey: "boardId",
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
 
 db.List.belongsTo(db.Board, {
+  as: "board",
   foreignKey: "boardId",
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
 
 db.List.hasMany(db.Task, {
+  as: "tasks",
   foreignKey: "listId",
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
 
 db.Task.belongsTo(db.List, {
+  as: "list",
   foreignKey: "listId",
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
 
 db.User.hasMany(db.TaskComment, {
+  as: "comments",
   foreignKey: "userId",
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
 
 db.TaskComment.belongsTo(db.User, {
+  as: "user",
   foreignKey: "userId",
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
 
 db.Task.hasMany(db.TaskComment, {
+  as: "comments",
   foreignKey: "taskId",
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
 
 db.TaskComment.belongsTo(db.Task, {
+  as: "task",
   foreignKey: "taskId",
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
 
 db.User.belongsToMany(db.Board, {
+  as: "boards",
   through: db.BoardMember,
   foreignKey: "userId",
   otherKey: "boardId",
@@ -270,6 +281,7 @@ db.User.belongsToMany(db.Board, {
 });
 
 db.Board.belongsToMany(db.User, {
+  as: "members",
   through: db.BoardMember,
   foreignKey: "boardId",
   otherKey: "userId",
@@ -278,6 +290,7 @@ db.Board.belongsToMany(db.User, {
 });
 
 db.User.belongsToMany(db.Task, {
+  as: "tasks",
   through: db.TaskAssignee,
   foreignKey: "userId",
   otherKey: "taskId",
@@ -286,6 +299,7 @@ db.User.belongsToMany(db.Task, {
 });
 
 db.Task.belongsToMany(db.User, {
+  as: "assignees",
   through: db.TaskAssignee,
   foreignKey: "taskId",
   otherKey: "userId",
