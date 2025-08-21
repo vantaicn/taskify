@@ -6,14 +6,14 @@ const getBoardsByUserId = async (userId) => {
 
 const getSharedBoardsByUserId = async (userId) => {
   return await db.Board.findAll({
-    include: [
-      {
-        model: db.BoardMember,
-        as: 'members',
-        where: { userId },
-        required: true
-      }
-    ]
+    // include: [
+    //   {
+    //     model: db.BoardMember,
+    //     as: 'members',
+    //     where: { userId },
+    //     required: true
+    //   }
+    // ]
   });
 };
 
@@ -21,16 +21,8 @@ const getBoardById = async (boardId) => {
   return await db.Board.findByPk(boardId, {
     include: [
       {
-        model: db.BoardMember,
-        as: 'members',
-        attributes: ['id', 'userId', 'role'],
-        include: [
-          {
-            model: db.User,
-            as: 'user',
-            attributes: ['id', 'email', 'fullName']
-          }
-        ]
+        model: db.List,
+        as: 'lists',
       }
     ]
   });
