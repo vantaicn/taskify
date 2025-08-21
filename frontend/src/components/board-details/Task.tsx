@@ -12,9 +12,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Edit } from "lucide-react";
+import type { Task as TaskType } from "@/types/task.types";
 
+export interface TaskProps {
+  task: TaskType;
+}
 
-const Task = () => {
+const Task = ({task}: TaskProps) => {
   return (
     <Card className="p-1 rounded-sm group">
       <CardContent className="text-sm justify-between items-center p-1 flex">

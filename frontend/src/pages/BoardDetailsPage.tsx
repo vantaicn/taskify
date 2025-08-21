@@ -1,18 +1,32 @@
+import React from "react";
 import List from "@/components/board-details/List";
-import { MoreHorizontal, UserPlus } from "lucide-react";
+import { MoreHorizontal, UserPlus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useParams } from "react-router-dom";
+import type { List as ListType } from "@/types/list.types";
 
 import useBoards from "@/hooks/useBoards";
+import useList from "@/hooks/useList";
 
+const POSITION_GAP = 100;
 
 const BoardDetailsPage = () => {
   const { useGetBoardById } = useBoards();
-  const { boardId } = useParams<{ boardId: string }>();
+  const { boardId } = useParams();
   const boardQuery = useGetBoardById(boardId || "");
 
-  const handleAddList = () => {
-    // Logic to add a new list
+  const board = boardQuery.data;
+  const lists = board?.lists || [];
+  console.log("Board details:", board);
+  console.log("Lists:", lists);
+
+  const { createListMutation } = useList();
+
+  const [newList, setNewList] = React.useState({ title: "", boardId: boardId || "", position: lists.length > 0 ? lists[lists.length - 1].position + POSITION_GAP : 0 });
+
+  const handleAddListAsync = async () => {
+    await createListMutation.mutateAsync(newList);
+    setNewList({ title: "", boardId: boardId || "", position: lists.length > 0 ? lists[lists.length - 1].position + POSITION_GAP : 0 });
   };
 
   return (
@@ -33,10 +47,12 @@ const BoardDetailsPage = () => {
 
       {/* Lists */}
       <div className="flex space-x-4 p-4">
-        <List />
-        <List />
-        <Button variant="outline" className="w-64" onClick={handleAddList}>
-          + Add New List
+        {lists.map((list: ListType) => (
+          <List key={list.id} list={list} />
+        ))}
+        <Button variant="outline" className="w-64" onClick={handleAddListAsync}>
+          <Plus className="w-4 h-4 mr-1" />
+          Add New List
         </Button>
       </div>    
     </>
