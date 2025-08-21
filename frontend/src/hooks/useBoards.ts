@@ -34,8 +34,8 @@ const useBoards = () => {
       toast.success("Board created successfully");
       queryClient.invalidateQueries({queryKey: ["boards", user?.id]});
     },
-    onError: () => {
-      toast.error("Error creating board");
+    onError: (error: any) => {
+      toast.error(`Error creating board: ${error.response?.data?.error}`);
     },
   });
 
@@ -46,8 +46,8 @@ const useBoards = () => {
       queryClient.invalidateQueries({ queryKey: ["board", id] });
       queryClient.invalidateQueries({ queryKey: ["boards", user?.id] });
     },
-    onError: () => {
-      toast.error("Error updating board");
+    onError: (error: any) => {
+      toast.error(`Error updating board: ${error.response?.data?.error}`);
     },
   });
 
@@ -58,8 +58,8 @@ const useBoards = () => {
       queryClient.removeQueries({ queryKey: ["board", id] });
       queryClient.invalidateQueries({ queryKey: ["boards", user?.id] });
     },
-    onError: () => {
-      toast.error("Error deleting board");
+    onError: (error: any) => {
+      toast.error(`Error deleting board: ${error.response?.data?.error}`);
     },
   });
 

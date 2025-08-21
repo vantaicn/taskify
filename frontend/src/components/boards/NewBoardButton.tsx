@@ -14,10 +14,8 @@ import { Input } from "@/components/ui/input";
 import { Plus } from "lucide-react";
 import React from "react";
 import useBoards from "@/hooks/useBoards";
-import { useAuthStore } from "@/stores/authStore";
 
 const NewBoardButton = () => {
-  const { user } = useAuthStore();
   const [boardData, setBoardData] = React.useState({
     title: "",
     description: "",
@@ -31,7 +29,6 @@ const NewBoardButton = () => {
   };
 
   const handleCreateBoard = async () => {
-    console.log("user", user);
     await createBoardMutation.mutateAsync(boardData);
     setBoardData({ title: "", description: "" });
     setOpen(false);
