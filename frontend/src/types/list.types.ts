@@ -1,6 +1,6 @@
-import type { Task } from "./task.types";
+import type { TaskType } from "./task.types";
 
-export interface List {
+export interface ListType {
   id: string;
   title: string;
   position: number;
@@ -8,5 +8,10 @@ export interface List {
   createdAt: Date;
   updatedAt: Date;
 
-  tasks: Task[];
+  tasks?: TaskType[];
+}
+
+export interface CreateListPayload {
+  title: string;
+  position: number;
 }

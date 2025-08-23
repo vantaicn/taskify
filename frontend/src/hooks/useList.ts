@@ -1,15 +1,32 @@
-import { useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import listApi from "../api/listApi";
-import type { List } from "../types/list.types";
+import type { CreateListPayload } from "../types/list.types";
 import { toast } from "sonner";
-import queryClient from "@/lib/react-query";
 
-const useList = () => {
+const useList = (boardId: string) => {
+  const queryClient = useQueryClient();
+
+  const useGetLists = () => {
+    return useQuery({
+      queryKey: ["board", boardId, "lists"],
+      queryFn: () => listApi.getLists(boardId),
+      enabled: !!boardId,
+    });
+  };
+
+  const useGetListById = (listId: string) => {
+    return useQuery({
+      queryKey: ["list", listId],
+      queryFn: () => listApi.getListById(listId),
+      enabled: !!listId,
+    });
+  };
+
   const createListMutation = useMutation({
-    mutationFn: (data: Omit<List, 'id' | 'createdAt' | 'updatedAt' | 'tasks'>) => listApi.createList(data),
-    onSuccess: (data) => {
+    mutationFn: (data: CreateListPayload) => listApi.createList(boardId, data),
+    onSuccess: () => {
       toast.success("List created successfully!");
-      queryClient.invalidateQueries({ queryKey: ["board", data.boardId] });
+      queryClient.invalidateQueries({ queryKey: ["board", boardId, "lists"] });
     },
     onError: (error: any) => {
       toast.error(`Error creating list: ${error.response?.data?.error}`);
@@ -17,11 +34,12 @@ const useList = () => {
   });
 
   const updateListTitleMutation = useMutation({
-    mutationFn: (data: { boardId: string; listId: string; title: string }) =>
-      listApi.updateListTitle(data.boardId, data.listId, data.title),
-    onSuccess: (data) => {
+    mutationFn: ({listId, title}: {listId: string; title: string}) =>
+      listApi.updateListTitle(listId, title),
+    onSuccess: (_, {listId}) => {
       toast.success("List title updated successfully!");
-      queryClient.invalidateQueries({ queryKey: ["board", data.boardId] });
+      queryClient.invalidateQueries({ queryKey: ["list", listId] });
+      queryClient.invalidateQueries({ queryKey: ["board", boardId, "lists"] });
     },
     onError: (error: any) => {
       toast.error(`Error updating list title: ${error.response?.data?.error}`);
@@ -29,11 +47,11 @@ const useList = () => {
   });
 
   const updateListPositionMutation = useMutation({
-    mutationFn: (data: { boardId: string; listId: string; position: number }) =>
-      listApi.updateListPosition(data.boardId, data.listId, data.position),
-    onSuccess: (data) => {
+    mutationFn: ({listId, position}: {listId: string; position: number}) =>
+      listApi.updateListPosition(listId, position),
+    onSuccess: () => {
       toast.success("List position updated successfully!");
-      queryClient.invalidateQueries({ queryKey: ["board", data.boardId] });
+      queryClient.invalidateQueries({ queryKey: ["board", boardId, "lists"] });
     },
     onError: (error: any) => {
       toast.error(`Error updating list position: ${error.response?.data?.error}`);
@@ -41,11 +59,10 @@ const useList = () => {
   });
 
   const deleteListMutation = useMutation({
-    mutationFn: (data: { boardId: string; listId: string }) =>
-      listApi.deleteList(data.boardId, data.listId),
-    onSuccess: (data) => {
+    mutationFn: listApi.deleteList,
+    onSuccess: () => {
       toast.success("List deleted successfully!");
-      queryClient.invalidateQueries({ queryKey: ["board", data.boardId] });
+      queryClient.invalidateQueries({ queryKey: ["board", boardId, "lists"] });
     },
     onError: (error: any) => {
       toast.error(`Error deleting list: ${error.response?.data?.error}`);
@@ -53,6 +70,8 @@ const useList = () => {
   });
 
   return {
+    useGetLists,
+    useGetListById,
     createListMutation,
     updateListTitleMutation,
     updateListPositionMutation,

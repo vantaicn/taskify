@@ -1,5 +1,5 @@
 import axiosInstance from "@/lib/axios";
-import type { Board, CreateBoardRequest } from "@/types/board.types";
+import type { CreateBoardPayload, UpdateBoardPayload } from "@/types/board.types";
 
 const boardsApi = {
   getBoards: async () => {
@@ -14,12 +14,12 @@ const boardsApi = {
     const response = await axiosInstance.get(`/boards/${id}`);
     return response.data;
   },
-  createBoard: async (data: CreateBoardRequest) => {
+  createBoard: async (data: CreateBoardPayload) => {
     const response = await axiosInstance.post("/boards", data);
     console.log('Board created:', response);
     return response.data;
   },
-  updateBoard: async (id: string, data: Partial<Board>) => {
+  updateBoard: async (id: string, data: UpdateBoardPayload) => {
     const response = await axiosInstance.put(`/boards/${id}`, data);
     return response.data;
   },
