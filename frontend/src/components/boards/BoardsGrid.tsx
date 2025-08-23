@@ -1,10 +1,10 @@
 
 import BoardsCard from "./BoardsCard";
-import type { Board } from "@/types/board.types";
+import type { BoardType } from "@/types/board.types";
 import {Link} from "react-router-dom";
 
 interface BoardsGridProps {
-  boards: Board[];
+  boards: BoardType[];
   title: string;
 }
 
@@ -23,7 +23,7 @@ const BoardsGrid = ({
       
 
       {/* Grid */}
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid overflow-y-auto h-55 grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-transparent hover:scrollbar-thumb-gray-300">
         {boards.map((board) => (
           <Link to={`/boards/${board.id}`} key={board.id}>
             <BoardsCard board={board} />

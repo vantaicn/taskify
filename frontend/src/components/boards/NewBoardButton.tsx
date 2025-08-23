@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Plus } from "lucide-react";
 import React from "react";
-import useBoards from "@/hooks/useBoards";
+import useBoards from "@/hooks/useBoard";
 
 const NewBoardButton = () => {
   const [boardData, setBoardData] = React.useState({
