@@ -1,26 +1,52 @@
 const express = require("express");
-const router = express.Router({ mergeParams: true });
+const listNestedRoutes = express.Router({ mergeParams: true });
+const listFlatRoutes = express.Router();
 const listController = require("./list.controller");
 const listValidation = require("./list.validation");
-const boardMiddleware = require("../../middlewares/board.middleware");
+const {
+  checkBoardAccess,
+  checkBoardAdmin,
+} = require("../../middlewares/board.middleware");
+const { loadAndAttachList } = require("../../middlewares/list.middleware");
+const { taskNestedRoutes } = require("../task/task.route");
 
-router.post("/", boardMiddleware.checkBoardAdmin, listController.createList);
-router.get("/", listController.getLists);
-router.get("/:listId", listController.getList);
-router.put(
+// Nested routes: /boards/:boardId/lists
+listNestedRoutes.post("/", checkBoardAdmin, listController.createList);
+listNestedRoutes.get("/", listController.getLists);
+
+// Flat routes: /lists
+listFlatRoutes.param("listId", (req, res, next) => {
+  return loadAndAttachList(req, res, next);
+});
+
+listFlatRoutes.get(
   "/:listId",
-  boardMiddleware.checkBoardAdmin,
+  checkBoardAccess,
+  listController.getList
+);
+listFlatRoutes.put(
+  "/:listId",
+  checkBoardAdmin,
   listController.updateListTitle
 );
-router.delete(
+listFlatRoutes.delete(
   "/:listId",
-  boardMiddleware.checkBoardAdmin,
+  checkBoardAdmin,
   listController.deleteList
 );
-router.put(
+listFlatRoutes.put(
   "/:listId/position",
-  boardMiddleware.checkBoardAdmin,
+  checkBoardAdmin,
   listController.updateListPosition
 );
 
-module.exports = router;
+listFlatRoutes.use(
+  "/:listId/tasks",
+  checkBoardAccess,
+  taskNestedRoutes
+);
+
+module.exports = {
+  listNestedRoutes,
+  listFlatRoutes,
+};

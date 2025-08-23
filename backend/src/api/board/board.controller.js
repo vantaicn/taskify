@@ -35,7 +35,6 @@ const getBoard = async (req, res) => {
   const boardId = req.params.boardId;
   try {
     const board = await boardService.getBoardById(boardId);
-    console.log("Board details:", board);
     res.status(200).json(board);
   } catch (error) {
     res.status(error.statusCode || 500).json({ error: error.message });

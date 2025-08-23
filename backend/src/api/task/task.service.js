@@ -3,7 +3,7 @@ const { BadRequestError, UnauthorizedError, ForbiddenError, NotFoundError, Inter
 
 const createTask = async (taskData) => {
   try {
-    const newTask = await taskRepository.createTask(taskData);
+    const newTask = await taskRepository.createTask(taskData.title, taskData.listId, taskData.position);
     return newTask.toJSON();
   } catch (error) {
     throw new InternalServerError(error.message || 'Error creating task');

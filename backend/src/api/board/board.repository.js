@@ -23,6 +23,12 @@ const getBoardById = async (boardId) => {
       {
         model: db.List,
         as: 'lists',
+        include: [
+          {
+            model: db.Task,
+            as: 'tasks'
+          }
+        ]
       }
     ]
   });
