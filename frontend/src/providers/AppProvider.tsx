@@ -21,12 +21,14 @@ const AppProvider = ({ children }: AppProviderProps) => {
         <QueryClientProvider client={queryClient}>
           <Router>
             <SidebarProvider>
-              <div className="flex min-h-screen bg-background w-full">
+              <div className="flex h-screen bg-background w-full overflow-hidden">
                 <AppSidebar />
                 <AuthShield>
-                  <div className="flex-1 flex flex-col">
+                  <div className="flex-1 flex flex-col overflow-hidden">
                     <AppHeader />
-                    {children}
+                    <main className="flex-1 overflow-auto">
+                      {children}
+                    </main>
                   </div>
                 </AuthShield>
               </div>
