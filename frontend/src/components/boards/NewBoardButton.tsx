@@ -37,52 +37,65 @@ const NewBoardButton = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">
-          <Plus className="w-4 h-4" />
+        <Button 
+          variant="default"
+          className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white shadow-md hover:shadow-lg transition-all duration-200"
+        >
+          <Plus className="w-4 h-4 mr-2" />
           New Board
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[480px] bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border border-white/20 dark:border-gray-700/20">
         <DialogHeader>
-          <DialogTitle>New board</DialogTitle>
-          <DialogDescription>
-            Create a new board by filling out the details below.
+          <DialogTitle className="text-xl font-semibold bg-gradient-to-r from-gray-800 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
+            Create New Board
+          </DialogTitle>
+          <DialogDescription className="text-gray-600 dark:text-gray-400">
+            Create a new board to organize your tasks and collaborate with your team.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="title" className="text-right">
-              Title
+        <div className="grid gap-6 py-4">
+          <div className="space-y-2">
+            <Label htmlFor="title" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              Board Title *
             </Label>
             <Input
               id="title"
-              className="col-span-3"
+              placeholder="Enter board title..."
               value={boardData.title}
               onChange={handleInputChange}
+              className="bg-white/50 dark:bg-gray-800/50 border-gray-200/50 dark:border-gray-700/50 focus:border-primary/50 dark:focus:border-primary/50"
             />
           </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="description" className="text-right">
+          <div className="space-y-2">
+            <Label htmlFor="description" className="text-sm font-medium text-gray-700 dark:text-gray-300">
               Description
             </Label>
             <Input
               id="description"
-              className="col-span-3"
+              placeholder="Describe what this board is for..."
               value={boardData.description}
               onChange={handleInputChange}
+              className="bg-white/50 dark:bg-gray-800/50 border-gray-200/50 dark:border-gray-700/50 focus:border-primary/50 dark:focus:border-primary/50"
             />
           </div>
         </div>
 
-        <DialogFooter>
+        <DialogFooter className="gap-2">
           <DialogClose asChild>
-            <Button type="button" variant="secondary">
+            <Button type="button" variant="outline" className="bg-white/50 dark:bg-gray-800/50">
               Cancel
             </Button>
           </DialogClose>
-          <Button onClick={handleCreateBoard}>Create</Button>
+          <Button 
+            onClick={handleCreateBoard}
+            disabled={!boardData.title.trim()}
+            className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Create Board
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

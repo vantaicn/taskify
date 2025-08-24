@@ -52,31 +52,30 @@ const BoardDetailsPage = () => {
   };
 
   return (
-    <div className="bg-gradient-to-br from-purple-300 via-purple-300 to-pink-400 min-h-screen">
+    <div className="flex flex-col h-full bg-gradient-to-br from-purple-300 via-purple-300 to-pink-400">
       {/* Header */}
-      <div className="h-16 bg-black/30 backdrop-blur-md flex items-center justify-between px-4">
+      <div className="flex-shrink-0 h-16 bg-black/30 backdrop-blur-md flex items-center justify-between px-4">
         <h1 className="text-lg font-semibold">{boardQuery.data?.title}</h1>
         <div className="item-end px-6 flex items-center gap-2">
-          <Button variant="outline" className="text-sm text-gray-500">
+          <Button variant="outline" className="text-sm text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-600">
             <UserPlus className="w-4 h-4 mr-1" />
             Share
           </Button>
-          <Button variant="outline" className="text-sm text-gray-500 px-2">
+          <Button variant="outline" className="text-sm text-gray-500 px-2 hover:bg-gray-100 dark:hover:bg-gray-600">
             <MoreHorizontal className="w-4 h-4" />
           </Button>
         </div>
       </div>
 
       {/* Lists */}
-      <div className="flex items-start gap-4 p-4 overflow-x-auto w-360
-                      scrollbar-thin 
+      <div className="flex items-start gap-4 p-4 overflow-x-auto overflow-y-hidden
+                      scrollbar-thin
                       scrollbar-track-transparent
                       scrollbar-thumb-transparent
                       hover:scrollbar-thumb-gray-300">
         {lists.map((list: ListType) => (
           <List key={list.id} list={list} />
         ))}
-
         <Dialog
           open={isOpenNewListDialog}
           onOpenChange={setIsOpenNewListDialog}

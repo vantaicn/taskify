@@ -4,10 +4,7 @@ import {
   Card,
   CardHeader,
   CardContent,
-  CardFooter,
   CardTitle,
-  CardDescription,
-  CardAction,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
@@ -53,56 +50,89 @@ const List = ({ list }: ListProps) => {
   };
 
   return (
-    <Card className="min-w-[16rem] bg-gray-100 pb-1">
+    <Card className="w-[18rem] pb-2 flex-shrink-0 bg-white/60 dark:bg-gray-800/60 backdrop-blur-md border border-white/30 dark:border-gray-700/30 shadow-lg">
       <CardHeader>
-        <CardTitle>{list.title}</CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-md font-semibold bg-gradient-to-r from-gray-800 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
+            {list.title}
+          </CardTitle>
+          <div className="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 text-xs px-2 py-1 rounded-full">
+            {tasks.length}
+          </div>
+        </div>
       </CardHeader>
-      <CardContent className="space-y-2 p-2">
-        <div className="space-y-2 max-h-[30rem] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-transparent hover:scrollbar-thumb-gray-300">
+    
+      <CardContent className="space-y-2 px-2">
+        <div className="max-h-[28rem] pb-2 space-y-2 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400/70 dark:hover:scrollbar-thumb-gray-500/70">
           {tasks?.map((task: TaskType) => (
             <Task key={task.id} task={task} />
           ))}
         </div>
+    
         <Dialog
           open={isOpenNewTaskDialog}
           onOpenChange={setIsOpenNewTaskDialog}
         >
           <DialogTrigger asChild>
-            <Button variant="outline" className="w-full border-0 bg-white/30 hover:bg-white/50 text-gray-600 backdrop-blur-md">
-              <Plus className="w-4 h-4 mr-1" />
+            <Button
+              variant="ghost"
+              className="w-full bg-transparent hover:bg-white/40 dark:hover:bg-gray-800/40 text-gray-600 dark:text-gray-400 border-0"
+            >
+              <Plus className="w-4 h-4" />
               Add New Task
             </Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border border-white/20 dark:border-gray-700/20">
             <DialogHeader>
-              <DialogTitle>Add New Task</DialogTitle>
-              <DialogDescription>
+              <DialogTitle className="text-lg font-semibold bg-gradient-to-r from-gray-800 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
+                Add New Task
+              </DialogTitle>
+              <DialogDescription className="text-gray-600 dark:text-gray-400">
                 Enter the details for the new task.
               </DialogDescription>
             </DialogHeader>
-            <Label htmlFor="task-title">Task Title</Label>
-            <Input
-              id="task-title"
-              placeholder="Enter task title"
-              value={newTaskData.title}
-              onChange={(e) =>
-                setNewTaskData({ ...newTaskData, title: e.target.value })
-              }
-            />
-            <Label htmlFor="task-description">Description</Label>
-            <Input
-              id="task-description"
-              placeholder="Enter task description"
-              value={newTaskData.description}
-              onChange={(e) =>
-                setNewTaskData({ ...newTaskData, description: e.target.value })
-              }
-            />
-            <DialogFooter>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="task-title" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Task Title
+                </Label>
+                <Input
+                  id="task-title"
+                  placeholder="Enter task title"
+                  value={newTaskData.title}
+                  onChange={(e) =>
+                    setNewTaskData({ ...newTaskData, title: e.target.value })
+                  }
+                  className="bg-white/50 dark:bg-gray-800/50 border-gray-200/50 dark:border-gray-700/50 focus:border-primary/50 dark:focus:border-primary/50"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="task-description" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Description
+                </Label>
+                <Input
+                  id="task-description"
+                  placeholder="Enter task description"
+                  value={newTaskData.description}
+                  onChange={(e) =>
+                    setNewTaskData({ ...newTaskData, description: e.target.value })
+                  }
+                  className="bg-white/50 dark:bg-gray-800/50 border-gray-200/50 dark:border-gray-700/50 focus:border-primary/50 dark:focus:border-primary/50"
+                />
+              </div>
+            </div>
+            <DialogFooter className="gap-2">
               <DialogClose asChild>
-                <Button variant="outline">Cancel</Button>
+                <Button variant="outline" className="bg-white/50 dark:bg-gray-800/50">
+                  Cancel
+                </Button>
               </DialogClose>
-              <Button onClick={handleCreateTask}>Create</Button>
+              <Button
+                onClick={handleCreateTask}
+                className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white"
+              >
+                Create
+              </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
