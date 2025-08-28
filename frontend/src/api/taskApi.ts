@@ -15,7 +15,7 @@ const taskApi = {
     return response.data;
   },
   updateTask: async (taskId: string, data: UpdateTaskPayload) => {
-    const response = await axiosInstance.put(`/tasks/${taskId}`, data);
+    const response = await axiosInstance.patch(`/tasks/${taskId}`, data);
     return response.data;
   },
   updateTaskPosition: async (taskId: string, position: number) => {

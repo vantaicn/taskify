@@ -1,11 +1,8 @@
 import React from "react";
+import { useDroppable } from "@dnd-kit/core";
+import { SortableContext } from "@dnd-kit/sortable";
 import Task from "./Task";
-import {
-  Card,
-  CardHeader,
-  CardContent,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import type { ListType } from "@/types/list.types";
@@ -23,6 +20,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 
+import useList from "@/hooks/useList";
 import useTask from "@/hooks/useTask";
 
 export interface ListProps {
@@ -32,6 +30,9 @@ export interface ListProps {
 const POSITION_GAP = 100;
 
 const List = ({ list }: ListProps) => {
+  const { setNodeRef } = useDroppable({ id: list.id });
+
+  const { updateListTitleMutation } = useList(list.boardId);
   const { useGetTasks, createTaskMutation } = useTask(list.boardId, list.id);
   const tasksQuery = useGetTasks();
   const tasks = tasksQuery.data || [];
@@ -39,36 +40,88 @@ const List = ({ list }: ListProps) => {
   const [newTaskData, setNewTaskData] = React.useState({
     title: "",
     description: "",
-    position: tasks.length > 0 ? tasks[tasks.length - 1].position + POSITION_GAP : 0,
+    position:
+      tasks.length > 0 ? tasks[tasks.length - 1].position + POSITION_GAP : 0,
   });
   const [isOpenNewTaskDialog, setIsOpenNewTaskDialog] = React.useState(false);
+  const [isEditing, setIsEditing] = React.useState(false);
+  const [listTitle, setListTitle] = React.useState(list.title);
+
+  const handleSaveEdit = async () => {
+    if (listTitle !== list.title) {
+      await updateListTitleMutation.mutateAsync({
+        listId: list.id,
+        title: listTitle,
+      });
+    }
+    setIsEditing(false);
+  };
 
   const handleCreateTask = async () => {
     await createTaskMutation.mutateAsync(newTaskData);
-    setNewTaskData({ title: "", description: "", position: tasks.length > 0 ? tasks[tasks.length - 1].position + POSITION_GAP : 0 });
+    setNewTaskData({
+      title: "",
+      description: "",
+      position:
+        tasks.length > 0 ? tasks[tasks.length - 1].position + POSITION_GAP : 0,
+    });
     setIsOpenNewTaskDialog(false);
   };
 
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    setListTitle(list.title);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleSaveEdit();
+    } else if (e.key === "Escape") {
+      handleCancelEdit();
+    }
+  };
+
   return (
-    <Card className="w-[18rem] pb-2 flex-shrink-0 bg-white/60 dark:bg-gray-800/60 backdrop-blur-md border border-white/30 dark:border-gray-700/30 shadow-lg">
-      <CardHeader>
-        <div className="flex items-center justify-between">
+    <Card className="w-[18rem] py-2 flex-shrink-0 bg-white/60 dark:bg-gray-800/60 backdrop-blur-md border border-white/30 dark:border-gray-700/30 shadow-lg">
+      <CardHeader className="">
+        <div className="flex items-center justify-between gap-2">
           <CardTitle className="text-md font-semibold bg-gradient-to-r from-gray-800 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
-            {list.title}
+            {isEditing ? (
+              <Input
+                value={listTitle}
+                onChange={(e) => setListTitle(e.target.value)}
+                onBlur={handleSaveEdit}
+                onKeyDown={handleKeyDown}
+                autoFocus
+                className="mt-1 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 dark:text-gray-100"
+              />
+            ) : (
+              <p
+                className="mt-2 cursor-pointer"
+                onClick={() => setIsEditing(true)}
+              >
+                {listTitle}
+              </p>
+            )}
           </CardTitle>
           <div className="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 text-xs px-2 py-1 rounded-full">
             {tasks.length}
           </div>
         </div>
       </CardHeader>
-    
+
       <CardContent className="space-y-2 px-2">
-        <div className="max-h-[28rem] pb-2 space-y-2 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400/70 dark:hover:scrollbar-thumb-gray-500/70">
-          {tasks?.map((task: TaskType) => (
-            <Task key={task.id} task={task} />
-          ))}
-        </div>
-    
+        <SortableContext
+          id={list.id}
+          items={list.tasks?.map((c) => c.id) || []}
+        >
+          <div className="max-h-[28rem] pb-2 space-y-2 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400/70 dark:hover:scrollbar-thumb-gray-500/70">
+            {tasks?.map((task: TaskType) => (
+              <Task key={task.id} boardId={list.boardId} task={task} />
+            ))}
+          </div>
+        </SortableContext>
+
         <Dialog
           open={isOpenNewTaskDialog}
           onOpenChange={setIsOpenNewTaskDialog}
@@ -93,7 +146,10 @@ const List = ({ list }: ListProps) => {
             </DialogHeader>
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="task-title" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                <Label
+                  htmlFor="task-title"
+                  className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
                   Task Title
                 </Label>
                 <Input
@@ -107,7 +163,10 @@ const List = ({ list }: ListProps) => {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="task-description" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                <Label
+                  htmlFor="task-description"
+                  className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
                   Description
                 </Label>
                 <Input
@@ -115,7 +174,10 @@ const List = ({ list }: ListProps) => {
                   placeholder="Enter task description"
                   value={newTaskData.description}
                   onChange={(e) =>
-                    setNewTaskData({ ...newTaskData, description: e.target.value })
+                    setNewTaskData({
+                      ...newTaskData,
+                      description: e.target.value,
+                    })
                   }
                   className="bg-white/50 dark:bg-gray-800/50 border-gray-200/50 dark:border-gray-700/50 focus:border-primary/50 dark:focus:border-primary/50"
                 />
@@ -123,7 +185,10 @@ const List = ({ list }: ListProps) => {
             </div>
             <DialogFooter className="gap-2">
               <DialogClose asChild>
-                <Button variant="outline" className="bg-white/50 dark:bg-gray-800/50">
+                <Button
+                  variant="outline"
+                  className="bg-white/50 dark:bg-gray-800/50"
+                >
                   Cancel
                 </Button>
               </DialogClose>
