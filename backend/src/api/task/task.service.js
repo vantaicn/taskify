@@ -31,9 +31,10 @@ const getTaskById = async (taskId) => {
   }
 }
 
-const updateTaskTitle = async (taskId, title) => {
+const updateTask = async (taskId, updateData) => {
+  const { title, description, isCompleted, dueDate } = updateData;
   try {
-    const result = await taskRepository.updateTaskTitle(taskId, title);
+    const result = await taskRepository.updateTask(taskId, title, description, isCompleted, dueDate);
     if (result.affectedCount === 0) {
       throw new NotFoundError('Task not found');
     }
@@ -83,7 +84,7 @@ module.exports = {
   createTask,
   getTasksByListId,
   getTaskById,
-  updateTaskTitle,
+  updateTask,
   updateTaskPosition,
   moveTask,
   deleteTaskById,

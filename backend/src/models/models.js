@@ -113,6 +113,10 @@ db.Task = sequelize.define(
       type: DataTypes.DECIMAL(20, 10),
       allowNull: false,
     },
+    isCompleted: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
     dueDate: {
       type: DataTypes.DATE,
       allowNull: true,

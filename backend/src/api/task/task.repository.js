@@ -12,8 +12,8 @@ const getTaskById = async (taskId) => {
   return await db.Task.findByPk(taskId);
 }
 
-const updateTaskTitle = async (taskId, title) => {
-  return await db.Task.update({ title }, { where: { id: taskId } });
+const updateTask = async (taskId, title, description, isCompleted, dueDate) => {
+  return await db.Task.update({ title, description, isCompleted, dueDate }, { where: { id: taskId } });
 }
 
 const updateTaskPosition = async (taskId, position) => {
@@ -32,7 +32,7 @@ module.exports = {
   createTask,
   getTasksByListId,
   getTaskById,
-  updateTaskTitle,
+  updateTask,
   updateTaskPosition,
   moveTask,
   deleteTaskById,

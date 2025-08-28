@@ -31,11 +31,12 @@ const getTask = async (req, res) => {
   }
 }
 
-const updateTaskTitle = async (req, res) => {
+const updateTask = async (req, res) => {
   const { taskId } = req.params;
-  const { title } = req.body;
+  const { title, description, isCompleted, dueDate } = req.body;
+  console.log("Updating task:", { taskId, title, description, isCompleted, dueDate });
   try {
-    const updatedTask = await taskService.updateTaskTitle(taskId, title);
+    const updatedTask = await taskService.updateTask(taskId, {title, description, isCompleted, dueDate});
     res.status(200).json(updatedTask);
   } catch (error) {
     res.status(error.statusCode || 500).json({ error: error.message });
@@ -78,7 +79,7 @@ module.exports = {
   createTask,
   getTasks,
   getTask,
-  updateTaskTitle,
+  updateTask,
   updateTaskPosition,
   moveTask,
   deleteTask,

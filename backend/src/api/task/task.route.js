@@ -9,10 +9,10 @@ taskNestedRoutes.get("/", taskController.getTasks);
 
 // Flat routes: /tasks
 taskFlatRoutes.get("/:taskId", taskController.getTask);
-taskFlatRoutes.put("/:taskId", taskController.updateTaskTitle);
+taskFlatRoutes.patch("/:taskId", taskController.updateTask);
 taskFlatRoutes.delete("/:taskId", taskController.deleteTask);
-taskFlatRoutes.put("/:taskId/position", taskController.updateTaskPosition);
-taskFlatRoutes.put("/:taskId/move", taskController.moveTask);
+taskFlatRoutes.patch("/:taskId/position", taskController.updateTaskPosition);
+taskFlatRoutes.patch("/:taskId/move", taskController.moveTask);
 
 module.exports = {
   taskNestedRoutes,
