@@ -51,6 +51,9 @@ db.Board = sequelize.define(
       type: DataTypes.TEXT,
       allowNull: true,
     },
+    backgroundUrl: {
+      type: DataTypes.STRING,
+    },
     ownerId: {
       type: DataTypes.UUID,
       allowNull: false,
@@ -79,7 +82,7 @@ db.List = sequelize.define(
       allowNull: false,
     },
     position: {
-      type: DataTypes.DECIMAL(20, 10),
+      type: DataTypes.DECIMAL(20, 2),
       allowNull: false,
     },
   },
