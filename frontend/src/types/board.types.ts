@@ -3,6 +3,7 @@ export interface BoardType {
   id: string;
   title: string;
   description: string;
+  backgroundUrl: string;
   ownerId: string;
   createdAt: string;
   updatedAt: string;
@@ -13,9 +14,11 @@ export interface BoardType {
 export interface CreateBoardPayload {
   title: string;
   description?: string;
+  backgroundUrl?: string;
 }
 
 export interface UpdateBoardPayload {
   title?: string;
   description?: string;
+  backgroundUrl?: string;
 }

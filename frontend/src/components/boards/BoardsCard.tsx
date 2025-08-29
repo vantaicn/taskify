@@ -1,35 +1,19 @@
-import {
-  Card,
-  CardTitle,
-  CardHeader,
-  CardContent,
-} from "@/components/ui/card";
-import { Calendar, Users } from "lucide-react";
-
+import { Card, CardTitle, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
 import type { BoardType } from "@/types/board.types";
 
-const BoardsCard = ({ board }: { board: BoardType }) => {  
+const BoardsCard = ({ board }: { board: BoardType }) => {
   return (
-    <Card className="w-full h-32 group-hover:shadow-xl transition-all duration-300 group-hover:-translate-y-1 cursor-pointer border-0 bg-white dark:bg-gray-800">
-      {/* Content */}
-      <CardHeader className="p-4 pb-2">
-        <CardTitle className="text-lg font-semibold text-gray-800 dark:text-white group-hover:text-gray-900 dark:group-hover:text-gray-100 transition-colors">
-          {board.title}
-        </CardTitle>
-      </CardHeader>
-      
-      <CardContent className="px-4 pb-4">
-        <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-          <div className="flex items-center gap-1">
-            <Calendar className="w-3 h-3" />
-            <span>Recent</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <Users className="w-3 h-3" />
-            <span>Team</span>
-          </div>
-        </div>
-      </CardContent>
+    <Card className="group h-full p-0 gap-2 overflow-hidden rounded-md shadow transition cursor-pointer">
+      <div
+        className="relative h-20 bg-cover bg-center"
+        style={{ backgroundImage: `url(${board.backgroundUrl})` }}
+      >
+        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors" />
+      </div>
+
+      <CardFooter className="px-4 pb-2 text-sm font-medium">
+        {board.title}
+      </CardFooter>
     </Card>
   );
 };

@@ -13,15 +13,12 @@ const BoardsGrid = ({
   title
 }: BoardsGridProps) => {
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 p-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
           {title}
         </h2>
-        <div className="text-sm text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-full">
-          {boards.length} {boards.length === 1 ? 'board' : 'boards'}
-        </div>
       </div>
 
       {/* Grid */}
@@ -40,7 +37,7 @@ const BoardsGrid = ({
           </p>
         </div>
       ) : (
-        <div className="p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-h-[30rem] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-transparent hover:scrollbar-thumb-gray-300">
+        <div className="p-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 max-h-[25rem] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-transparent hover:scrollbar-thumb-gray-300">
           {boards.map((board) => (
             <Link to={`/boards/${board.id}`} key={board.id} className="group">
               <BoardsCard board={board} />
