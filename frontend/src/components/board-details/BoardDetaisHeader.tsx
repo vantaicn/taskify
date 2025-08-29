@@ -1,5 +1,5 @@
 import React from "react";
-import { MoreHorizontal, UserPlus, Check, X } from "lucide-react";
+import { MoreHorizontal, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { BoardType } from "@/types/board.types";

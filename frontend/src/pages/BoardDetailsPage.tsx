@@ -1,6 +1,6 @@
 import React from "react";
-import { DndContext } from '@dnd-kit/core';
-import type { DragEndEvent } from '@dnd-kit/core';
+import { DragDropContext } from "@hello-pangea/dnd";
+import type { DropResult } from "@hello-pangea/dnd";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,6 +22,7 @@ import type { ListType } from "@/types/list.types";
 import { useParams } from "react-router-dom";
 import useBoard from "@/hooks/useBoard";
 import useList from "@/hooks/useList";
+import { useTask } from "@/hooks/useTask";
 
 const POSITION_GAP = 100;
 
@@ -42,8 +43,13 @@ const BoardDetailsPage = () => {
   });
   const [isOpenNewListDialog, setIsOpenNewListDialog] = React.useState(false);
 
+  const { updateTaskPositionMutation, moveTaskMutation } = useTask(boardId || "");
+
   const handleAddListAsync = async () => {
-    const position = lists.length > 0 ? Math.round(lists[lists.length - 1].position) + 100 : 0;
+    const position =
+      lists.length > 0
+        ? Math.round(lists[lists.length - 1].position) + POSITION_GAP
+        : 0;
     await createListMutation.mutateAsync({
       ...newList,
       position,
@@ -56,21 +62,69 @@ const BoardDetailsPage = () => {
     setIsOpenNewListDialog(false);
   };
 
-  const handleDragEnd = (event: DragEndEvent) => {
-    // Handle drag end event
+  const handleDragEnd = async (result: DropResult) => {
+    const { source, destination, draggableId } = result;
+    if (!destination) return;
+
+    if (
+      source.droppableId === destination.droppableId &&
+      source.index === destination.index
+    ) {
+      return;
+    }
+
+    try {
+      const sourceList = lists.find(
+        (list: ListType) => list.id === source.droppableId
+      );
+      const destinationList = lists.find(
+        (list: ListType) => list.id === destination.droppableId
+      );
+      const sourceTasks = sourceList?.tasks || [];
+      const destinationTasks = destinationList?.tasks || [];
+      let newPosition = 0;
+      const [movedTask] = sourceTasks.splice(source.index, 1);
+      destinationTasks.splice(destination.index, 0, movedTask);
+      if (destination.index === 0) {
+        newPosition = Math.round(destinationTasks[1]?.position) - POSITION_GAP;
+      } else if (destination.index === destinationTasks.length - 1) {
+        newPosition = Math.round(destinationTasks[destination.index - 1].position) + POSITION_GAP;
+      } else {
+        const prevPosition = destinationTasks[destination.index - 1].position;
+        const nextPosition = destinationTasks[destination.index + 1].position;
+        newPosition = (Math.round(prevPosition) + Math.round(nextPosition)) / 2;
+      }
+      if (source.droppableId !== destination.droppableId) {
+        await moveTaskMutation.mutateAsync({
+          taskId: draggableId,
+          targetListId: destination.droppableId,
+          position: newPosition,
+        });
+      } else {
+        await updateTaskPositionMutation.mutateAsync({
+          taskId: draggableId,
+          position: newPosition,
+        });
+      }
+    } catch (err) {
+      // swallow - hooks will invalidate and refresh
+      // console.error(err);
+    }
   };
 
   return (
     <div className="flex flex-col h-full bg-gradient-to-br from-purple-300 via-purple-300 to-pink-400">
       <BoardDetailsHeader boardData={board} />
 
-      <DndContext onDragEnd={handleDragEnd}>
+      <DragDropContext onDragEnd={handleDragEnd}>
         {/* Lists */}
-        <div className="flex-1 flex items-start gap-4 p-4 mb-4 overflow-x-auto overflow-y-hidden
+        <div
+          className="flex-1 flex items-start gap-4 p-4 mb-4 overflow-x-auto overflow-y-hidden
                         scrollbar-thin
                         scrollbar-track-transparent
                         scrollbar-thumb-transparent
-                        hover:scrollbar-thumb-gray-300">
+                        hover:scrollbar-thumb-gray-300"
+        >
           {lists.map((list: ListType) => (
             <List key={list.id} list={list} />
           ))}
@@ -112,7 +166,7 @@ const BoardDetailsPage = () => {
             </DialogContent>
           </Dialog>
         </div>
-      </DndContext>
+      </DragDropContext>
     </div>
   );
 };

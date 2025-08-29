@@ -1,6 +1,5 @@
 import React from "react";
-import { useDroppable } from "@dnd-kit/core";
-import { SortableContext } from "@dnd-kit/sortable";
+import { Droppable } from '@hello-pangea/dnd';
 import Task from "./Task";
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -21,7 +20,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 
 import useList from "@/hooks/useList";
-import useTask from "@/hooks/useTask";
+import { useTaskList } from "@/hooks/useTask";
 
 export interface ListProps {
   list: ListType;
@@ -30,18 +29,15 @@ export interface ListProps {
 const POSITION_GAP = 100;
 
 const List = ({ list }: ListProps) => {
-  const { setNodeRef } = useDroppable({ id: list.id });
-
   const { updateListTitleMutation } = useList(list.boardId);
-  const { useGetTasks, createTaskMutation } = useTask(list.boardId, list.id);
+  const { useGetTasks, createTaskMutation } = useTaskList(list.boardId, list.id);
   const tasksQuery = useGetTasks();
   const tasks = tasksQuery.data || [];
 
   const [newTaskData, setNewTaskData] = React.useState({
     title: "",
     description: "",
-    position:
-      tasks.length > 0 ? tasks[tasks.length - 1].position + POSITION_GAP : 0,
+    position: 0,
   });
   const [isOpenNewTaskDialog, setIsOpenNewTaskDialog] = React.useState(false);
   const [isEditing, setIsEditing] = React.useState(false);
@@ -58,12 +54,12 @@ const List = ({ list }: ListProps) => {
   };
 
   const handleCreateTask = async () => {
-    await createTaskMutation.mutateAsync(newTaskData);
+    const position = tasks.length > 0 ? Math.round(tasks[tasks.length - 1].position) + POSITION_GAP : 0;
+    await createTaskMutation.mutateAsync({ ...newTaskData, position });
     setNewTaskData({
       title: "",
       description: "",
-      position:
-        tasks.length > 0 ? tasks[tasks.length - 1].position + POSITION_GAP : 0,
+      position: 0,
     });
     setIsOpenNewTaskDialog(false);
   };
@@ -82,7 +78,7 @@ const List = ({ list }: ListProps) => {
   };
 
   return (
-    <Card className="w-[18rem] py-2 flex-shrink-0 bg-white/60 dark:bg-gray-800/60 backdrop-blur-md border border-white/30 dark:border-gray-700/30 shadow-lg">
+  <Card className="w-[18rem] py-2 flex-shrink-0 bg-white/60 dark:bg-gray-800/60 border border-white/30 dark:border-gray-700/30 shadow-lg">
       <CardHeader className="">
         <div className="flex items-center justify-between gap-2">
           <CardTitle className="text-md font-semibold bg-gradient-to-r from-gray-800 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
@@ -111,16 +107,20 @@ const List = ({ list }: ListProps) => {
       </CardHeader>
 
       <CardContent className="space-y-2 px-2">
-        <SortableContext
-          id={list.id}
-          items={list.tasks?.map((c) => c.id) || []}
-        >
-          <div className="max-h-[28rem] pb-2 space-y-2 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400/70 dark:hover:scrollbar-thumb-gray-500/70">
-            {tasks?.map((task: TaskType) => (
-              <Task key={task.id} boardId={list.boardId} task={task} />
-            ))}
-          </div>
-        </SortableContext>
+        <Droppable droppableId={list.id} type="TASK">
+          {(provided) => (
+            <div
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+              className="max-h-[28rem] pb-2 space-y-2 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400/70 dark:hover:scrollbar-thumb-gray-500/70"
+            >
+              {tasks?.map((task: TaskType, index: number) => (
+                <Task key={task.id} task={task} boardId={list.boardId} index={index} />
+              ))}
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
 
         <Dialog
           open={isOpenNewTaskDialog}
@@ -135,7 +135,7 @@ const List = ({ list }: ListProps) => {
               Add New Task
             </Button>
           </DialogTrigger>
-          <DialogContent className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border border-white/20 dark:border-gray-700/20">
+          <DialogContent className="bg-white/95 dark:bg-gray-900/95 border border-white/20 dark:border-gray-700/20">
             <DialogHeader>
               <DialogTitle className="text-lg font-semibold bg-gradient-to-r from-gray-800 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
                 Add New Task
