@@ -46,8 +46,9 @@ const updateTask = async (req, res) => {
 const deleteTask = async (req, res) => {
   const { taskId } = req.params;
   try {
+    const deletedTask = await taskService.getTaskById(taskId);
     const deletedCount = await taskService.deleteTaskById(taskId);
-    res.status(200).json({ message: `${deletedCount} task(s) deleted` });
+    res.status(200).json({ deletedTaskListId: deletedTask.listId });
   } catch (error) {
     res.status(error.statusCode || 500).json({ error: error.message });
   }
@@ -57,8 +58,8 @@ const updateTaskPosition = async (req, res) => {
   const { taskId } = req.params;
   const { position } = req.body;
   try {
-    const updatedCount = await taskService.updateTaskPosition(taskId, position);
-    res.status(200).json({ message: `${updatedCount} task(s) updated` });
+    const updatedTask = await taskService.updateTaskPosition(taskId, position);
+    res.status(200).json(updatedTask);
   } catch (error) {
     res.status(error.statusCode || 500).json({ error: error.message });
   }
@@ -68,8 +69,8 @@ const moveTask = async (req, res) => {
   const { taskId } = req.params;
   const { targetListId, position } = req.body;
   try {
-    const movedCount = await taskService.moveTask(taskId, targetListId, position);
-    res.status(200).json({ message: `${movedCount} task(s) moved` });
+    const updatedTask = await taskService.moveTask(taskId, targetListId, position);
+    res.status(200).json(updatedTask);
   } catch (error) {
     res.status(error.statusCode || 500).json({ error: error.message });
   }

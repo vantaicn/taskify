@@ -13,15 +13,15 @@ const getTaskById = async (taskId) => {
 }
 
 const updateTask = async (taskId, title, description, isCompleted, dueDate) => {
-  return await db.Task.update({ title, description, isCompleted, dueDate }, { where: { id: taskId } });
+  return await db.Task.update({ title, description, isCompleted, dueDate }, { where: { id: taskId }, returning: true });
 }
 
 const updateTaskPosition = async (taskId, position) => {
-  return await db.Task.update({ position }, { where: { id: taskId } });
+  return await db.Task.update({ position }, { where: { id: taskId }, returning: true });
 }
 
 const moveTask = async (taskId, targetListId, position) => {
-  return await db.Task.update({ listId: targetListId, position }, { where: { id: taskId } });
+  return await db.Task.update({ listId: targetListId, position }, { where: { id: taskId }, returning: true });
 }
 
 const deleteTaskById = async (taskId) => {

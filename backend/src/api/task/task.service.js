@@ -38,7 +38,7 @@ const updateTask = async (taskId, updateData) => {
     if (result.affectedCount === 0) {
       throw new NotFoundError('Task not found');
     }
-    return result.affectedCount;
+    return result[1][0].toJSON();
   } catch (error) {
     throw new InternalServerError(error.message || 'Error updating task');
   }
@@ -50,7 +50,7 @@ const updateTaskPosition = async (taskId, position) => {
     if (result.affectedCount === 0) {
       throw new NotFoundError('Task not found');
     }
-    return result.affectedCount;
+    return result[1][0].toJSON();
   } catch (error) {
     throw new InternalServerError(error.message || 'Error updating task position');
   }
@@ -62,7 +62,7 @@ const moveTask = async (taskId, targetListId, position) => {
     if (result.affectedCount === 0) {
       throw new NotFoundError('Task not found or move failed');
     }
-    return result.affectedCount;
+    return result[1][0].toJSON();
   } catch (error) {
     throw new InternalServerError(error.message || 'Error moving task');
   }
