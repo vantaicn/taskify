@@ -74,29 +74,35 @@ const BoardDetailsPage = () => {
     }
 
     try {
-      const sourceList = lists.find(
-        (list: ListType) => list.id === source.droppableId
-      );
-      const destinationList = lists.find(
-        (list: ListType) => list.id === destination.droppableId
-      );
-      const sourceTasks = sourceList?.tasks || [];
-      const destinationTasks = destinationList?.tasks || [];
-      let newPosition = 0;
+      const sourceList = lists.find((list: ListType) => list.id === source.droppableId);
+      const destinationList = lists.find((list: ListType) => list.id === destination.droppableId);
+
+      const sourceTasks = [...(sourceList?.tasks || [])];
+      const destinationTasks = [...(destinationList?.tasks || [])];
+
       const [movedTask] = sourceTasks.splice(source.index, 1);
+
       destinationTasks.splice(destination.index, 0, movedTask);
+
+      let newPosition = 0;
       if (destination.index === 0) {
-        newPosition = Math.round(destinationTasks[1]?.position) - POSITION_GAP;
+        const next = destinationTasks[1];
+        newPosition = next ? Math.round(next.position) - POSITION_GAP : 0;
       } else if (destination.index === destinationTasks.length - 1) {
-        newPosition = Math.round(destinationTasks[destination.index - 1].position) + POSITION_GAP;
+        const prev = destinationTasks[destination.index - 1];
+        newPosition = prev ? Math.round(prev.position) + POSITION_GAP : 0;
       } else {
-        const prevPosition = destinationTasks[destination.index - 1].position;
-        const nextPosition = destinationTasks[destination.index + 1].position;
-        newPosition = (Math.round(prevPosition) + Math.round(nextPosition)) / 2;
+        const prev = destinationTasks[destination.index - 1];
+        const next = destinationTasks[destination.index + 1];
+        if (prev && next) {
+          newPosition = (Math.round(prev.position) + Math.round(next.position)) / 2;
+        }
       }
+
       if (source.droppableId !== destination.droppableId) {
         await moveTaskMutation.mutateAsync({
           taskId: draggableId,
+          sourceListId: source.droppableId,
           targetListId: destination.droppableId,
           position: newPosition,
         });
@@ -111,6 +117,7 @@ const BoardDetailsPage = () => {
       // console.error(err);
     }
   };
+
 
   return (
     <div className="flex flex-col h-full bg-gradient-to-br from-purple-300 via-purple-300 to-pink-400">

@@ -81,16 +81,18 @@ const useTask = (boardId: string) => {
   const moveTaskMutation = useMutation({
     mutationFn: ({
       taskId,
+      sourceListId,
       targetListId,
       position
     }: {
       taskId: string;
+      sourceListId: string;
       targetListId: string;
       position: number;
-    }) => taskApi.moveTask(taskId, targetListId, position),
-    onSuccess: (updatedTask, { targetListId }) => {
+    }) => taskApi.moveTask(taskId, sourceListId, targetListId, position),
+    onSuccess: (_, { sourceListId, targetListId }) => {
       toast.success("Task moved successfully!");
-      queryClient.invalidateQueries({ queryKey: ["list", updatedTask.listId, "tasks"] });
+      queryClient.invalidateQueries({ queryKey: ["list", sourceListId, "tasks"] });
       queryClient.invalidateQueries({ queryKey: ["list", targetListId, "tasks"] });
       queryClient.invalidateQueries({ queryKey: ["board", boardId, "lists"] });
     },

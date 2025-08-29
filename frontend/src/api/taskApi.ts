@@ -22,8 +22,8 @@ const taskApi = {
     const response = await axiosInstance.patch(`/tasks/${taskId}/position`, { position });
     return response.data;
   },
-  moveTask: async (taskId: string, targetListId: string, position: number) => {
-    const response = await axiosInstance.patch(`/tasks/${taskId}/move`, { targetListId, position });
+  moveTask: async (taskId: string, sourceListId:string, targetListId: string, position: number) => {
+    const response = await axiosInstance.patch(`/tasks/${taskId}/move`, { sourceListId, targetListId, position });
     return response.data;
   },
   deleteTask: async (taskId: string) => {
