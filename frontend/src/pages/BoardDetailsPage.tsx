@@ -23,6 +23,7 @@ import { useParams } from "react-router-dom";
 import useBoard from "@/hooks/useBoard";
 import useList from "@/hooks/useList";
 import { useTask } from "@/hooks/useTask";
+import { toast } from "sonner"
 
 const POSITION_GAP = 100;
 
@@ -35,6 +36,7 @@ const BoardDetailsPage = () => {
   const { useGetLists, createListMutation } = useList(boardId || "");
   const listsQuery = useGetLists();
   const lists = listsQuery.data || [];
+  console.log("lists", lists);
 
   const [newList, setNewList] = React.useState({
     title: "",
@@ -43,7 +45,9 @@ const BoardDetailsPage = () => {
   });
   const [isOpenNewListDialog, setIsOpenNewListDialog] = React.useState(false);
 
-  const { updateTaskPositionMutation, moveTaskMutation } = useTask(boardId || "");
+  const { updateTaskPositionMutation, moveTaskMutation } = useTask(
+    boardId || ""
+  );
 
   const handleAddListAsync = async () => {
     const position =
@@ -74,15 +78,23 @@ const BoardDetailsPage = () => {
     }
 
     try {
-      const sourceList = lists.find((list: ListType) => list.id === source.droppableId);
-      const destinationList = lists.find((list: ListType) => list.id === destination.droppableId);
+      const sourceList = lists.find(
+        (list: ListType) => list.id === source.droppableId
+      );
+      const destinationList = lists.find(
+        (list: ListType) => list.id === destination.droppableId
+      );
 
-      const sourceTasks = [...(sourceList?.tasks || [])];
-      const destinationTasks = [...(destinationList?.tasks || [])];
+      const sourceTasks = sourceList?.tasks || [];
+      const destinationTasks = destinationList?.tasks || [];
+      console.log("source tasks", sourceTasks);
+      console.log("destination tasks", destinationTasks);
 
       const [movedTask] = sourceTasks.splice(source.index, 1);
-
       destinationTasks.splice(destination.index, 0, movedTask);
+
+      console.log("updated sourceTasks", sourceTasks);
+      console.log("updated destinationTasks", destinationTasks);
 
       let newPosition = 0;
       if (destination.index === 0) {
@@ -95,7 +107,8 @@ const BoardDetailsPage = () => {
         const prev = destinationTasks[destination.index - 1];
         const next = destinationTasks[destination.index + 1];
         if (prev && next) {
-          newPosition = (Math.round(prev.position) + Math.round(next.position)) / 2;
+          newPosition =
+            (Math.round(prev.position) + Math.round(next.position)) / 2;
         }
       }
 
@@ -112,68 +125,72 @@ const BoardDetailsPage = () => {
           position: newPosition,
         });
       }
-    } catch (err) {
-      // swallow - hooks will invalidate and refresh
-      // console.error(err);
+    } catch (err: any) {
+      toast.error(err.message || "Something went wrong");
     }
   };
 
-
   return (
-    <div className="flex flex-col h-full bg-gradient-to-br from-purple-300 via-purple-300 to-pink-400">
-      <BoardDetailsHeader boardData={board} />
-
-      <DragDropContext onDragEnd={handleDragEnd}>
-        {/* Lists */}
-        <div
-          className="flex-1 flex items-start gap-4 p-4 mb-4 overflow-x-auto overflow-y-hidden
-                        scrollbar-thin
-                        scrollbar-track-transparent
-                        scrollbar-thumb-transparent
-                        hover:scrollbar-thumb-gray-300"
-        >
-          {lists.map((list: ListType) => (
-            <List key={list.id} list={list} />
-          ))}
-          <Dialog
-            open={isOpenNewListDialog}
-            onOpenChange={setIsOpenNewListDialog}
+    <div
+      className="relative flex flex-col h-full bg-cover bg-center"
+      style={{ backgroundImage: `url(${board?.backgroundUrl})` }}
+    >
+      <div className="absolute inset-0 bg-black/20" />
+      <div className="absolute inset-0 bg-white/10" />
+      <div className="relative z-10 flex flex-col h-full mb-4">
+        <BoardDetailsHeader boardData={board} />
+        <DragDropContext onDragEnd={handleDragEnd}>
+          {/* Lists */}
+          <div
+            className="flex-1 flex items-start gap-4 p-4 overflow-x-auto overflow-y-hidden
+                          scrollbar-thin
+                          scrollbar-track-transparent
+                          scrollbar-thumb-transparent
+                          hover:scrollbar-thumb-gray-300"
           >
-            <DialogTrigger asChild>
-              <Button
-                variant="outline"
-                className="min-w-[16rem] bg-white/30 hover:bg-white/50 text-gray-600 border-0"
-              >
-                <Plus className="w-4 h-4 mr-1" />
-                Add New List
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Add New List</DialogTitle>
-                <DialogDescription>
-                  Enter the title for the new list.
-                </DialogDescription>
-              </DialogHeader>
-              <Label htmlFor="list-title">List Title</Label>
-              <Input
-                id="list-title"
-                value={newList.title}
-                onChange={(e) =>
-                  setNewList({ ...newList, title: e.target.value })
-                }
-                placeholder="Enter list title"
-              />
-              <DialogFooter>
-                <DialogClose asChild>
-                  <Button variant="outline">Cancel</Button>
-                </DialogClose>
-                <Button onClick={handleAddListAsync}>Create</Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        </div>
-      </DragDropContext>
+            {lists.map((list: ListType) => (
+              <List key={list.id} list={list} />
+            ))}
+            <Dialog
+              open={isOpenNewListDialog}
+              onOpenChange={setIsOpenNewListDialog}
+            >
+              <DialogTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="min-w-[16rem] bg-white/40 dark:bg-gray-800/30 hover:bg-gray-300/50 dark:hover:bg-gray-800/50 text-gray-600 dark:text-gray-400 border-0"
+                >
+                  <Plus className="w-4 h-4 mr-1" />
+                  Add New List
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Add New List</DialogTitle>
+                  <DialogDescription>
+                    Enter the title for the new list.
+                  </DialogDescription>
+                </DialogHeader>
+                <Label htmlFor="list-title">List Title</Label>
+                <Input
+                  id="list-title"
+                  value={newList.title}
+                  onChange={(e) =>
+                    setNewList({ ...newList, title: e.target.value })
+                  }
+                  placeholder="Enter list title"
+                />
+                <DialogFooter>
+                  <DialogClose asChild>
+                    <Button variant="outline">Cancel</Button>
+                  </DialogClose>
+                  <Button onClick={handleAddListAsync}>Create</Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </div>
+        </DragDropContext>
+      </div>
     </div>
   );
 };
