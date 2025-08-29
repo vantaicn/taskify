@@ -3,6 +3,7 @@ const joi = require('joi');
 const createBoardRequest = joi.object({
   title: joi.string().required(),
   description: joi.string().optional(),
+  backgroundUrl: joi.string().optional(),
 })
 
 const getBoardRequest = joi.object({
@@ -12,6 +13,7 @@ const getBoardRequest = joi.object({
 const updateBoardRequest = joi.object({
   title: joi.string().required(),
   description: joi.string().optional(),
+  backgroundUrl: joi.string().optional(),
 })
 
 const deleteBoardRequest = joi.object({

@@ -2,9 +2,9 @@ const boardService = require('./board.service');
 
 const createBoard = async (req, res) => {
   const userId = req.user.id;
-  const { title, description } = req.body;
+  const { title, description, backgroundUrl } = req.body;
   try {
-    const newBoard = await boardService.createBoard({ title, description, ownerId: userId });
+    const newBoard = await boardService.createBoard({ title, description, backgroundUrl, ownerId: userId });
     res.status(201).json(newBoard);
   } catch (error) {
     res.status(error.statusCode || 500).json({ error: error.message });
@@ -43,9 +43,9 @@ const getBoard = async (req, res) => {
 
 const updateBoard = async (req, res) => {
   const boardId = req.params.boardId;
-  const { title, description } = req.body;
+  const { title, description, backgroundUrl } = req.body;
   try {
-    const updatedCount = await boardService.updateBoard(boardId, title, description);
+    const updatedCount = await boardService.updateBoard(boardId, title, description, backgroundUrl);
     res.status(200).json({ message: `${updatedCount} board(s) updated` });
   } catch (error) {
     res.status(error.statusCode || 500).json({ error: error.message });

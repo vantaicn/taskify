@@ -1,7 +1,7 @@
 const db = require("../../models/models");
 
 const getBoardsByUserId = async (userId) => {
-  return await db.Board.findAll({ where: { ownerId: userId } });
+  return await db.Board.findAll({ where: { ownerId: userId }, order: [['createdAt', 'ASC']] });
 };
 
 const getSharedBoardsByUserId = async (userId) => {
@@ -34,12 +34,12 @@ const getBoardById = async (boardId) => {
   });
 };
 
-const createBoard = async (title, description, ownerId, options = {}) => {
-  return await db.Board.create({ title, description, ownerId }, options);
+const createBoard = async (title, description, backgroundUrl, ownerId, options = {}) => {
+  return await db.Board.create({ title, description, backgroundUrl, ownerId }, options);
 };
 
-const updateBoard = async (id, title, description) => {
-  return await db.Board.update({ title, description }, { where: { id } });
+const updateBoard = async (id, title, description, backgroundUrl) => {
+  return await db.Board.update({ title, description, backgroundUrl }, { where: { id } });
 };
 
 const deleteBoardById = async (id) => {

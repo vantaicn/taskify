@@ -6,11 +6,11 @@ const {NotFoundError, InternalServerError} = require('../../utils/errors');
 const createBoard = async (boardData) => {
   try {
     // const newBoard = await sequelize.transaction(async (t) => {
-      const { title, description, ownerId } = boardData;
+      const { title, description, backgroundUrl, ownerId } = boardData;
       // const newBoard = await boardRepository.createBoard(title, description, ownerId, {transaction: t});
       // await memberService.addMemberToBoard(newBoard.id, ownerId, 'admin', {transaction: t});
-    const newBoard = await boardRepository.createBoard(title, description, ownerId);
-    await memberService.addMemberToBoard(newBoard.id, ownerId, 'admin');  
+    const newBoard = await boardRepository.createBoard(title, description, backgroundUrl, ownerId);
+    await memberService.addMemberToBoard(newBoard.id, ownerId, 'admin');
     return newBoard.toJSON();
     // })
     // return newBoard;
@@ -49,9 +49,9 @@ const getBoardById = async (boardId) => {
   }
 }
 
-const updateBoard = async (boardId, title, description) => {
+const updateBoard = async (boardId, title, description, backgroundUrl) => {
   try {
-    const result = await boardRepository.updateBoard(boardId, title, description);
+    const result = await boardRepository.updateBoard(boardId, title, description, backgroundUrl);
     if (result.affectedCount === 0) {
       throw new NotFoundError('Board not found');
     }
