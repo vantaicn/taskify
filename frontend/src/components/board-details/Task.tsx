@@ -52,6 +52,7 @@ const Task = ({ task, boardId, index = 0 }: TaskProps) => {
               <div className="flex items-start gap-3">
                 <Checkbox
                   checked={taskData.isCompleted}
+                  onClick={(e) => e.stopPropagation()}
                   onCheckedChange={async () => {
                     const newTaskData = {
                       ...taskData,
@@ -60,7 +61,7 @@ const Task = ({ task, boardId, index = 0 }: TaskProps) => {
                     setTaskData(newTaskData);
                     await handleUpdateTask(newTaskData);
                   }}
-                  className="mt-1 rounded-md bg-gray-100 dark:bg-gray-600 border-gray-300 dark:border-gray-500 opacity-0 pointer-events-none w-0 group-hover:opacity-100 group-hover:pointer-events-auto group-hover:w-4 data-[state=checked]:opacity-100 data-[state=checked]:w-4 data-[state=checked]:pointer-events-auto data-[state=checked]:bg-emerald-500 data-[state=checked]:border-emerald-500 data-[state=checked]:text-white transition-all duration-300 flex-shrink-0 peer"
+                  className="mt-1 rounded-md bg-gray-100 dark:bg-gray-600 border-gray-300 dark:border-gray-500 cursor-pointer opacity-0 pointer-events-none w-0 group-hover:opacity-100 group-hover:pointer-events-auto group-hover:w-4 data-[state=checked]:opacity-100 data-[state=checked]:w-4 data-[state=checked]:pointer-events-auto data-[state=checked]:bg-emerald-500 data-[state=checked]:border-emerald-500 data-[state=checked]:text-white transition-all duration-300 flex-shrink-0 peer"
                 />
                 <h4 className="flex-1 text-sm text-gray-900 dark:text-gray-100 peer-data-[state=checked]:text-gray-500 dark:peer-data-[state=checked]:text-gray-400">
                   {taskData.title}

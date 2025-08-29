@@ -55,7 +55,7 @@ const BoardDetailsHeader = ({ boardData }: { boardData: BoardType }) => {
         ) : (
           <div className="px-4 py-1 hover:bg-white/30 hover:backdrop-blur-sm rounded-sm cursor-pointer">
             <h1
-              className="text-lg text-gray-200 font-semibold"
+              className="text-lg font-semibold"
               onClick={() => setIsEditing(true)}
             >
               {boardData?.title}
@@ -66,14 +66,14 @@ const BoardDetailsHeader = ({ boardData }: { boardData: BoardType }) => {
       <div className="px-6 flex items-center gap-2">
         <Button
           variant="outline"
-          className="text-sm text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-600"
+          className="text-sm hover:bg-gray-100 dark:hover:bg-gray-600"
         >
           <UserPlus className="w-4 h-4 mr-1" />
           Share
         </Button>
         <Button
           variant="outline"
-          className="text-sm text-gray-500 px-2 hover:bg-gray-100 dark:hover:bg-gray-600"
+          className="text-sm px-2 hover:bg-gray-100 dark:hover:bg-gray-600"
         >
           <MoreHorizontal className="w-4 h-4" />
         </Button>

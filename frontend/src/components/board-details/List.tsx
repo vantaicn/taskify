@@ -78,8 +78,8 @@ const List = ({ list }: ListProps) => {
   };
 
   return (
-  <Card className="w-[18rem] py-2 flex-shrink-0 bg-white/60 dark:bg-gray-800/60 border border-white/30 dark:border-gray-700/30 shadow-lg">
-      <CardHeader className="">
+  <Card className="w-[18rem] py-2 gap-2 flex-shrink-0 bg-white/90 dark:bg-gray-800/60 border border-white/30 dark:border-gray-700/30 shadow-lg">
+      <CardHeader>
         <div className="flex items-center justify-between gap-2">
           <CardTitle className="text-md font-semibold bg-gradient-to-r from-gray-800 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
             {isEditing ? (
@@ -129,7 +129,7 @@ const List = ({ list }: ListProps) => {
           <DialogTrigger asChild>
             <Button
               variant="ghost"
-              className="w-full bg-transparent hover:bg-white/40 dark:hover:bg-gray-800/40 text-gray-600 dark:text-gray-400 border-0"
+              className="w-full bg-transparent hover:bg-gray-300/50 dark:hover:bg-gray-800/50 text-gray-600 dark:text-gray-400 border-0"
             >
               <Plus className="w-4 h-4" />
               Add New Task

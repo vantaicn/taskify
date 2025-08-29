@@ -66,7 +66,6 @@ const useTask = (boardId: string) => {
     mutationFn: ({ taskId, position }: { taskId: string; position: number }) =>
       taskApi.updateTaskPosition(taskId, position),
     onSuccess: (updatedTask) => {
-      console.log("Updated task position:", updatedTask);
       toast.success("Task position updated successfully!");
       queryClient.invalidateQueries({ queryKey: ["list", updatedTask.listId, "tasks"] });
       queryClient.invalidateQueries({ queryKey: ["board", boardId, "lists"] });
