@@ -5,7 +5,7 @@ const boardMiddleware = require('../../middlewares/board.middleware');
 
 router.post('/', boardMiddleware.checkBoardAdmin, memberController.addMember);
 router.get('/', memberController.getMembers);
-router.put('/:memberId', boardMiddleware.checkBoardAdmin, memberController.updateMemberRole);
+router.patch('/:memberId', boardMiddleware.checkBoardAdmin, memberController.updateMemberRole);
 router.delete('/:memberId', memberController.deleteMember);
 
 module.exports = router;

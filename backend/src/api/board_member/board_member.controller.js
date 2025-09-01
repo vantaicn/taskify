@@ -2,9 +2,9 @@ const memberService = require('./board_member.service');
 
 const addMember = async (req, res) => {
   const boardId = req.params.boardId;
-  const { userId } = req.body;
+  const { email, role } = req.body;
   try {
-    const newMember = await memberService.addMemberToBoard(boardId, userId);
+    const newMember = await memberService.addMemberToBoard(boardId, email, role);
     res.status(201).json(newMember);
   } catch (error) {
     res.status(error.statusCode || 500).json({ error: error.message });

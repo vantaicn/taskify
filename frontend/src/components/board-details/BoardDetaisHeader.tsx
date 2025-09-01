@@ -2,6 +2,7 @@ import React from "react";
 import { MoreHorizontal, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import AddMemberButton from "./AddMemberButton";
 import type { BoardType } from "@/types/board.types";
 import useBoards from "@/hooks/useBoard";
 
@@ -64,13 +65,7 @@ const BoardDetailsHeader = ({ boardData }: { boardData: BoardType }) => {
         )}
       </div>
       <div className="px-6 flex items-center gap-2">
-        <Button
-          variant="outline"
-          className="text-sm hover:bg-gray-100 dark:hover:bg-gray-600"
-        >
-          <UserPlus className="w-4 h-4 mr-1" />
-          Share
-        </Button>
+        <AddMemberButton boardId={boardData?.id} />
         <Button
           variant="outline"
           className="text-sm px-2 hover:bg-gray-100 dark:hover:bg-gray-600"

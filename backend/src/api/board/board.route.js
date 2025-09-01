@@ -36,6 +36,6 @@ router.delete(
 
 // Nested routes
 router.use("/:boardId/lists", boardMiddleware.checkBoardAccess, listNestedRoutes);
-// router.use("/:boardId/members", boardMiddleware.checkBoardAccess, memberRoutes);
+router.use("/:boardId/members", boardMiddleware.checkBoardAccess, memberRoutes);
 
 module.exports = router;

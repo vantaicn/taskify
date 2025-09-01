@@ -1,9 +1,10 @@
 const memberRepository = require('./board_member.repository');
 const { BadRequestError, UnauthorizedError, ForbiddenError, NotFoundError, ConflictError, InternalServerError } = require('../../utils/errors');
 
-const addMemberToBoard = async (boardId, userId, role) => {
+const addMemberToBoard = async (boardId, email, role) => {
   try {
-    const newMember = await memberRepository.addMemberToBoard(boardId, userId, role);
+    const member = await memberRepository.getUserByEmail(email);
+    const newMember = await memberRepository.addMemberToBoard(boardId, member.id, role);
     return newMember.toJSON();
   } catch (error) {
     throw new InternalServerError(error.message || 'Error adding member to board');
