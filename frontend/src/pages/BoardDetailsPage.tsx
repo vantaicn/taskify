@@ -23,7 +23,9 @@ import { useParams } from "react-router-dom";
 import useBoard from "@/hooks/useBoard";
 import useList from "@/hooks/useList";
 import { useTask } from "@/hooks/useTask";
+import useSocket from "@/hooks/useSocket";
 import { toast } from "sonner"
+import { useSocketStore } from "@/stores/socketStore";
 
 const POSITION_GAP = 100;
 
@@ -36,7 +38,6 @@ const BoardDetailsPage = () => {
   const { useGetLists, createListMutation } = useList(boardId || "");
   const listsQuery = useGetLists();
   const lists = listsQuery.data || [];
-  console.log("lists", lists);
 
   const [newList, setNewList] = React.useState({
     title: "",
@@ -48,6 +49,14 @@ const BoardDetailsPage = () => {
   const { updateTaskPositionMutation, moveTaskMutation } = useTask(
     boardId || ""
   );
+
+  const { connect } = useSocketStore();
+
+  React.useEffect(() => {
+    connect();
+  }, [connect]);
+
+  const { emitTaskCreated, emitTaskUpdated, emitTaskMoved, emitTaskPositionUpdated } = useSocket(boardId || "");
 
   const handleAddListAsync = async () => {
     const position =
@@ -87,14 +96,9 @@ const BoardDetailsPage = () => {
 
       const sourceTasks = sourceList?.tasks || [];
       const destinationTasks = destinationList?.tasks || [];
-      console.log("source tasks", sourceTasks);
-      console.log("destination tasks", destinationTasks);
 
       const [movedTask] = sourceTasks.splice(source.index, 1);
       destinationTasks.splice(destination.index, 0, movedTask);
-
-      console.log("updated sourceTasks", sourceTasks);
-      console.log("updated destinationTasks", destinationTasks);
 
       let newPosition = 0;
       if (destination.index === 0) {
@@ -119,11 +123,14 @@ const BoardDetailsPage = () => {
           targetListId: destination.droppableId,
           position: newPosition,
         });
+        emitTaskMoved(boardId || "");
       } else {
         await updateTaskPositionMutation.mutateAsync({
           taskId: draggableId,
+          listId: source.droppableId,
           position: newPosition,
         });
+        emitTaskPositionUpdated(boardId || "");
       }
     } catch (err: any) {
       toast.error(err.message || "Something went wrong");
@@ -149,7 +156,7 @@ const BoardDetailsPage = () => {
                           hover:scrollbar-thumb-gray-300"
           >
             {lists.map((list: ListType) => (
-              <List key={list.id} list={list} />
+              <List key={list.id} list={list} onCreateTask={emitTaskCreated} onUpdateTask={emitTaskUpdated} />
             ))}
             <Dialog
               open={isOpenNewListDialog}

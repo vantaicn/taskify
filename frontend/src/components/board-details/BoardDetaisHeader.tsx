@@ -1,5 +1,5 @@
 import React from "react";
-import { MoreHorizontal, UserPlus } from "lucide-react";
+import { MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import AddMemberButton from "./AddMemberButton";
@@ -59,7 +59,7 @@ const BoardDetailsHeader = ({ boardData }: { boardData: BoardType }) => {
               className="text-lg font-semibold"
               onClick={() => setIsEditing(true)}
             >
-              {boardData?.title}
+              {title}
             </h1>
           </div>
         )}

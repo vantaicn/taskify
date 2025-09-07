@@ -1,5 +1,5 @@
 import React from "react";
-import { Droppable } from '@hello-pangea/dnd';
+import { Droppable } from "@hello-pangea/dnd";
 import Task from "./Task";
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -24,13 +24,18 @@ import { useTaskList } from "@/hooks/useTask";
 
 export interface ListProps {
   list: ListType;
+  onCreateTask?: (boardId: string) => void;
+  onUpdateTask?: (boardId: string) => void;
 }
 
 const POSITION_GAP = 100;
 
-const List = ({ list }: ListProps) => {
+const List = ({ list, onCreateTask, onUpdateTask }: ListProps) => {
   const { updateListTitleMutation } = useList(list.boardId);
-  const { useGetTasks, createTaskMutation } = useTaskList(list.boardId, list.id);
+  const { useGetTasks, createTaskMutation } = useTaskList(
+    list.boardId,
+    list.id
+  );
   const tasksQuery = useGetTasks();
   const tasks = tasksQuery.data || [];
 
@@ -54,13 +59,19 @@ const List = ({ list }: ListProps) => {
   };
 
   const handleCreateTask = async () => {
-    const position = tasks.length > 0 ? Math.round(tasks[tasks.length - 1].position) + POSITION_GAP : 0;
+    const position =
+      tasks.length > 0
+        ? Math.round(tasks[tasks.length - 1].position) + POSITION_GAP
+        : 0;
     await createTaskMutation.mutateAsync({ ...newTaskData, position });
     setNewTaskData({
       title: "",
       description: "",
       position: 0,
     });
+    if (onCreateTask) {
+      onCreateTask(list.boardId || "");
+    }
     setIsOpenNewTaskDialog(false);
   };
 
@@ -78,7 +89,7 @@ const List = ({ list }: ListProps) => {
   };
 
   return (
-  <Card className="w-[18rem] py-2 gap-2 flex-shrink-0 bg-white/90 dark:bg-gray-800/60 border border-white/30 dark:border-gray-700/30 shadow-lg">
+    <Card className="w-[18rem] py-2 gap-2 flex-shrink-0 bg-white/90 dark:bg-gray-800/60 border border-white/30 dark:border-gray-700/30 shadow-lg">
       <CardHeader>
         <div className="flex items-center justify-between gap-2">
           <CardTitle className="text-md font-semibold bg-gradient-to-r from-gray-800 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
@@ -114,8 +125,14 @@ const List = ({ list }: ListProps) => {
               {...provided.droppableProps}
               className="max-h-[28rem] pb-2 space-y-2 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400/70 dark:hover:scrollbar-thumb-gray-500/70"
             >
-              {tasks?.map((task: TaskType, index: number) => (
-                <Task key={task.id} task={task} boardId={list.boardId} index={index} />
+              {list.tasks?.map((task: TaskType, index: number) => (
+                <Task
+                  key={task.id}
+                  task={task}
+                  boardId={list.boardId}
+                  index={index}
+                  onUpdateTask={onUpdateTask}
+                />
               ))}
               {provided.placeholder}
             </div>

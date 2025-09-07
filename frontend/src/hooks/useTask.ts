@@ -24,7 +24,7 @@ const useTaskList = (boardId:string, listId: string) => {
 
   const createTaskMutation = useMutation({
     mutationFn: (data: CreateTaskPayload) => taskApi.createTask(listId, data),
-    onSuccess: () => {
+    onSuccess: (createdTask) => {
       toast.success("Task created successfully!");
       queryClient.invalidateQueries({ queryKey: ["list", listId, "tasks"] });
       queryClient.invalidateQueries({ queryKey: ["board", boardId, "lists"] });
@@ -63,8 +63,20 @@ const useTask = (boardId: string) => {
   });
 
   const updateTaskPositionMutation = useMutation({
-    mutationFn: ({ taskId, position }: { taskId: string; position: number }) =>
+    mutationFn: ({ taskId, listId, position }: { taskId: string; listId: string; position: number }) =>
       taskApi.updateTaskPosition(taskId, position),
+    onMutate: async ({ taskId, listId, position }) => {
+      await queryClient.cancelQueries({ queryKey: ["list", listId, "tasks"] });
+
+      queryClient.setQueryData(["list", listId, "tasks"], (oldData: any) => {
+        if (!oldData) return [];
+
+        const newTasks = oldData.map((task: any) =>
+          task.id === taskId ? { ...task, position } : task
+        );
+        return [...newTasks].sort((a, b) => a.position - b.position);
+      });
+    },
     onSuccess: (updatedTask) => {
       toast.success("Task position updated successfully!");
       queryClient.invalidateQueries({ queryKey: ["list", updatedTask.listId, "tasks"] });

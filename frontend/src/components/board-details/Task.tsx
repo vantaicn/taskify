@@ -13,9 +13,10 @@ export interface TaskProps {
   task: TaskType;
   boardId: string;
   index?: number;
+  onUpdateTask?: (boardId: string) => void;
 }
 
-const Task = ({ task, boardId, index = 0 }: TaskProps) => {
+const Task = ({ task, boardId, index = 0, onUpdateTask }: TaskProps) => {
   const { updateTaskMutation } = useTask(boardId);
   const [taskData, setTaskData] = React.useState(task);
   useEffect(() => {
@@ -34,6 +35,9 @@ const Task = ({ task, boardId, index = 0 }: TaskProps) => {
           dueDate: updateTask.dueDate,
         },
       });
+      if (onUpdateTask) {
+        onUpdateTask(boardId);
+      }
     } catch (error) {
       setTaskData(task);
     }

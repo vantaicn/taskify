@@ -21,6 +21,7 @@
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.16.3",
     "sequelize": "^6.37.7",
+    "socket.io": "^4.8.1",
     "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
