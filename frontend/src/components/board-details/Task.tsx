@@ -99,7 +99,11 @@ const Task = ({ task, boardId, index = 0, onUpdateTask }: TaskProps) => {
               <DialogHeader>
                 <h3 className="text-lg font-semibold">Task Details</h3>
               </DialogHeader>
-              <TaskDetails />
+              <TaskDetails 
+                task={taskData} 
+                onUpdate={handleUpdateTask}
+                onClose={() => setIsOpen(false)}
+              />
             </DialogContent>
           </Dialog>
         </div>
