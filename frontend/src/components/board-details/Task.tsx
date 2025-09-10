@@ -6,7 +6,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
 import { Edit, Calendar, User } from "lucide-react";
 import type { TaskType, UpdateTaskPayload } from "@/types/task.types";
-import TaskDetails from "./TaskDetails";
+import TaskDetails from "@/components/task-details/TaskDetails";
 import {useTask} from "@/hooks/useTask";
 
 export interface TaskProps {
@@ -95,14 +95,10 @@ const Task = ({ task, boardId, index = 0, onUpdateTask }: TaskProps) => {
           </Card>
 
           <Dialog open={isOpen} onOpenChange={setIsOpen}>
-            <DialogContent className="sm:max-w-3xl">
-              <DialogHeader>
-                <h3 className="text-lg font-semibold">Task Details</h3>
-              </DialogHeader>
+            <DialogContent className="sm:max-w-7xl">
               <TaskDetails 
                 task={taskData} 
                 onUpdate={handleUpdateTask}
-                onClose={() => setIsOpen(false)}
               />
             </DialogContent>
           </Dialog>
