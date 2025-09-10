@@ -37,6 +37,16 @@ export interface ChecklistItemType {
   updatedAt: Date;
 }
 
+export interface TaskCommentType {
+  id: string;
+  taskId: string;
+  userId: string;
+  user: UserType;
+  content: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export interface TaskLabelType {
   id: string;
   name: string;
@@ -59,6 +69,7 @@ export interface TaskType {
   attachments?: TaskAttachmentType[];
   checklist?: ChecklistItemType[];
   labels?: TaskLabelType[];
+  comments?: TaskCommentType[];
 }
 
 export interface CreateTaskPayload {
