@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import memberApi from "@/api/memberApi";
-import type { CreateMemberPayload } from "../types/member.types";
+import type { CreateMemberPayload, MemberType } from "../types/member.types";
 import { toast } from "sonner";
 
 const useMember = (boardId: string) => {
@@ -9,6 +9,7 @@ const useMember = (boardId: string) => {
   const getMembersQuery = useQuery({
     queryKey: ["members", boardId],
     queryFn: () => memberApi.getMembers(boardId),
+    enabled: !!boardId,
   });
 
   const createMemberMutation = useMutation({

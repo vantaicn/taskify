@@ -13,6 +13,7 @@ const addMember = async (req, res) => {
 
 const getMembers = async (req, res) => {
   const boardId = req.params.boardId;
+  console.log("Fetching members for board:", boardId);
   try {
     const members = await memberService.getMembersByBoardId(boardId);
     res.status(200).json(members);

@@ -296,6 +296,13 @@ db.Board.belongsToMany(db.User, {
   onUpdate: "CASCADE",
 });
 
+db.BoardMember.belongsTo(db.User, {
+  as: "user",
+  foreignKey: "userId",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+
 db.User.belongsToMany(db.Task, {
   as: "tasks",
   through: db.TaskAssignee,
@@ -310,6 +317,13 @@ db.Task.belongsToMany(db.User, {
   through: db.TaskAssignee,
   foreignKey: "taskId",
   otherKey: "userId",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+
+db.TaskAssignee.belongsTo(db.User, {
+  as: "user",
+  foreignKey: "userId",
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });

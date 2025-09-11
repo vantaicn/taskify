@@ -1,6 +1,7 @@
 const express = require("express");
 const taskNestedRoutes = express.Router({ mergeParams: true });
 const taskFlatRoutes = express.Router();
+const assigneeRouter = require("../assignee/assignee.route");
 const taskController = require("./task.controller");
 
 // Nested routes: /lists/:listId/tasks
@@ -13,6 +14,9 @@ taskFlatRoutes.patch("/:taskId", taskController.updateTask);
 taskFlatRoutes.delete("/:taskId", taskController.deleteTask);
 taskFlatRoutes.patch("/:taskId/position", taskController.updateTaskPosition);
 taskFlatRoutes.patch("/:taskId/move", taskController.moveTask);
+
+// Assignee routes
+taskFlatRoutes.use("/:taskId/assignees", assigneeRouter);
 
 module.exports = {
   taskNestedRoutes,

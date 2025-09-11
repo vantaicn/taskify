@@ -19,14 +19,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { UserPlus } from "lucide-react";
-import useMember from "@/hooks/useMember";
+import type { MemberType } from "@/types/member.types";
+import type { CreateMemberPayload } from "@/types/member.types";
+import type { UseMutationResult } from "@tanstack/react-query";
 
 interface AddMemberButtonProps {
-  boardId?: string;
+  createMemberMutation: UseMutationResult<any, any, CreateMemberPayload, unknown>;
+  members?: MemberType[];
 }
 
-const AddMemberButton = ({ boardId }: AddMemberButtonProps) => {
-  const { getMembersQuery, createMemberMutation } = useMember(boardId || "");
+const AddMemberButton = ({ createMemberMutation, members }: AddMemberButtonProps) => {
 
   const [email, setEmail] = React.useState("");
   const [role, setRole] = React.useState<"admin" | "member">("member");
