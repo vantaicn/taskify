@@ -56,6 +56,7 @@ const useTask = (boardId: string) => {
       toast.success("Task updated successfully!");
       queryClient.invalidateQueries({ queryKey: ["task", taskId] });
       queryClient.invalidateQueries({ queryKey: ["list", updatedTask.listId, "tasks"] });
+      queryClient.invalidateQueries({ queryKey: ["board", boardId, "lists"] });
     },
     onError: (error: any) => {
       toast.error(`Error updating task: ${error.response?.data?.error}`);

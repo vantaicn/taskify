@@ -1,20 +1,6 @@
 
-export interface UserType {
-  id: string;
-  fullName: string;
-  email: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface AssigneeType {
-  id: string;
-  taskId: string;
-  userId: string;
-  user: UserType;
-  createdAt: Date;
-  updatedAt: Date;
-}
+import type { AssigneeType } from './assignee.types';
+import type { TaskCommentType } from './comment.types';
 
 export interface TaskAttachmentType {
   id: string;
@@ -33,16 +19,6 @@ export interface ChecklistItemType {
   title: string;
   isCompleted: boolean;
   position: number;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface TaskCommentType {
-  id: string;
-  taskId: string;
-  userId: string;
-  user: UserType;
-  content: string;
   createdAt: Date;
   updatedAt: Date;
 }

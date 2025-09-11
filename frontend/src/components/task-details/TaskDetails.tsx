@@ -12,7 +12,6 @@ import type { TaskType } from "@/types/task.types";
 import Attachments from "@/components/task-details/Attachments";
 import Checklist from "@/components/task-details/Checklist";
 import Comments from "@/components/task-details/Comments";
-import Labels from "@/components/task-details/Labels";
 import DueDatePicker from "@/components/task-details/DueDatePicker";
 
 interface TaskDetailsProps {
@@ -115,7 +114,7 @@ const TaskDetails = ({ task, onUpdate }: TaskDetailsProps) => {
                 </span>
               </div>
               <div className="pl-4">
-                <DueDatePicker dueDate={dueDate} onDateChange={handleDueDateChange} />
+                <DueDatePicker dueDate={dueDate} onDateChange={handleDueDateChange} isCompleted={task?.isCompleted} />
               </div>
             </div>
           )}

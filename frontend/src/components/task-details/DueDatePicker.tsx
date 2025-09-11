@@ -14,14 +14,13 @@ import {
   Clock,
   AlertCircle,
   CalendarDays,
-  X,
 } from "lucide-react";
 import { format } from "date-fns";
-import { vi } from "date-fns/locale";
 
 interface DueDatePickerProps {
   dueDate?: Date;
   onDateChange?: (date: Date | null) => void;
+  isCompleted?: boolean;
   size?: "sm" | "default" | "lg";
   className?: string;
 }
@@ -29,6 +28,7 @@ interface DueDatePickerProps {
 const DueDatePicker = ({
   dueDate,
   onDateChange,
+  isCompleted = false,
   size = "sm",
   className = "",
 }: DueDatePickerProps) => {
@@ -62,16 +62,6 @@ const DueDatePicker = ({
     setOpen(false);
   };
 
-  const handleCancel = () => {
-    setSelectedDate(dueDate);
-    setSelectedTime(dueDate ? format(dueDate, "HH:mm") : "09:00");
-    setOpen(false);
-  };
-
-  // Helpers
-  const formatDateTime = (date: Date) =>
-    format(date, "dd/MM/yyyy HH:mm", { locale: vi });
-
   const isDueSoon = (date: Date) => {
     const now = new Date();
     const diffTime = date.getTime() - now.getTime();
@@ -83,36 +73,40 @@ const DueDatePicker = ({
 
   const getButtonText = (dueDate?: Date) => {
     if (!dueDate) return "Ngày";
-    return formatDateTime(dueDate);
+    return format(dueDate, "HH:mm MMM dd");
   };
 
   const getIcon = (dueDate?: Date) => {
-    if (!dueDate) return <CalendarDays className="w-4 h-4 mr-2" />;
-    if (isOverdue(dueDate)) return <AlertCircle className="w-4 h-4 mr-2" />;
-    if (isDueSoon(dueDate)) return <Clock className="w-4 h-4 mr-2" />;
-    return <CalendarIcon className="w-4 h-4 mr-2" />;
+    if (!dueDate) return <CalendarDays className="w-4 h-4" />;
+    if (isOverdue(dueDate)) return <AlertCircle className="w-4 h-4" />;
+    if (isDueSoon(dueDate)) return <Clock className="w-4 h-4" />;
+    return <CalendarIcon className="w-4 h-4" />;
   };
 
   const getStatusLabel = (dueDate?: Date) => {
+    console.log(isCompleted);
     if (!dueDate) return null;
     if (isOverdue(dueDate)) return "Quá hạn";
     if (isDueSoon(dueDate)) return "Sắp đến hạn";
+    if (isCompleted) return "Hoàn thành";
   };
 
   const getStatusColor = (dueDate?: Date) => {
     if (!dueDate) return "";
-    if (isOverdue(dueDate)) return "text-red-600 bg-red-50 border-red-200";
-    if (isDueSoon(dueDate))
-      return "text-orange-600 bg-orange-50 border-orange-200";
-    return "text-green-600 bg-green-50 border-green-200";
+    if (isOverdue(dueDate)) {
+      return "bg-red-500 text-white hover:bg-red-600";
+    }
+    if (isDueSoon(dueDate)) {
+      return "bg-yellow-400 text-black hover:bg-yellow-500";
+    }
+    if (isCompleted) {
+      return "bg-green-500 text-white hover:bg-green-600";
+    }
   };
 
   const getButtonStyle = (dueDate?: Date) => {
     if (!dueDate) return "";
-    if (isOverdue(dueDate))
-      return "border-red-300 text-red-700 bg-red-200 hover:bg-red-300";
-    if (isDueSoon(dueDate))
-      return "border-orange-300 text-orange-700 bg-orange-200 hover:bg-orange-300";
+    return "bg-gray-200 dark:bg-gray-600";
   };
 
   return (
@@ -122,9 +116,7 @@ const DueDatePicker = ({
           <Button
             size={size}
             variant="outline"
-            className={`justify-start p-4 ${getButtonStyle(
-              dueDate
-            )} ${className}`}
+            className={`justify-start p-4 ${getButtonStyle(dueDate)} ${className}`}
           >
             {getIcon(dueDate)}
             {getButtonText(dueDate)}
