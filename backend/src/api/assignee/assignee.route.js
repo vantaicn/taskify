@@ -4,6 +4,6 @@ const assigneeController = require('./assignee.controller');
 
 router.post('/', assigneeController.addAssignee);
 router.get('/', assigneeController.getAssignees);
-router.delete('/:assigneeId', assigneeController.deleteAssignee);
+router.delete('/:userId', assigneeController.deleteAssignee);
 
 module.exports = router;

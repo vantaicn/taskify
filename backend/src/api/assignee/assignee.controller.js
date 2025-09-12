@@ -22,9 +22,9 @@ const getAssignees = async (req, res) => {
 }
 
 const deleteAssignee = async (req, res) => {
-  const { taskId, assigneeId } = req.params;
+  const { taskId, userId } = req.params;
   try {
-    const deletedCount = await assigneeService.deleteAssignee(taskId, assigneeId);
+    const deletedCount = await assigneeService.deleteAssignee(taskId, userId);
     res.status(204).json({ message: `${deletedCount} assignee(s) deleted` });
   } catch (error) {
     res.status(error.statusCode || 500).json({ error: error.message });

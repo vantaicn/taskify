@@ -1,15 +1,15 @@
 const db = require('../../models/models');
 
 const addAssignee = async (taskId, userId) => {
-  return await db.task_assignees.create({ taskId, userId });
+  return await db.TaskAssignee.create({ taskId, userId });
 }
 
 const getAssigneesByTaskId = async (taskId) => {
-  return await db.task_assignees.findAll({ where: { taskId } });
+  return await db.TaskAssignee.findAll({ where: { taskId }, include: { model: db.User, as: 'user' } });
 }
 
-const deleteAssignee = async (taskId, assigneeId) => {
-  return await db.task_assignees.destroy({ where: { taskId, id: assigneeId } });
+const deleteAssignee = async (taskId, userId) => {
+  return await db.TaskAssignee.destroy({ where: { taskId, userId } });
 }
 
 module.exports = {
