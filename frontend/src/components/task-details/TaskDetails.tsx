@@ -5,7 +5,6 @@ import {
   FileText,
   Paperclip,
   Tag,
-  Users,
   CheckCircle2,
 } from "lucide-react";
 import type { TaskType } from "@/types/task.types";
@@ -13,18 +12,23 @@ import Attachments from "@/components/task-details/Attachments";
 import Checklist from "@/components/task-details/Checklist";
 import Comments from "@/components/task-details/Comments";
 import DueDatePicker from "@/components/task-details/DueDatePicker";
+import AssigneeManager from "@/components/task-details/AssigneeManager";
+import useAssignee from "@/hooks/useAssignee";
 
 interface TaskDetailsProps {
   task?: TaskType;
+  boardId: string;
   onUpdate?: (taskData: any) => void;
 }
 
-const TaskDetails = ({ task, onUpdate }: TaskDetailsProps) => {
+const TaskDetails = ({ task, boardId, onUpdate }: TaskDetailsProps) => {
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [isEditingDescription, setIsEditingDescription] = useState(false);
   const [title, setTitle] = useState(task?.title);
   const [description, setDescription] = useState(task?.description);
   const [dueDate, setDueDate] = useState<Date | null>(task?.dueDate ? new Date(task.dueDate) : null);
+  const { getAssigneesQuery } = useAssignee(task?.id || "");
+  const assignees = getAssigneesQuery.data || [];
 
   const handleSaveTitle = () => {
     if (title !== task?.title) {
@@ -79,10 +83,7 @@ const TaskDetails = ({ task, onUpdate }: TaskDetailsProps) => {
         <div className="flex-4 space-y-6 overflow-y-auto">
           {/* Action Buttons */}
           <div className="flex gap-2">
-            <Button variant="outline" size="sm" className="justify-start">
-              <Users className="w-4 h-4 mr-2" />
-              Thành viên
-            </Button>
+            {task && assignees.length === 0 && <AssigneeManager task={task} boardId={boardId} />}
             <Button variant="outline" size="sm" className="justify-start">
               <Tag className="w-4 h-4 mr-2" />
               Nhãn
@@ -101,6 +102,9 @@ const TaskDetails = ({ task, onUpdate }: TaskDetailsProps) => {
               Đính kèm
             </Button>
           </div>
+
+          {/* Assignee Manager */}
+          {task && assignees.length > 0 && <AssigneeManager task={task} boardId={boardId} />}
 
           {/* Labels */}
           {/* <Labels /> */}

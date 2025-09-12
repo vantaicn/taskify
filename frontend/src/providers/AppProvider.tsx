@@ -6,6 +6,7 @@ import queryClient from "../lib/react-query";
 import AuthShield from "../components/auth/AuthShield";
 import { Toaster } from "../components/ui/sonner";
 import { SidebarProvider } from "../components/ui/sidebar";
+import { TooltipProvider } from "../components/ui/tooltip";
 import AppSidebar from "../components/layout/AppSidebar";
 import AppHeader from "../components/layout/AppHeader";
 import { ThemeProvider } from "../components/darkmode/theme-provider";
@@ -20,19 +21,21 @@ const AppProvider = ({ children }: AppProviderProps) => {
       <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
         <QueryClientProvider client={queryClient}>
           <Router>
-            <SidebarProvider>
-              <div className="flex h-screen bg-background w-full overflow-hidden">
-                <AppSidebar />
-                <AuthShield>
-                  <div className="flex-1 flex flex-col overflow-hidden">
-                    <AppHeader />
-                    <main className="flex-1 overflow-auto">
-                      {children}
-                    </main>
-                  </div>
-                </AuthShield>
-              </div>
-            </SidebarProvider>
+            <TooltipProvider>
+              <SidebarProvider>
+                <div className="flex h-screen bg-background w-full overflow-hidden">
+                  <AppSidebar />
+                  <AuthShield>
+                    <div className="flex-1 flex flex-col overflow-hidden">
+                      <AppHeader />
+                      <main className="flex-1 overflow-auto">
+                        {children}
+                      </main>
+                    </div>
+                  </AuthShield>
+                </div>
+              </SidebarProvider>
+            </TooltipProvider>
           </Router>
           <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>

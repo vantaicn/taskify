@@ -8,7 +8,6 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import {
   Edit,
   Clock,
-  CalendarDays,
   CalendarIcon,
   AlertCircle,
 } from "lucide-react";
@@ -35,7 +34,6 @@ const Task = ({ task, boardId, index = 0, onUpdateTask }: TaskProps) => {
   }, [task]);
   const [isOpen, setIsOpen] = React.useState(false);
   
-
   const { getAssigneesQuery } = useAssignee(task.id);
   const dueDate = taskData.dueDate ? new Date(taskData.dueDate) : null;
   const assignees = getAssigneesQuery.data || [];
@@ -126,13 +124,15 @@ const Task = ({ task, boardId, index = 0, onUpdateTask }: TaskProps) => {
 
               {/* Task metadata */}
               <div className="flex items-center justify-between mt-2 text-xs text-gray-500 dark:text-gray-400">
-                {dueDate && (
+                {dueDate ? (
                   <div
                     className={`flex items-center gap-1 px-1.5 py-0.5 rounded-sm font-semibold ${getStatusColor()}`}
                   >
                     {getIcon(dueDate)}
                     {format(dueDate, "MMM dd")}
                   </div>
+                ) : (
+                  <div></div>
                 )}
                 <div className="flex items-center gap-1">
                   {assignees.length > 0 && (
@@ -154,7 +154,7 @@ const Task = ({ task, boardId, index = 0, onUpdateTask }: TaskProps) => {
               </DialogTitle>
             </VisuallyHidden>
             <DialogContent className="sm:max-w-7xl">
-              <TaskDetails task={taskData} onUpdate={handleUpdateTask} />
+              <TaskDetails task={taskData} boardId={boardId} onUpdate={handleUpdateTask} />
             </DialogContent>
           </Dialog>
         </div>
