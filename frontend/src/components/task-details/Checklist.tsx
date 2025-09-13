@@ -4,43 +4,77 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
+import useChecklist from "@/hooks/useChecklist";
+import type { ChecklistType } from "@/types/checklist.types";
 
-const Checklist = () => {
+interface ChecklistProps {
+  taskId: string;
+}
 
-  const mockChecklist = [
-    { id: "1", title: "Research competitor websites", isCompleted: true },
-    { id: "2", title: "Create wireframes", isCompleted: true },
-    { id: "3", title: "Design mockups", isCompleted: false },
-    { id: "4", title: "Get approval from stakeholders", isCompleted: false },
-  ];
+const Checklist = ({ taskId }: ChecklistProps) => {
+  const [newChecklistItem, setNewChecklistItem] = useState("");
+  const [showAddChecklist, setShowAddChecklist] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingTitle, setEditingTitle] = useState("");
 
-  const [checklist, setChecklist] = useState(mockChecklist);
+  const {
+    getChecklistsQuery,
+    createChecklistMutation,
+    updateChecklistMutation,
+    deleteChecklistMutation,
+  } = useChecklist(taskId);
 
-    const [newChecklistItem, setNewChecklistItem] = useState("");
-    const [showAddChecklist, setShowAddChecklist] = useState(false);
+  const checklists = getChecklistsQuery.data || [];
+  const isLoading = getChecklistsQuery.isLoading;
 
+  const toggleChecklistItem = (checklistId: string) => {
+    const checklist = checklists.find((item: ChecklistType) => item.id === checklistId);
+    if (checklist) {
+      updateChecklistMutation.mutate({
+        checklistId,
+        data: { isCompleted: !checklist.isCompleted }
+      });
+    }
+  };
 
-  const toggleChecklistItem = (itemId: string) => {
-    setChecklist(prev => prev.map(item =>
-      item.id === itemId ? { ...item, isCompleted: !item.isCompleted } : item
-    ));
+  const startEditing = (checklistId: string, currentTitle: string) => {
+    setEditingId(checklistId);
+    setEditingTitle(currentTitle);
+  };
+
+  const saveEdit = () => {
+    if (editingId && editingTitle.trim()) {
+      updateChecklistMutation.mutate({
+        checklistId: editingId,
+        data: { title: editingTitle.trim() }
+      });
+      setEditingId(null);
+      setEditingTitle("");
+    }
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setEditingTitle("");
   };
 
   const addChecklistItem = () => {
     if (newChecklistItem.trim()) {
-      const newItem = {
-        id: Date.now().toString(),
+      createChecklistMutation.mutate({
         title: newChecklistItem.trim(),
-        isCompleted: false,
-      };
-      setChecklist(prev => [...prev, newItem]);
+        position: checklists.length,
+      });
       setNewChecklistItem("");
       setShowAddChecklist(false);
     }
   };
 
-    const completedChecklist = checklist.filter(item => item.isCompleted).length;
-  const totalChecklist = checklist.length;
+  const handleDeleteChecklist = (checklistId: string) => {
+    deleteChecklistMutation.mutate(checklistId);
+  };
+
+  const completedChecklist = checklists.filter((item: ChecklistType) => item.isCompleted).length;
+  const totalChecklist = checklists.length;
   const checklistProgress = totalChecklist > 0 ? (completedChecklist / totalChecklist) * 100 : 0;
 
 
@@ -75,45 +109,99 @@ const Checklist = () => {
       </div>
 
       <div className="space-y-2 pl-4">
-        {checklist.map((item) => (
-          <div
-            key={item.id}
-            className="flex items-center gap-3 p-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md"
-          >
-            <Checkbox
-              checked={item.isCompleted}
-              onCheckedChange={() => toggleChecklistItem(item.id)}
-              className="flex-shrink-0"
-            />
-            <span
-              className={`flex-1 text-sm ${
-                item.isCompleted
-                  ? "line-through text-gray-500 dark:text-gray-400"
-                  : "text-gray-700 dark:text-gray-300"
-              }`}
+        {isLoading ? (
+          <div className="text-sm text-gray-500">Loading checklists...</div>
+        ) : (
+          checklists.map((item: ChecklistType) => (
+            <div
+              key={item.id}
+              className="flex items-center gap-3 p-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md group"
             >
-              {item.title}
-            </span>
-          </div>
-        ))}
+              <Checkbox
+                checked={item.isCompleted}
+                onCheckedChange={() => toggleChecklistItem(item.id)}
+                className="flex-shrink-0"
+              />
+              {editingId === item.id ? (
+                <div className="flex items-center gap-2 flex-1">
+                  <Input
+                    value={editingTitle}
+                    onChange={(e) => setEditingTitle(e.target.value)}
+                    className="flex-1"
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        saveEdit();
+                      } else if (e.key === "Escape") {
+                        cancelEdit();
+                      }
+                    }}
+                    autoFocus
+                    disabled={updateChecklistMutation.isPending}
+                  />
+                  <Button 
+                    size="sm" 
+                    onClick={saveEdit}
+                    disabled={updateChecklistMutation.isPending || !editingTitle.trim()}
+                  >
+                    {updateChecklistMutation.isPending ? "..." : "Lưu"}
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={cancelEdit}
+                    disabled={updateChecklistMutation.isPending}
+                  >
+                    <X className="w-4 h-4" />
+                  </Button>
+                </div>
+              ) : (
+                <>
+                  <span
+                    className={`flex-1 text-sm cursor-pointer ${
+                      item.isCompleted
+                        ? "line-through text-gray-500 dark:text-gray-400"
+                        : "text-gray-700 dark:text-gray-300"
+                    }`}
+                    onDoubleClick={() => startEditing(item.id, item.title)}
+                    title="Double-click để chỉnh sửa"
+                  >
+                    {item.title}
+                  </span>
+                  <button
+                    onClick={() => handleDeleteChecklist(item.id)}
+                    className="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-red-100 dark:hover:bg-red-900 rounded"
+                  >
+                    <X className="w-3 h-3 text-red-500" />
+                  </button>
+                </>
+              )}
+            </div>
+          ))
+        )}
 
         {showAddChecklist ? (
           <div className="flex items-center gap-2 p-2 bg-gray-100 dark:bg-gray-800 rounded-md">
             <Input
               value={newChecklistItem}
-              onChange={(e: any) => setNewChecklistItem(e.target.value)}
+              onChange={(e) => setNewChecklistItem(e.target.value)}
               placeholder="Thêm mục mới"
               className="flex-1"
-              onKeyDown={(e: any) => e.key === "Enter" && addChecklistItem()}
+              onKeyDown={(e) => e.key === "Enter" && addChecklistItem()}
               autoFocus
+              disabled={createChecklistMutation.isPending}
             />
-            <Button size="sm" onClick={addChecklistItem}>
-              Thêm
+            <Button 
+              size="sm" 
+              onClick={addChecklistItem}
+              disabled={createChecklistMutation.isPending || !newChecklistItem.trim()}
+            >
+              {createChecklistMutation.isPending ? "..." : "Thêm"}
             </Button>
             <Button
               size="sm"
               variant="ghost"
               onClick={() => setShowAddChecklist(false)}
+              disabled={createChecklistMutation.isPending}
             >
               <X className="w-4 h-4" />
             </Button>
@@ -124,6 +212,7 @@ const Checklist = () => {
             size="sm"
             onClick={() => setShowAddChecklist(true)}
             className="border-dashed"
+            disabled={isLoading}
           >
             <Plus className="w-4 h-4 mr-1" />
             Thêm mục

@@ -208,6 +208,76 @@ db.TaskAssignee = sequelize.define(
   }
 );
 
+db.Checklist = sequelize.define(
+  "Checklist",
+  {
+    id: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true,
+    },
+    title: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    isCompleted: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    taskId: {
+      type: DataTypes.UUID,
+      allowNull: false,
+    },
+    position: {
+      type: DataTypes.DECIMAL(20, 10),
+      allowNull: false,
+    },
+  },
+  {
+    timestamps: true,
+    underscored: true,
+  }
+);
+
+db.TaskAttachment = sequelize.define(
+  "TaskAttachment",
+  {
+    id: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true,
+    },
+    fileName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    fileUrl: {
+      type: DataTypes.STRING(500),
+      allowNull: false,
+    },
+    fileSize: {
+      type: DataTypes.BIGINT,
+      allowNull: true,
+    },
+    fileType: {
+      type: DataTypes.STRING(100),
+      allowNull: true,
+    },
+    taskId: {
+      type: DataTypes.UUID,
+      allowNull: false,
+    },
+    uploadedBy: {
+      type: DataTypes.UUID,
+      allowNull: false,
+    },
+  },
+  {
+    timestamps: true,
+    underscored: true,
+  }
+);
+
 db.User.hasMany(db.Board, {
   as: "ownedBoards",
   foreignKey: "ownerId",
@@ -278,6 +348,20 @@ db.TaskComment.belongsTo(db.Task, {
   onUpdate: "CASCADE",
 });
 
+db.Task.hasMany(db.Checklist, {
+  as: "checklists",
+  foreignKey: "taskId",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+
+db.Checklist.belongsTo(db.Task, {
+  as: "task",
+  foreignKey: "taskId",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+
 db.User.belongsToMany(db.Board, {
   as: "boards",
   through: db.BoardMember,
@@ -324,6 +408,35 @@ db.Task.belongsToMany(db.User, {
 db.TaskAssignee.belongsTo(db.User, {
   as: "user",
   foreignKey: "userId",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+
+// TaskAttachment associations
+db.Task.hasMany(db.TaskAttachment, {
+  as: "attachments",
+  foreignKey: "taskId",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+
+db.TaskAttachment.belongsTo(db.Task, {
+  as: "task",
+  foreignKey: "taskId",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+
+db.User.hasMany(db.TaskAttachment, {
+  as: "uploadedAttachments",
+  foreignKey: "uploadedBy",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+
+db.TaskAttachment.belongsTo(db.User, {
+  as: "uploader",
+  foreignKey: "uploadedBy",
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
