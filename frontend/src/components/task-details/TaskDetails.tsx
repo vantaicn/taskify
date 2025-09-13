@@ -93,10 +93,10 @@ const TaskDetails = ({ task, boardId, onUpdate }: TaskDetailsProps) => {
                 <DueDatePicker dueDate={dueDate || undefined} onDateChange={handleDueDateChange} />
               )
             }
-            <Button variant="outline" size="sm" className="justify-start">
+            {/* <Button variant="outline" size="sm" className="justify-start">
               <CheckCircle2 className="w-4 h-4 mr-2" />
               Checklist
-            </Button>
+            </Button> */}
             <Button variant="outline" size="sm" className="justify-start">
               <Paperclip className="w-4 h-4 mr-2" />
               Đính kèm
@@ -177,10 +177,10 @@ const TaskDetails = ({ task, boardId, onUpdate }: TaskDetailsProps) => {
           </div>
 
           {/* Checklist */}
-          <Checklist />
+          {task?.id && <Checklist taskId={task.id} />}
 
           {/* Attachments */}
-          <Attachments />
+          {task?.id && <Attachments taskId={task.id} />}
         </div>
 
         {/* Comments */}

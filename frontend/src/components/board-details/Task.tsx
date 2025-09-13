@@ -74,14 +74,14 @@ const Task = ({ task, boardId, index = 0, onUpdateTask }: TaskProps) => {
 
   const getStatusColor = () => {
     if (!dueDate) return "";
+    if (task.isCompleted) {
+      return "bg-green-500 text-white hover:bg-green-600";
+    }
     if (isOverdue(dueDate)) {
       return "bg-red-500 text-white hover:bg-red-600";
     }
     if (isDueSoon(dueDate)) {
       return "bg-yellow-400 text-black hover:bg-yellow-500";
-    }
-    if (task.isCompleted) {
-      return "bg-green-500 text-white hover:bg-green-600";
     }
   };
 
