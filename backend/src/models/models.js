@@ -394,20 +394,14 @@ db.BoardMember.belongsTo(db.Board, {
   onUpdate: "CASCADE",
 });
 
-db.User.belongsToMany(db.Task, {
-  as: "tasks",
-  through: db.TaskAssignee,
-  foreignKey: "userId",
-  otherKey: "taskId",
-  onDelete: "CASCADE",
-  onUpdate: "CASCADE",
+db.TaskAssignee.belongsTo(db.Task, {
+  as: "task",
+  foreignKey: "taskId",
 });
 
-db.Task.belongsToMany(db.User, {
+db.Task.hasMany(db.TaskAssignee, {
   as: "assignees",
-  through: db.TaskAssignee,
   foreignKey: "taskId",
-  otherKey: "userId",
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });

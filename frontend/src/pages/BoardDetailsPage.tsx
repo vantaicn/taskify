@@ -56,7 +56,7 @@ const BoardDetailsPage = () => {
     connect();
   }, [connect]);
 
-  const { emitTaskCreated, emitTaskUpdated, emitTaskMoved, emitTaskPositionUpdated } = useSocket(boardId || "");
+  const { emitListCreated, emitListUpdated, emitListDeleted, emitTaskCreated, emitTaskUpdated, emitTaskMoved, emitTaskPositionUpdated } = useSocket(boardId || "");
 
   const handleAddListAsync = async () => {
     const position =
@@ -72,6 +72,7 @@ const BoardDetailsPage = () => {
       boardId: boardId || "",
       position: 0,
     });
+    emitListCreated(boardId || "");
     setIsOpenNewListDialog(false);
   };
 
@@ -155,7 +156,7 @@ const BoardDetailsPage = () => {
                           hover:scrollbar-thumb-gray-300"
           >
             {lists?.map((list: ListType) => (
-              <List key={list.id} list={list} onCreateTask={emitTaskCreated} onUpdateTask={emitTaskUpdated} />
+              <List key={list.id} list={list} onUpdateList={emitListUpdated} onCreateTask={emitTaskCreated} onUpdateTask={emitTaskUpdated} />
             ))}
             <Dialog
               open={isOpenNewListDialog}

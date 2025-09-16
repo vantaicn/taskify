@@ -5,16 +5,16 @@ import { toast } from "sonner";
 const useAssignee = (taskId: string) => {
   const queryClient = useQueryClient();
 
-  const getAssigneesQuery = useQuery({
-    queryKey: ["assignees", taskId],
-    queryFn: () => assigneeApi.getAssigneesByTaskId(taskId),
-    enabled: !!taskId,
-  });
+  // const getAssigneesQuery = useQuery({
+  //   queryKey: ["assignees", taskId],
+  //   queryFn: () => assigneeApi.getAssigneesByTaskId(taskId),
+  //   enabled: !!taskId,
+  // });
 
   const addAssigneeMutation = useMutation({
     mutationFn: (userId: string) => assigneeApi.addAssignee(taskId, userId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["assignees", taskId] });
+      queryClient.invalidateQueries({ queryKey: ["task", taskId] });
       toast.success("Assignee added successfully");
     },
     onError: (error: any) => {
@@ -25,7 +25,7 @@ const useAssignee = (taskId: string) => {
   const removeAssigneeMutation = useMutation({
     mutationFn: (userId: string) => assigneeApi.removeAssignee(taskId, userId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["assignees", taskId] });
+      queryClient.invalidateQueries({ queryKey: ["task", taskId] });
       toast.success("Assignee removed successfully");
     },
     onError: (error: any) => {
@@ -34,7 +34,7 @@ const useAssignee = (taskId: string) => {
   });
 
   return {
-    getAssigneesQuery,
+    // getAssigneesQuery,
     addAssigneeMutation,
     removeAssigneeMutation,
   };

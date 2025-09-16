@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -24,16 +24,24 @@ interface TaskDetailsProps {
 const TaskDetails = ({ boardId, taskId, onUpdate }: TaskDetailsProps) => {
   const { useGetTaskById } = useTask(boardId);
   const task = useGetTaskById(taskId || "").data;
-  const assignees = task.assignees;
-  const checklist = task.checklist;
-  const attachments = task.attachments;
+  const checklist = task?.checklist;
+  const attachments = task?.attachments;
 
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [isEditingDescription, setIsEditingDescription] = useState(false);
   const [title, setTitle] = useState(task?.title);
   const [description, setDescription] = useState(task?.description);
   const [dueDate, setDueDate] = useState<Date | null>(task?.dueDate ? new Date(task.dueDate) : null);
+  const [assignees, setAssignees] = useState(task?.assignees || []);
 
+  useEffect(() => {
+  if (task) {
+    setTitle(task.title);
+    setDescription(task.description);
+    setDueDate(task.dueDate ? new Date(task.dueDate) : null);
+    setAssignees(task.assignees || []);
+  }
+}, [task]);
 
   const handleSaveTitle = () => {
     if (title !== task?.title) {
@@ -88,7 +96,7 @@ const TaskDetails = ({ boardId, taskId, onUpdate }: TaskDetailsProps) => {
         <div className="flex-4 space-y-6 overflow-y-auto">
           {/* Action Buttons */}
           <div className="flex gap-2">
-            {task && assignees.length === 0 && <AssigneeManager task={task} boardId={boardId} />}
+            {task && assignees?.length === 0 && <AssigneeManager assignees={assignees} task={task} boardId={boardId} />}
             <Button variant="outline" size="sm" className="justify-start">
               <Tag className="w-4 h-4 mr-2" />
               Nhãn
@@ -109,7 +117,7 @@ const TaskDetails = ({ boardId, taskId, onUpdate }: TaskDetailsProps) => {
           </div>
 
           {/* Assignee Manager */}
-          {task && assignees.length > 0 && <AssigneeManager task={task} boardId={boardId} />}
+          {task && assignees?.length > 0 && <AssigneeManager assignees={assignees} task={task} boardId={boardId} />}
 
           {/* Labels */}
           {/* <Labels /> */}

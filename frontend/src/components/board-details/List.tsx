@@ -1,4 +1,4 @@
-import React from "react";
+import React, { use } from "react";
 import { Droppable } from "@hello-pangea/dnd";
 import Task from "./Task";
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
@@ -24,13 +24,14 @@ import { useTaskList } from "@/hooks/useTask";
 
 export interface ListProps {
   list: ListType;
+  onUpdateList?: (boardId: string) => void;
   onCreateTask?: (boardId: string) => void;
   onUpdateTask?: (boardId: string) => void;
 }
 
 const POSITION_GAP = 100;
 
-const List = ({ list, onCreateTask, onUpdateTask }: ListProps) => {
+const List = ({ list, onUpdateList, onCreateTask, onUpdateTask }: ListProps) => {
   const tasks = list.tasks;
 
   const { updateListTitleMutation } = useList(list.boardId);
@@ -45,6 +46,10 @@ const List = ({ list, onCreateTask, onUpdateTask }: ListProps) => {
   const [isEditing, setIsEditing] = React.useState(false);
   const [listTitle, setListTitle] = React.useState(list.title);
 
+  React.useEffect(() => {
+    setListTitle(list.title);
+  }, [list.title]);
+
   const handleSaveEdit = async () => {
     if (listTitle !== list.title) {
       await updateListTitleMutation.mutateAsync({
@@ -52,6 +57,7 @@ const List = ({ list, onCreateTask, onUpdateTask }: ListProps) => {
         title: listTitle,
       });
     }
+    onUpdateList?.(list.boardId || "");
     setIsEditing(false);
   };
 

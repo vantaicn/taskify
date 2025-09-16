@@ -26,6 +26,21 @@ const initSocket = (server) => {
       console.log(`Socket ${socket.id} left board ${boardId}`);
     });
 
+    socket.on('list-created', (boardId) => {
+      console.log(`List created in board ${boardId}`);
+      socket.to(boardId).emit('list-created');
+    });
+
+    socket.on('list-updated', (boardId) => {
+      console.log(`List updated in board ${boardId}`);
+      socket.to(boardId).emit('list-updated');
+    });
+
+    socket.on('list-deleted', (boardId) => {
+      console.log(`List deleted in board ${boardId}`);
+      socket.to(boardId).emit('list-deleted');
+    });
+
     socket.on('task-created', (boardId) => {
       console.log(`Task created in board ${boardId}`);
       socket.to(boardId).emit('task-created');

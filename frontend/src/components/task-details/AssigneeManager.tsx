@@ -12,18 +12,19 @@ import type { MemberType } from "@/types/member.types";
 import type { AssigneeType } from "@/types/assignee.types";
 
 interface AssigneeManagerProps {
-  task: TaskType;
+  assignees: AssigneeType[];
   boardId: string;
+  task: TaskType;
 }
 
-const AssigneeManager = ({ task, boardId }: AssigneeManagerProps) => {
+const AssigneeManager = ({ assignees, boardId, task }: AssigneeManagerProps) => {
+  console.log("Assignees: ", assignees);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const { getAssigneesQuery, addAssigneeMutation, removeAssigneeMutation } = useAssignee(task.id);
+  const { addAssigneeMutation, removeAssigneeMutation } = useAssignee(task.id);
   const { getMembersQuery } = useMember(boardId);
 
-  const assignees = getAssigneesQuery.data || [];
   const boardMembers = getMembersQuery.data || [];
 
   // Filter board members that are not already assigned

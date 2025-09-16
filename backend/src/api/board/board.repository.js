@@ -32,9 +32,13 @@ const getBoardById = async (boardId) => {
             as: "tasks",
             include: [
               {
-                model: db.User,
+                model: db.TaskAssignee,
                 as: "assignees",
-                attributes: ["id", "fullName", "avatarUrl"],
+                include: {
+                  model: db.User,
+                  as: "user",
+                  attributes: ["id", "fullName", "avatarUrl"],
+                },
               },
             ],
           },

@@ -7,6 +7,18 @@ const useSocket = (boardId: string) => {
   const queryClient = useQueryClient();
 
   // Emitters
+  const emitListCreated = useCallback((boardId: string) => {
+    socket?.emit("list-created", boardId);
+  }, [socket]);
+
+  const emitListUpdated = useCallback((boardId: string) => {
+    socket?.emit("list-updated", boardId);
+  }, [socket]);
+
+  const emitListDeleted = useCallback((boardId: string) => {
+    socket?.emit("list-deleted", boardId);
+  }, [socket]);
+
   const emitJoinBoard = useCallback((boardId: string) => {
     socket?.emit("join-board", boardId);
   }, [socket]);
@@ -32,26 +44,45 @@ const useSocket = (boardId: string) => {
   }, [socket]);
 
   // Handlers
+  const handleListCreated = useCallback(() => {
+    queryClient.invalidateQueries({
+      queryKey: ["board", boardIdRef.current],
+    });
+  }, [queryClient]);
+
+  const handleListUpdated = useCallback(() => {
+    console.log("List updated event received");
+    queryClient.invalidateQueries({
+      queryKey: ["board", boardIdRef.current],
+    });
+  }, [queryClient]);
+
+  const handleListDeleted = useCallback(() => {
+    queryClient.invalidateQueries({
+      queryKey: ["board", boardIdRef.current],
+    });
+  }, [queryClient]);
+
   const handleTaskCreated = useCallback(() => {
     queryClient.invalidateQueries({
-      queryKey: ["board", boardIdRef.current, "lists"],
+      queryKey: ["board", boardIdRef.current],
     });
   }, [queryClient]);
 
   const handleTaskUpdated = useCallback(() => {
     queryClient.invalidateQueries({
-      queryKey: ["board", boardIdRef.current, "lists"],
+      queryKey: ["board", boardIdRef.current],
     });
   }, [queryClient]);
 
   const handleTaskMoved = useCallback(() => {
     queryClient.invalidateQueries({
-      queryKey: ["board", boardIdRef.current, "lists"],
+      queryKey: ["board", boardIdRef.current],
     });
   }, [queryClient]);
 
   const handleTaskPositionUpdated = useCallback(() => {
-    queryClient.invalidateQueries({ queryKey: ["board", boardIdRef.current, "lists"] });
+    queryClient.invalidateQueries({ queryKey: ["board", boardIdRef.current] });
   }, [queryClient]);
 
   const boardIdRef = useRef<string | null>(null);
@@ -64,12 +95,18 @@ const useSocket = (boardId: string) => {
       boardIdRef.current = boardId;
     }
 
+    socket.on("list-created", handleListCreated);
+    socket.on("list-updated", handleListUpdated);
+    socket.on("list-deleted", handleListDeleted);
     socket.on("task-created", handleTaskCreated);
     socket.on("task-updated", handleTaskUpdated);
     socket.on("task-moved", handleTaskMoved);
     socket.on("task-position-updated", handleTaskPositionUpdated);
 
     return () => {
+      socket.off("list-created", handleListCreated);
+      socket.off("list-updated", handleListUpdated);
+      socket.off("list-deleted", handleListDeleted);
       socket.off("task-created", handleTaskCreated);
       socket.off("task-updated", handleTaskUpdated);
       socket.off("task-moved", handleTaskMoved);
@@ -79,11 +116,14 @@ const useSocket = (boardId: string) => {
         boardIdRef.current = null;
       }
     };
-  }, [boardId, socket, emitJoinBoard, handleTaskCreated, handleTaskUpdated, handleTaskMoved, handleTaskPositionUpdated]);
+  }, [boardId, socket, emitJoinBoard, handleListCreated, handleListUpdated, handleListDeleted, handleTaskCreated, handleTaskUpdated, handleTaskMoved, handleTaskPositionUpdated]);
 
   return {
     emitJoinBoard,
     emitLeaveBoard,
+    emitListCreated,
+    emitListUpdated,
+    emitListDeleted,
     emitTaskCreated,
     emitTaskUpdated,
     emitTaskMoved,

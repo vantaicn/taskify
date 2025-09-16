@@ -93,14 +93,14 @@ const DueDatePicker = ({
 
   const getStatusColor = (dueDate?: Date) => {
     if (!dueDate) return "";
+    if (isCompleted) {
+      return "bg-green-500 text-white hover:bg-green-600";
+    }
     if (isOverdue(dueDate)) {
       return "bg-red-500 text-white hover:bg-red-600";
     }
     if (isDueSoon(dueDate)) {
       return "bg-yellow-400 text-black hover:bg-yellow-500";
-    }
-    if (isCompleted) {
-      return "bg-green-500 text-white hover:bg-green-600";
     }
   };
 
