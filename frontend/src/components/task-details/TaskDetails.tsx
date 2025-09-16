@@ -13,22 +13,27 @@ import Checklist from "@/components/task-details/Checklist";
 import Comments from "@/components/task-details/Comments";
 import DueDatePicker from "@/components/task-details/DueDatePicker";
 import AssigneeManager from "@/components/task-details/AssigneeManager";
-import useAssignee from "@/hooks/useAssignee";
+import { useTask } from "@/hooks/useTask";
 
 interface TaskDetailsProps {
-  task?: TaskType;
+  taskId: string;
   boardId: string;
   onUpdate?: (taskData: any) => void;
 }
 
-const TaskDetails = ({ task, boardId, onUpdate }: TaskDetailsProps) => {
+const TaskDetails = ({ boardId, taskId, onUpdate }: TaskDetailsProps) => {
+  const { useGetTaskById } = useTask(boardId);
+  const task = useGetTaskById(taskId || "").data;
+  const assignees = task.assignees;
+  const checklist = task.checklist;
+  const attachments = task.attachments;
+
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [isEditingDescription, setIsEditingDescription] = useState(false);
   const [title, setTitle] = useState(task?.title);
   const [description, setDescription] = useState(task?.description);
   const [dueDate, setDueDate] = useState<Date | null>(task?.dueDate ? new Date(task.dueDate) : null);
-  const { getAssigneesQuery } = useAssignee(task?.id || "");
-  const assignees = getAssigneesQuery.data || [];
+
 
   const handleSaveTitle = () => {
     if (title !== task?.title) {

@@ -8,7 +8,7 @@ export interface BoardType {
   createdAt: string;
   updatedAt: string;
 
-  lists?: ListType[];
+  lists: ListType[];
 }
 
 export interface CreateBoardPayload {

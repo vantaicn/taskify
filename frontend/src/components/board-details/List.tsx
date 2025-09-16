@@ -31,13 +31,10 @@ export interface ListProps {
 const POSITION_GAP = 100;
 
 const List = ({ list, onCreateTask, onUpdateTask }: ListProps) => {
+  const tasks = list.tasks;
+
   const { updateListTitleMutation } = useList(list.boardId);
-  const { useGetTasks, createTaskMutation } = useTaskList(
-    list.boardId,
-    list.id
-  );
-  const tasksQuery = useGetTasks();
-  const tasks = tasksQuery.data || [];
+  const { createTaskMutation } = useTaskList(list.boardId, list.id);
 
   const [newTaskData, setNewTaskData] = React.useState({
     title: "",

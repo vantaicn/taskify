@@ -8,7 +8,7 @@ export interface ListType {
   createdAt: Date;
   updatedAt: Date;
 
-  tasks?: TaskType[];
+  tasks: TaskType[];
 }
 
 export interface CreateListPayload {

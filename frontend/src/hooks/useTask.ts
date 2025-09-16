@@ -6,14 +6,14 @@ import { toast } from "sonner";
 const useTaskList = (boardId:string, listId: string) => {
   const queryClient = useQueryClient();
 
-  const useGetTasks = () => {
-    return useQuery({
-      queryKey: ["list", listId, "tasks"],
-      queryFn: () => taskApi.getTasks(listId),
-      enabled: !!listId,
-    });
-  };
-
+  // const useGetTasks = () => {
+  //   return useQuery({
+  //     queryKey: ["list", listId, "tasks"],
+  //     queryFn: () => taskApi.getTasks(listId),
+  //     enabled: !!listId,
+  //   });
+  // };
+  
   const useGetTaskById = (taskId: string) => {
     return useQuery({
       queryKey: ["task", taskId],
@@ -24,10 +24,9 @@ const useTaskList = (boardId:string, listId: string) => {
 
   const createTaskMutation = useMutation({
     mutationFn: (data: CreateTaskPayload) => taskApi.createTask(listId, data),
-    onSuccess: (createdTask) => {
+    onSuccess: () => {
       toast.success("Task created successfully!");
-      queryClient.invalidateQueries({ queryKey: ["list", listId, "tasks"] });
-      queryClient.invalidateQueries({ queryKey: ["board", boardId, "lists"] });
+      queryClient.invalidateQueries({ queryKey: ["board", boardId] });
     },
     onError: (error: any) => {
       toast.error(`Error creating task: ${error.response?.data?.error}`);
@@ -35,7 +34,7 @@ const useTaskList = (boardId:string, listId: string) => {
   });
 
   return {
-    useGetTasks,
+    // useGetTasks,
     useGetTaskById,
     createTaskMutation,
   };
@@ -43,6 +42,14 @@ const useTaskList = (boardId:string, listId: string) => {
 
 const useTask = (boardId: string) => {
   const queryClient = useQueryClient();
+
+  const useGetTaskById = (taskId: string) => {
+    return useQuery({
+      queryKey: ["task", taskId],
+      queryFn: () => taskApi.getTaskById(taskId),
+      enabled: !!taskId,
+    });
+  };
 
   const updateTaskMutation = useMutation({
     mutationFn: ({
@@ -55,8 +62,7 @@ const useTask = (boardId: string) => {
     onSuccess: (updatedTask, { taskId }) => {
       toast.success("Task updated successfully!");
       queryClient.invalidateQueries({ queryKey: ["task", taskId] });
-      queryClient.invalidateQueries({ queryKey: ["list", updatedTask.listId, "tasks"] });
-      queryClient.invalidateQueries({ queryKey: ["board", boardId, "lists"] });
+      queryClient.invalidateQueries({ queryKey: ["board", boardId] });
     },
     onError: (error: any) => {
       toast.error(`Error updating task: ${error.response?.data?.error}`);
@@ -64,24 +70,11 @@ const useTask = (boardId: string) => {
   });
 
   const updateTaskPositionMutation = useMutation({
-    mutationFn: ({ taskId, listId, position }: { taskId: string; listId: string; position: number }) =>
+    mutationFn: ({ taskId, position }: { taskId: string; position: number }) =>
       taskApi.updateTaskPosition(taskId, position),
-    onMutate: async ({ taskId, listId, position }) => {
-      await queryClient.cancelQueries({ queryKey: ["list", listId, "tasks"] });
-
-      queryClient.setQueryData(["list", listId, "tasks"], (oldData: any) => {
-        if (!oldData) return [];
-
-        const newTasks = oldData.map((task: any) =>
-          task.id === taskId ? { ...task, position } : task
-        );
-        return [...newTasks].sort((a, b) => a.position - b.position);
-      });
-    },
-    onSuccess: (updatedTask) => {
+    onSuccess: () => {
       toast.success("Task position updated successfully!");
-      queryClient.invalidateQueries({ queryKey: ["list", updatedTask.listId, "tasks"] });
-      queryClient.invalidateQueries({ queryKey: ["board", boardId, "lists"] });
+      queryClient.invalidateQueries({ queryKey: ["board", boardId] });
     },
     onError: (error: any) => {
       toast.error(
@@ -102,11 +95,9 @@ const useTask = (boardId: string) => {
       targetListId: string;
       position: number;
     }) => taskApi.moveTask(taskId, sourceListId, targetListId, position),
-    onSuccess: (_, { sourceListId, targetListId }) => {
+    onSuccess: () => {
       toast.success("Task moved successfully!");
-      queryClient.invalidateQueries({ queryKey: ["list", sourceListId, "tasks"] });
-      queryClient.invalidateQueries({ queryKey: ["list", targetListId, "tasks"] });
-      queryClient.invalidateQueries({ queryKey: ["board", boardId, "lists"] });
+      queryClient.invalidateQueries({ queryKey: ["board", boardId,] });
     },
     onError: (error: any) => {
       toast.error(`Error moving task: ${error.response?.data?.error}`);
@@ -115,10 +106,9 @@ const useTask = (boardId: string) => {
 
   const deleteTaskMutation = useMutation({
     mutationFn: taskApi.deleteTask,
-    onSuccess: ({ deletedTaskListId }) => {
+    onSuccess: () => {
       toast.success("Task deleted successfully!");
-      queryClient.removeQueries({ queryKey: ["list", deletedTaskListId, "tasks"] });
-      queryClient.invalidateQueries({ queryKey: ["board", boardId, "lists"] });
+      queryClient.invalidateQueries({ queryKey: ["board", boardId] });
     },
     onError: (error: any) => {
       toast.error(`Error deleting task: ${error.response?.data?.error}`);
@@ -126,6 +116,7 @@ const useTask = (boardId: string) => {
   });
 
   return {
+    useGetTaskById,
     updateTaskMutation,
     updateTaskPositionMutation,
     moveTaskMutation,

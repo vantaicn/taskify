@@ -14,10 +14,9 @@ import {
 import type { TaskType, UpdateTaskPayload } from "@/types/task.types";
 import TaskDetails from "@/components/task-details/TaskDetails";
 import { useTask } from "@/hooks/useTask";
-import useAssignee from "@/hooks/useAssignee";
 import { format } from "date-fns";
 import Avatar from "@/components/user/Avatar";
-import type { MemberType } from "@/types/member.types";
+import type { AssigneeType } from '@/types/assignee.types';
 
 export interface TaskProps {
   task: TaskType;
@@ -34,9 +33,8 @@ const Task = ({ task, boardId, index = 0, onUpdateTask }: TaskProps) => {
   }, [task]);
   const [isOpen, setIsOpen] = React.useState(false);
   
-  const { getAssigneesQuery } = useAssignee(task.id);
   const dueDate = taskData.dueDate ? new Date(taskData.dueDate) : null;
-  const assignees = getAssigneesQuery.data || [];
+  const assignees = taskData.assignees;
 
   const handleUpdateTask = async (updateTask: UpdateTaskPayload) => {
     try {
@@ -137,7 +135,7 @@ const Task = ({ task, boardId, index = 0, onUpdateTask }: TaskProps) => {
                 <div className="flex items-center gap-1">
                   {assignees.length > 0 && (
                     <div className="flex -space-x-2">
-                      {assignees.slice(0, 3).map((assignee: MemberType) => (
+                      {assignees.slice(0, 3).map((assignee: AssigneeType) => (
                         <Avatar key={assignee.id} src={assignee.user?.avatarUrl} alt={assignee.user?.fullName} size={24} />
                       ))}
                     </div>
@@ -154,7 +152,7 @@ const Task = ({ task, boardId, index = 0, onUpdateTask }: TaskProps) => {
               </DialogTitle>
             </VisuallyHidden>
             <DialogContent className="sm:max-w-7xl">
-              <TaskDetails task={taskData} boardId={boardId} onUpdate={handleUpdateTask} />
+              <TaskDetails taskId={taskData.id} boardId={boardId} onUpdate={handleUpdateTask} />
             </DialogContent>
           </Dialog>
         </div>

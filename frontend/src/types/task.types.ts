@@ -41,9 +41,9 @@ export interface TaskType {
   isCompleted: boolean;
   createdAt: Date;
   updatedAt: Date;
-  assignees?: AssigneeType[];
-  attachments?: TaskAttachmentType[];
-  checklist?: ChecklistItemType[];
+  assignees: AssigneeType[];
+  attachments: TaskAttachmentType[];
+  checklist: ChecklistItemType[];
   labels?: TaskLabelType[];
   comments?: TaskCommentType[];
 }

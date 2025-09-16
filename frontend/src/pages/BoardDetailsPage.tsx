@@ -34,10 +34,10 @@ const BoardDetailsPage = () => {
   const { boardId } = useParams();
   const boardQuery = useGetBoardById(boardId || "");
   const board = boardQuery.data;
+  const lists = board?.lists;
+  console.log("Lists:", lists);
 
-  const { useGetLists, createListMutation } = useList(boardId || "");
-  const listsQuery = useGetLists();
-  const lists = listsQuery.data || [];
+  const { createListMutation } = useList(boardId || "");
 
   const [newList, setNewList] = React.useState({
     title: "",
@@ -127,7 +127,6 @@ const BoardDetailsPage = () => {
       } else {
         await updateTaskPositionMutation.mutateAsync({
           taskId: draggableId,
-          listId: source.droppableId,
           position: newPosition,
         });
         emitTaskPositionUpdated(boardId || "");
@@ -155,7 +154,7 @@ const BoardDetailsPage = () => {
                           scrollbar-thumb-transparent
                           hover:scrollbar-thumb-gray-300"
           >
-            {lists.map((list: ListType) => (
+            {lists?.map((list: ListType) => (
               <List key={list.id} list={list} onCreateTask={emitTaskCreated} onUpdateTask={emitTaskUpdated} />
             ))}
             <Dialog
