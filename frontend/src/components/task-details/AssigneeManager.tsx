@@ -15,9 +15,11 @@ interface AssigneeManagerProps {
   assignees: AssigneeType[];
   boardId: string;
   task: TaskType;
+  onAssigneeAdded?: (boardId: string, taskId: string) => void;
+  onAssigneeRemoved?: (boardId: string, taskId: string) => void;
 }
 
-const AssigneeManager = ({ assignees, boardId, task }: AssigneeManagerProps) => {
+const AssigneeManager = ({ assignees, boardId, task, onAssigneeAdded, onAssigneeRemoved }: AssigneeManagerProps) => {
   console.log("Assignees: ", assignees);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -39,6 +41,7 @@ const AssigneeManager = ({ assignees, boardId, task }: AssigneeManagerProps) => 
       await addAssigneeMutation.mutateAsync(userId);
       setSearchTerm("");
       setIsPopoverOpen(false);
+      onAssigneeAdded && onAssigneeAdded(boardId, task.id);
     } catch (error) {
       // Error is handled in the mutation
     }
@@ -47,6 +50,7 @@ const AssigneeManager = ({ assignees, boardId, task }: AssigneeManagerProps) => 
   const handleRemoveAssignee = async (userId: string) => {
     try {
       await removeAssigneeMutation.mutateAsync(userId);
+      onAssigneeRemoved && onAssigneeRemoved(boardId, task.id);
     } catch (error) {
       // Error is handled in the mutation
     }

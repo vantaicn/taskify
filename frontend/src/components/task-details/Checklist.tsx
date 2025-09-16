@@ -9,31 +9,40 @@ import type { ChecklistType } from "@/types/checklist.types";
 
 interface ChecklistProps {
   taskId: string;
+  checklists: ChecklistType[];
+  onChecklistAdded?: (taskId: string) => void;
+  onChecklistUpdated?: (taskId: string) => void;
+  onChecklistDeleted?: (taskId: string) => void;
 }
 
-const Checklist = ({ taskId }: ChecklistProps) => {
+const Checklist = ({
+  taskId,
+  checklists,
+  onChecklistAdded,
+  onChecklistUpdated,
+  onChecklistDeleted,
+}: ChecklistProps) => {
   const [newChecklistItem, setNewChecklistItem] = useState("");
   const [showAddChecklist, setShowAddChecklist] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingTitle, setEditingTitle] = useState("");
 
   const {
-    getChecklistsQuery,
     createChecklistMutation,
     updateChecklistMutation,
     deleteChecklistMutation,
   } = useChecklist(taskId);
 
-  const checklists = getChecklistsQuery.data || [];
-  const isLoading = getChecklistsQuery.isLoading;
-
-  const toggleChecklistItem = (checklistId: string) => {
-    const checklist = checklists.find((item: ChecklistType) => item.id === checklistId);
+  const toggleChecklistItem = async (checklistId: string) => {
+    const checklist = checklists.find(
+      (item: ChecklistType) => item.id === checklistId
+    );
     if (checklist) {
-      updateChecklistMutation.mutate({
+      await updateChecklistMutation.mutateAsync({
         checklistId,
-        data: { isCompleted: !checklist.isCompleted }
+        data: { isCompleted: !checklist.isCompleted },
       });
+      onChecklistUpdated && onChecklistUpdated(taskId);
     }
   };
 
@@ -42,11 +51,11 @@ const Checklist = ({ taskId }: ChecklistProps) => {
     setEditingTitle(currentTitle);
   };
 
-  const saveEdit = () => {
+  const saveEdit = async () => {
     if (editingId && editingTitle.trim()) {
-      updateChecklistMutation.mutate({
+      await updateChecklistMutation.mutateAsync({
         checklistId: editingId,
-        data: { title: editingTitle.trim() }
+        data: { title: editingTitle.trim() },
       });
       setEditingId(null);
       setEditingTitle("");
@@ -58,26 +67,29 @@ const Checklist = ({ taskId }: ChecklistProps) => {
     setEditingTitle("");
   };
 
-  const addChecklistItem = () => {
+  const addChecklistItem = async () => {
     if (newChecklistItem.trim()) {
-      createChecklistMutation.mutate({
+      await createChecklistMutation.mutateAsync({
         title: newChecklistItem.trim(),
         position: checklists.length,
       });
       setNewChecklistItem("");
       setShowAddChecklist(false);
+      onChecklistAdded && onChecklistAdded(taskId);
     }
   };
 
-  const handleDeleteChecklist = (checklistId: string) => {
-    deleteChecklistMutation.mutate(checklistId);
+  const handleDeleteChecklist = async (checklistId: string) => {
+    await deleteChecklistMutation.mutateAsync(checklistId);
+    onChecklistDeleted && onChecklistDeleted(taskId);
   };
 
-  const completedChecklist = checklists.filter((item: ChecklistType) => item.isCompleted).length;
+  const completedChecklist = checklists.filter(
+    (item: ChecklistType) => item.isCompleted
+  ).length;
   const totalChecklist = checklists.length;
-  const checklistProgress = totalChecklist > 0 ? (completedChecklist / totalChecklist) * 100 : 0;
-
-
+  const checklistProgress =
+    totalChecklist > 0 ? (completedChecklist / totalChecklist) * 100 : 0;
 
   return (
     <div className="space-y-3">
@@ -109,75 +121,73 @@ const Checklist = ({ taskId }: ChecklistProps) => {
       </div>
 
       <div className="space-y-2 pl-4">
-        {isLoading ? (
-          <div className="text-sm text-gray-500">Loading checklists...</div>
-        ) : (
-          checklists.map((item: ChecklistType) => (
-            <div
-              key={item.id}
-              className="flex items-center gap-3 p-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md group"
-            >
-              <Checkbox
-                checked={item.isCompleted}
-                onCheckedChange={() => toggleChecklistItem(item.id)}
-                className="flex-shrink-0"
-              />
-              {editingId === item.id ? (
-                <div className="flex items-center gap-2 flex-1">
-                  <Input
-                    value={editingTitle}
-                    onChange={(e) => setEditingTitle(e.target.value)}
-                    className="flex-1"
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        saveEdit();
-                      } else if (e.key === "Escape") {
-                        cancelEdit();
-                      }
-                    }}
-                    autoFocus
-                    disabled={updateChecklistMutation.isPending}
-                  />
-                  <Button 
-                    size="sm" 
-                    onClick={saveEdit}
-                    disabled={updateChecklistMutation.isPending || !editingTitle.trim()}
-                  >
-                    {updateChecklistMutation.isPending ? "..." : "Lưu"}
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={cancelEdit}
-                    disabled={updateChecklistMutation.isPending}
-                  >
-                    <X className="w-4 h-4" />
-                  </Button>
-                </div>
-              ) : (
-                <>
-                  <span
-                    className={`flex-1 text-sm cursor-pointer ${
-                      item.isCompleted
-                        ? "line-through text-gray-500 dark:text-gray-400"
-                        : "text-gray-700 dark:text-gray-300"
-                    }`}
-                    onDoubleClick={() => startEditing(item.id, item.title)}
-                    title="Double-click để chỉnh sửa"
-                  >
-                    {item.title}
-                  </span>
-                  <button
-                    onClick={() => handleDeleteChecklist(item.id)}
-                    className="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-red-100 dark:hover:bg-red-900 rounded"
-                  >
-                    <X className="w-3 h-3 text-red-500" />
-                  </button>
-                </>
-              )}
-            </div>
-          ))
-        )}
+        {checklists.map((item: ChecklistType) => (
+          <div
+            key={item.id}
+            className="flex items-center gap-3 p-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md group"
+          >
+            <Checkbox
+              checked={item.isCompleted}
+              onCheckedChange={() => toggleChecklistItem(item.id)}
+              className="flex-shrink-0"
+            />
+            {editingId === item.id ? (
+              <div className="flex items-center gap-2 flex-1">
+                <Input
+                  value={editingTitle}
+                  onChange={(e) => setEditingTitle(e.target.value)}
+                  className="flex-1"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      saveEdit();
+                    } else if (e.key === "Escape") {
+                      cancelEdit();
+                    }
+                  }}
+                  autoFocus
+                  disabled={updateChecklistMutation.isPending}
+                />
+                <Button
+                  size="sm"
+                  onClick={saveEdit}
+                  disabled={
+                    updateChecklistMutation.isPending || !editingTitle.trim()
+                  }
+                >
+                  {updateChecklistMutation.isPending ? "..." : "Lưu"}
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={cancelEdit}
+                  disabled={updateChecklistMutation.isPending}
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+              </div>
+            ) : (
+              <>
+                <span
+                  className={`flex-1 text-sm cursor-pointer ${
+                    item.isCompleted
+                      ? "line-through text-gray-500 dark:text-gray-400"
+                      : "text-gray-700 dark:text-gray-300"
+                  }`}
+                  onDoubleClick={() => startEditing(item.id, item.title)}
+                  title="Double-click để chỉnh sửa"
+                >
+                  {item.title}
+                </span>
+                <button
+                  onClick={() => handleDeleteChecklist(item.id)}
+                  className="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-red-100 dark:hover:bg-red-900 rounded"
+                >
+                  <X className="w-3 h-3 text-red-500" />
+                </button>
+              </>
+            )}
+          </div>
+        ))}
 
         {showAddChecklist ? (
           <div className="flex items-center gap-2 p-2 bg-gray-100 dark:bg-gray-800 rounded-md">
@@ -190,10 +200,12 @@ const Checklist = ({ taskId }: ChecklistProps) => {
               autoFocus
               disabled={createChecklistMutation.isPending}
             />
-            <Button 
-              size="sm" 
+            <Button
+              size="sm"
               onClick={addChecklistItem}
-              disabled={createChecklistMutation.isPending || !newChecklistItem.trim()}
+              disabled={
+                createChecklistMutation.isPending || !newChecklistItem.trim()
+              }
             >
               {createChecklistMutation.isPending ? "..." : "Thêm"}
             </Button>
@@ -212,7 +224,6 @@ const Checklist = ({ taskId }: ChecklistProps) => {
             size="sm"
             onClick={() => setShowAddChecklist(true)}
             className="border-dashed"
-            disabled={isLoading}
           >
             <Plus className="w-4 h-4 mr-1" />
             Thêm mục

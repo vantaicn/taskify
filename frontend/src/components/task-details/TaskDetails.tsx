@@ -1,12 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  FileText,
-  Paperclip,
-  Tag,
-  CheckCircle2,
-} from "lucide-react";
+import { FileText, Paperclip, Tag, CheckCircle2 } from "lucide-react";
 import type { TaskType } from "@/types/task.types";
 import Attachments from "@/components/task-details/Attachments";
 import Checklist from "@/components/task-details/Checklist";
@@ -19,29 +14,51 @@ interface TaskDetailsProps {
   taskId: string;
   boardId: string;
   onUpdate?: (taskData: any) => void;
+  onAssigneeAdded?: (boardId: string, taskId: string) => void;
+  onAssigneeRemoved?: (boardId: string, taskId: string) => void;
+  onChecklistAdded?: (taskId: string) => void;
+  onChecklistUpdated?: (taskId: string) => void;
+  onChecklistDeleted?: (taskId: string) => void;
+  onAttachmentAdded?: (taskId: string) => void;
+  onAttachmentUpdated?: (taskId: string) => void;
+  onAttachmentRemoved?: (taskId: string) => void;
 }
 
-const TaskDetails = ({ boardId, taskId, onUpdate }: TaskDetailsProps) => {
+const TaskDetails = ({
+  boardId,
+  taskId,
+  onUpdate,
+  onAssigneeAdded,
+  onAssigneeRemoved,
+  onChecklistAdded,
+  onChecklistUpdated,
+  onChecklistDeleted,
+  onAttachmentAdded,
+  onAttachmentUpdated,
+  onAttachmentRemoved,
+}: TaskDetailsProps) => {
   const { useGetTaskById } = useTask(boardId);
   const task = useGetTaskById(taskId || "").data;
-  const checklist = task?.checklist;
+  const checklists = task?.checklists;
   const attachments = task?.attachments;
+
+  console.log("Task data:", task);
+  console.log("Checklist data:", checklists);
 
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [isEditingDescription, setIsEditingDescription] = useState(false);
   const [title, setTitle] = useState(task?.title);
   const [description, setDescription] = useState(task?.description);
-  const [dueDate, setDueDate] = useState<Date | null>(task?.dueDate ? new Date(task.dueDate) : null);
+  const dueDate = task?.dueDate ? new Date(task.dueDate) : null;
   const [assignees, setAssignees] = useState(task?.assignees || []);
 
   useEffect(() => {
-  if (task) {
-    setTitle(task.title);
-    setDescription(task.description);
-    setDueDate(task.dueDate ? new Date(task.dueDate) : null);
-    setAssignees(task.assignees || []);
-  }
-}, [task]);
+    if (task) {
+      setTitle(task.title);
+      setDescription(task.description);
+      setAssignees(task.assignees || []);
+    }
+  }, [task]);
 
   const handleSaveTitle = () => {
     if (title !== task?.title) {
@@ -58,7 +75,6 @@ const TaskDetails = ({ boardId, taskId, onUpdate }: TaskDetailsProps) => {
   };
 
   const handleDueDateChange = (date: Date | null) => {
-    setDueDate(date);
     onUpdate?.({ dueDate: date });
   };
 
@@ -96,16 +112,25 @@ const TaskDetails = ({ boardId, taskId, onUpdate }: TaskDetailsProps) => {
         <div className="flex-4 space-y-6 overflow-y-auto">
           {/* Action Buttons */}
           <div className="flex gap-2">
-            {task && assignees?.length === 0 && <AssigneeManager assignees={assignees} task={task} boardId={boardId} />}
+            {task && assignees?.length === 0 && (
+              <AssigneeManager
+                assignees={assignees}
+                task={task}
+                boardId={boardId}
+                onAssigneeAdded={onAssigneeAdded}
+                onAssigneeRemoved={onAssigneeRemoved}
+              />
+            )}
             <Button variant="outline" size="sm" className="justify-start">
               <Tag className="w-4 h-4 mr-2" />
               Nhãn
             </Button>
-            {
-              !dueDate && (
-                <DueDatePicker dueDate={dueDate || undefined} onDateChange={handleDueDateChange} />
-              )
-            }
+            {!dueDate && (
+              <DueDatePicker
+                dueDate={dueDate || undefined}
+                onDateChange={handleDueDateChange}
+              />
+            )}
             {/* <Button variant="outline" size="sm" className="justify-start">
               <CheckCircle2 className="w-4 h-4 mr-2" />
               Checklist
@@ -117,7 +142,15 @@ const TaskDetails = ({ boardId, taskId, onUpdate }: TaskDetailsProps) => {
           </div>
 
           {/* Assignee Manager */}
-          {task && assignees?.length > 0 && <AssigneeManager assignees={assignees} task={task} boardId={boardId} />}
+          {task && assignees?.length > 0 && (
+            <AssigneeManager
+              assignees={assignees}
+              task={task}
+              boardId={boardId}
+              onAssigneeAdded={onAssigneeAdded}
+              onAssigneeRemoved={onAssigneeRemoved}
+            />
+          )}
 
           {/* Labels */}
           {/* <Labels /> */}
@@ -131,7 +164,11 @@ const TaskDetails = ({ boardId, taskId, onUpdate }: TaskDetailsProps) => {
                 </span>
               </div>
               <div className="pl-4">
-                <DueDatePicker dueDate={dueDate} onDateChange={handleDueDateChange} isCompleted={task?.isCompleted} />
+                <DueDatePicker
+                  dueDate={dueDate}
+                  onDateChange={handleDueDateChange}
+                  isCompleted={task?.isCompleted}
+                />
               </div>
             </div>
           )}
@@ -190,10 +227,26 @@ const TaskDetails = ({ boardId, taskId, onUpdate }: TaskDetailsProps) => {
           </div>
 
           {/* Checklist */}
-          {task?.id && <Checklist taskId={task.id} />}
+          {task?.id && (
+            <Checklist
+              taskId={task.id}
+              checklists={checklists || []}
+              onChecklistAdded={onChecklistAdded}
+              onChecklistUpdated={onChecklistUpdated}
+              onChecklistDeleted={onChecklistDeleted}
+            />
+          )}
 
           {/* Attachments */}
-          {task?.id && <Attachments taskId={task.id} />}
+          {task?.id && (
+            <Attachments
+              taskId={task.id}
+              attachments={attachments || []}
+              onAttachmentAdded={onAttachmentAdded}
+              onAttachmentUpdated={onAttachmentUpdated}
+              onAttachmentRemoved={onAttachmentRemoved}
+            />
+          )}
         </div>
 
         {/* Comments */}

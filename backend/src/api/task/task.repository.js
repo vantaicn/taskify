@@ -33,6 +33,7 @@ const getTaskById = async (taskId) => {
       },
     ],
     order: [
+      [{ model: db.Checklist, as: "checklists" }, "createdAt", "ASC"],
       [{ model: db.TaskAttachment, as: "attachments" }, "createdAt", "ASC"],
     ],
   });

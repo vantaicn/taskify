@@ -24,7 +24,7 @@ import useBoard from "@/hooks/useBoard";
 import useList from "@/hooks/useList";
 import { useTask } from "@/hooks/useTask";
 import useSocket from "@/hooks/useSocket";
-import { toast } from "sonner"
+import { toast } from "sonner";
 import { useSocketStore } from "@/stores/socketStore";
 
 const POSITION_GAP = 100;
@@ -56,7 +56,23 @@ const BoardDetailsPage = () => {
     connect();
   }, [connect]);
 
-  const { emitListCreated, emitListUpdated, emitListDeleted, emitTaskCreated, emitTaskUpdated, emitTaskMoved, emitTaskPositionUpdated } = useSocket(boardId || "");
+  const {
+    emitListCreated,
+    emitListUpdated,
+    emitListDeleted,
+    emitTaskCreated,
+    emitTaskUpdated,
+    emitTaskMoved,
+    emitTaskPositionUpdated,
+    emitAssigneeAdded,
+    emitAssigneeRemoved,
+    emitChecklistAdded,
+    emitChecklistUpdated,
+    emitChecklistDeleted,
+    emitAttachmentAdded,
+    emitAttachmentUpdated,
+    emitAttachmentRemoved,
+  } = useSocket(boardId || "");
 
   const handleAddListAsync = async () => {
     const position =
@@ -156,7 +172,21 @@ const BoardDetailsPage = () => {
                           hover:scrollbar-thumb-gray-300"
           >
             {lists?.map((list: ListType) => (
-              <List key={list.id} list={list} onUpdateList={emitListUpdated} onCreateTask={emitTaskCreated} onUpdateTask={emitTaskUpdated} />
+              <List
+                key={list.id}
+                list={list}
+                onUpdateList={emitListUpdated}
+                onCreateTask={emitTaskCreated}
+                onUpdateTask={emitTaskUpdated}
+                onAssigneeAdded={emitAssigneeAdded}
+                onAssigneeRemoved={emitAssigneeRemoved}
+                onChecklistAdded={emitChecklistAdded}
+                onChecklistUpdated={emitChecklistUpdated}
+                onChecklistDeleted={emitChecklistDeleted}
+                onAttachmentAdded={emitAttachmentAdded}
+                onAttachmentUpdated={emitAttachmentUpdated}
+                onAttachmentRemoved={emitAttachmentRemoved}
+              />
             ))}
             <Dialog
               open={isOpenNewListDialog}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -37,6 +37,11 @@ const DueDatePicker = ({
   const [selectedTime, setSelectedTime] = useState<string>(
     dueDate ? format(dueDate, "HH:mm") : "09:00"
   );
+
+  useEffect(() => {
+    setSelectedDate(dueDate || undefined);
+    setSelectedTime(dueDate ? format(dueDate, "HH:mm") : "09:00");
+  }, [dueDate]);
 
   const handleDateSelect = (date: Date | undefined) => {
     setSelectedDate(date);

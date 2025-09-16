@@ -25,6 +25,7 @@ const getTaskById = async (taskId) => {
     if (!task) {
       throw new NotFoundError('Task not found');
     }
+    console.log("Fetched task:", task.toJSON());
     return task.toJSON();
   } catch (error) {
     throw new InternalServerError(error.message || 'Error fetching task by ID');

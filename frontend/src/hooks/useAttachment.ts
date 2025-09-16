@@ -6,19 +6,19 @@ import { toast } from "sonner";
 const useAttachment = (taskId: string) => {
   const queryClient = useQueryClient();
 
-  const getAttachmentsQuery = useQuery({
-    queryKey: ["task", taskId, "attachments"],
-    queryFn: () => attachmentApi.getAttachments(taskId),
-    enabled: !!taskId,
-  });
+  // const getAttachmentsQuery = useQuery({
+  //   queryKey: ["task", taskId, "attachments"],
+  //   queryFn: () => attachmentApi.getAttachments(taskId),
+  //   enabled: !!taskId,
+  // });
 
-  const getAttachmentByIdQuery = (attachmentId: string) => {
-    return useQuery({
-      queryKey: ["attachment", attachmentId],
-      queryFn: () => attachmentApi.getAttachmentById(attachmentId),
-      enabled: !!attachmentId,
-    });
-  };
+  // const getAttachmentByIdQuery = (attachmentId: string) => {
+  //   return useQuery({
+  //     queryKey: ["attachment", attachmentId],
+  //     queryFn: () => attachmentApi.getAttachmentById(attachmentId),
+  //     enabled: !!attachmentId,
+  //   });
+  // };
 
   const createAttachmentMutation = useMutation({
     mutationFn: (data: CreateAttachmentPayload) => attachmentApi.createAttachment(taskId, data),
@@ -81,8 +81,8 @@ const useAttachment = (taskId: string) => {
   };
 
   return {
-    getAttachmentsQuery,
-    getAttachmentByIdQuery,
+    // getAttachmentsQuery,
+    // getAttachmentByIdQuery,
     createAttachmentMutation,
     updateAttachmentMutation,
     deleteAttachmentMutation,

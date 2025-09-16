@@ -26,12 +26,33 @@ export interface ListProps {
   list: ListType;
   onUpdateList?: (boardId: string) => void;
   onCreateTask?: (boardId: string) => void;
-  onUpdateTask?: (boardId: string) => void;
+  onUpdateTask?: (boardId: string, taskId: string) => void;
+  onAssigneeAdded?: (boardId: string, taskId: string) => void;
+  onAssigneeRemoved?: (boardId: string, taskId: string) => void;
+  onChecklistAdded?: (taskId: string) => void;
+  onChecklistUpdated?: (taskId: string) => void;
+  onChecklistDeleted?: (taskId: string) => void;
+  onAttachmentAdded?: (taskId: string) => void;
+  onAttachmentUpdated?: (taskId: string) => void;
+  onAttachmentRemoved?: (taskId: string) => void;
 }
 
 const POSITION_GAP = 100;
 
-const List = ({ list, onUpdateList, onCreateTask, onUpdateTask }: ListProps) => {
+const List = ({
+  list,
+  onUpdateList,
+  onCreateTask,
+  onUpdateTask,
+  onAssigneeAdded,
+  onAssigneeRemoved,
+  onChecklistAdded,
+  onChecklistUpdated,
+  onChecklistDeleted,
+  onAttachmentAdded,
+  onAttachmentUpdated,
+  onAttachmentRemoved,
+}: ListProps) => {
   const tasks = list.tasks;
 
   const { updateListTitleMutation } = useList(list.boardId);
@@ -135,6 +156,14 @@ const List = ({ list, onUpdateList, onCreateTask, onUpdateTask }: ListProps) => 
                   boardId={list.boardId}
                   index={index}
                   onUpdateTask={onUpdateTask}
+                  onAssigneeAdded={onAssigneeAdded}
+                  onAssigneeRemoved={onAssigneeRemoved}
+                  onChecklistAdded={onChecklistAdded}
+                  onChecklistUpdated={onChecklistUpdated}
+                  onChecklistDeleted={onChecklistDeleted}
+                  onAttachmentAdded={onAttachmentAdded}
+                  onAttachmentUpdated={onAttachmentUpdated}
+                  onAttachmentRemoved={onAttachmentRemoved}
                 />
               ))}
               {provided.placeholder}

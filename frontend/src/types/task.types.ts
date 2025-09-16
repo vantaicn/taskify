@@ -43,7 +43,7 @@ export interface TaskType {
   updatedAt: Date;
   assignees: AssigneeType[];
   attachments: TaskAttachmentType[];
-  checklist: ChecklistItemType[];
+  checklists: ChecklistItemType[];
   labels?: TaskLabelType[];
   comments?: TaskCommentType[];
 }

@@ -5,34 +5,50 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-import {
-  Edit,
-  Clock,
-  CalendarIcon,
-  AlertCircle,
-} from "lucide-react";
+import { Edit, Clock, CalendarIcon, AlertCircle } from "lucide-react";
 import type { TaskType, UpdateTaskPayload } from "@/types/task.types";
 import TaskDetails from "@/components/task-details/TaskDetails";
 import { useTask } from "@/hooks/useTask";
 import { format } from "date-fns";
 import Avatar from "@/components/user/Avatar";
-import type { AssigneeType } from '@/types/assignee.types';
+import type { AssigneeType } from "@/types/assignee.types";
 
 export interface TaskProps {
   task: TaskType;
   boardId: string;
   index?: number;
-  onUpdateTask?: (boardId: string) => void;
+  onUpdateTask?: (boardId: string, taskId: string) => void;
+  onAssigneeAdded?: (boardId: string, taskId: string) => void;
+  onAssigneeRemoved?: (boardId: string, taskId: string) => void;
+  onChecklistAdded?: (taskId: string) => void;
+  onChecklistUpdated?: (taskId: string) => void;
+  onChecklistDeleted?: (taskId: string) => void;
+  onAttachmentAdded?: (taskId: string) => void;
+  onAttachmentUpdated?: (taskId: string) => void;
+  onAttachmentRemoved?: (taskId: string) => void;
 }
 
-const Task = ({ task, boardId, index = 0, onUpdateTask }: TaskProps) => {
+const Task = ({
+  task,
+  boardId,
+  index = 0,
+  onUpdateTask,
+  onAssigneeAdded,
+  onAssigneeRemoved,
+  onChecklistAdded,
+  onChecklistUpdated,
+  onChecklistDeleted,
+  onAttachmentAdded,
+  onAttachmentUpdated,
+  onAttachmentRemoved,
+}: TaskProps) => {
   const { updateTaskMutation } = useTask(boardId);
   const [taskData, setTaskData] = React.useState(task);
   useEffect(() => {
     setTaskData(task);
   }, [task]);
   const [isOpen, setIsOpen] = React.useState(false);
-  
+
   const dueDate = taskData.dueDate ? new Date(taskData.dueDate) : null;
   const assignees = taskData.assignees;
 
@@ -48,7 +64,7 @@ const Task = ({ task, boardId, index = 0, onUpdateTask }: TaskProps) => {
         },
       });
       if (onUpdateTask) {
-        onUpdateTask(boardId);
+        onUpdateTask(boardId, task.id);
       }
     } catch (error) {
       setTaskData(task);
@@ -136,7 +152,12 @@ const Task = ({ task, boardId, index = 0, onUpdateTask }: TaskProps) => {
                   {assignees.length > 0 && (
                     <div className="flex -space-x-2">
                       {assignees.slice(0, 3).map((assignee: AssigneeType) => (
-                        <Avatar key={assignee.id} src={assignee.user?.avatarUrl} alt={assignee.user?.fullName} size={24} />
+                        <Avatar
+                          key={assignee.id}
+                          src={assignee.user?.avatarUrl}
+                          alt={assignee.user?.fullName}
+                          size={24}
+                        />
                       ))}
                     </div>
                   )}
@@ -147,12 +168,22 @@ const Task = ({ task, boardId, index = 0, onUpdateTask }: TaskProps) => {
 
           <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <VisuallyHidden>
-              <DialogTitle>
-                Hidden title for accessibility
-              </DialogTitle>
+              <DialogTitle>Hidden title for accessibility</DialogTitle>
             </VisuallyHidden>
             <DialogContent className="sm:max-w-7xl">
-              <TaskDetails taskId={taskData.id} boardId={boardId} onUpdate={handleUpdateTask} />
+              <TaskDetails
+                taskId={taskData.id}
+                boardId={boardId}
+                onUpdate={handleUpdateTask}
+                onAssigneeAdded={onAssigneeAdded}
+                onAssigneeRemoved={onAssigneeRemoved}
+                onChecklistAdded={onChecklistAdded}
+                onChecklistUpdated={onChecklistUpdated}
+                onChecklistDeleted={onChecklistDeleted}
+                onAttachmentAdded={onAttachmentAdded}
+                onAttachmentUpdated={onAttachmentUpdated}
+                onAttachmentRemoved={onAttachmentRemoved}
+              />
             </DialogContent>
           </Dialog>
         </div>

@@ -45,10 +45,10 @@ const initSocket = (server) => {
       console.log(`Task created in board ${boardId}`);
       socket.to(boardId).emit('task-created');
     });
-    
-    socket.on('task-updated', (boardId) => {
+
+    socket.on('task-updated', (boardId, taskId) => {
       console.log(`Task updated in board ${boardId}`);
-      socket.to(boardId).emit('task-updated');
+      socket.to(boardId).emit('task-updated', taskId);
     });
 
     socket.on('task-moved', (boardId) => {
@@ -60,7 +60,55 @@ const initSocket = (server) => {
       console.log(`Task position updated in board ${boardId}`);
       socket.to(boardId).emit('task-position-updated', boardId);
     });
+
+    socket.on('task-deleted', (boardId) => {
+      console.log(`Task deleted in board ${boardId}`);
+      socket.to(boardId).emit('task-deleted', boardId);
+    });
+
+    socket.on('assignee-added', (boardId, taskId) => {
+      console.log(`Assignee added in board ${boardId}`);
+      socket.to(boardId).emit('assignee-added', boardId, taskId);
+    });
+
+    socket.on('assignee-removed', (boardId, taskId) => {
+      console.log(`Assignee removed in board ${boardId}`);
+      socket.to(boardId).emit('assignee-removed', boardId, taskId);
+    });
+
+    socket.on('checklist-added', (boardId, taskId) => {
+      console.log(`Checklist added in task ${taskId}`);
+      socket.to(boardId).emit('checklist-added', taskId);
+    });
+
+    socket.on('checklist-updated', (boardId, taskId) => {
+      console.log(`Checklist updated in task ${taskId}`);
+      socket.to(boardId).emit('checklist-updated', taskId);
+    });
+
+    socket.on('checklist-deleted', (boardId, taskId) => {
+      console.log(`Checklist deleted in task ${taskId}`);
+      socket.to(boardId).emit('checklist-deleted', taskId);
+    });
+
+    socket.on('attachment-added', (boardId, taskId) => {
+      console.log(`Attachment added in task ${taskId}`);
+      socket.to(boardId).emit('attachment-added', taskId);
+    });
+
+    socket.on('attachment-updated', (boardId, taskId) => {
+      console.log(`Attachment updated in task ${taskId}`);
+      socket.to(boardId).emit('attachment-updated', taskId);
+    });
+
+    socket.on('attachment-removed', (boardId, taskId) => {
+      console.log(`Attachment removed in task ${taskId}`);
+      socket.to(boardId).emit('attachment-removed', taskId);
+    });
+
   });
+
+  return io;
 }
 
 module.exports = { initSocket };
