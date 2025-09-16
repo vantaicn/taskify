@@ -9,7 +9,23 @@ const getTasksByListId = async (listId) => {
 }
 
 const getTaskById = async (taskId) => {
-  return await db.Task.findByPk(taskId);
+  return await db.Task.findByPk(taskId, {
+    include: [
+      {
+        model: db.User,
+        as: 'assignees',
+        attributes: ['id', 'name', 'avatarUrl']
+      },
+      {
+        model: db.Checklist,
+        as: 'checklists',
+      },
+      {
+        model: db.TaskAttachment,
+        as: 'attachments',
+      }
+    ]
+  });
 }
 
 const updateTask = async (taskId, title, description, isCompleted, dueDate) => {

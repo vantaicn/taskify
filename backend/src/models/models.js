@@ -387,6 +387,13 @@ db.BoardMember.belongsTo(db.User, {
   onUpdate: "CASCADE",
 });
 
+db.BoardMember.belongsTo(db.Board, {
+  as: "board",
+  foreignKey: "boardId",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+
 db.User.belongsToMany(db.Task, {
   as: "tasks",
   through: db.TaskAssignee,

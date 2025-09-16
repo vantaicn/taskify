@@ -1,7 +1,10 @@
 const db = require("../../models/models");
 
 const getBoardsByUserId = async (userId) => {
-  return await db.Board.findAll({ where: { ownerId: userId }, order: [['createdAt', 'ASC']] });
+  return await db.Board.findAll({
+    where: { ownerId: userId },
+    order: [["createdAt", "ASC"]],
+  });
 };
 
 const getSharedBoardsByUserId = async (userId) => {
@@ -22,24 +25,52 @@ const getBoardById = async (boardId) => {
     include: [
       {
         model: db.List,
-        as: 'lists',
+        as: "lists",
         include: [
           {
             model: db.Task,
-            as: 'tasks'
-          }
-        ]
-      }
-    ]
+            as: "tasks",
+            include: [
+              {
+                model: db.User,
+                as: "assignees",
+                attributes: ["id", "fullName", "avatarUrl"],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    order: [
+      [{ model: db.List, as: "lists" }, "position", "ASC"],
+      [
+        { model: db.List, as: "lists" },
+        { model: db.Task, as: "tasks" },
+        "position",
+        "ASC",
+      ],
+    ],
   });
 };
 
-const createBoard = async (title, description, backgroundUrl, ownerId, options = {}) => {
-  return await db.Board.create({ title, description, backgroundUrl, ownerId }, options);
+const createBoard = async (
+  title,
+  description,
+  backgroundUrl,
+  ownerId,
+  options = {}
+) => {
+  return await db.Board.create(
+    { title, description, backgroundUrl, ownerId },
+    options
+  );
 };
 
 const updateBoard = async (id, title, description, backgroundUrl) => {
-  return await db.Board.update({ title, description, backgroundUrl }, { where: { id } });
+  return await db.Board.update(
+    { title, description, backgroundUrl },
+    { where: { id } }
+  );
 };
 
 const deleteBoardById = async (id) => {

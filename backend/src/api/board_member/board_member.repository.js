@@ -21,7 +21,7 @@ const getAdminsByBoardId = async (boardId) => {
 const getBoardsByMemberId = async (memberId) => {
   return db.BoardMember.findAll({
     where: { userId: memberId },
-    include: [{ model: db.boards, as: "board" }],
+    include: [{ model: db.Board, as: "board" }],
   });
 };
 

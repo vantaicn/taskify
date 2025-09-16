@@ -1,10 +1,19 @@
 const memberRepository = require('./board_member.repository');
 const { BadRequestError, UnauthorizedError, ForbiddenError, NotFoundError, ConflictError, InternalServerError } = require('../../utils/errors');
 
-const addMemberToBoard = async (boardId, email, role) => {
+const addMemberToBoardByEmail = async (boardId, email, role) => {
   try {
     const member = await memberRepository.getUserByEmail(email);
     const newMember = await memberRepository.addMemberToBoard(boardId, member.id, role);
+    return newMember.toJSON();
+  } catch (error) {
+    throw new InternalServerError(error.message || 'Error adding member to board');
+  }
+}
+
+const addMemberToBoardByUserId = async (boardId, userId, role, options = {}) => {
+  try {
+    const newMember = await memberRepository.addMemberToBoard(boardId, userId, role, options);
     return newMember.toJSON();
   } catch (error) {
     throw new InternalServerError(error.message || 'Error adding member to board');
@@ -95,7 +104,8 @@ const deleteMemberById = async (memberId, currentUserId, boardId) => {
 }
 
 module.exports = {
-  addMemberToBoard,
+  addMemberToBoardByEmail,
+  addMemberToBoardByUserId,
   getMembersByBoardId,
   getBoardsByMemberId,
   updateMemberRole,
