@@ -121,10 +121,10 @@ const TaskDetails = ({
                 onAssigneeRemoved={onAssigneeRemoved}
               />
             )}
-            <Button variant="outline" size="sm" className="justify-start">
+            {/* <Button variant="outline" size="sm" className="justify-start">
               <Tag className="w-4 h-4 mr-2" />
               Label
-            </Button>
+            </Button> */}
             {!dueDate && (
               <DueDatePicker
                 dueDate={dueDate || undefined}
@@ -135,10 +135,10 @@ const TaskDetails = ({
               <CheckCircle2 className="w-4 h-4 mr-2" />
               Checklist
             </Button> */}
-            <Button variant="outline" size="sm" className="justify-start">
+            {/* <Button variant="outline" size="sm" className="justify-start">
               <Paperclip className="w-4 h-4 mr-2" />
               Attachments
-            </Button>
+            </Button> */}
           </div>
 
           {/* Assignee Manager */}

@@ -31,7 +31,7 @@ const useBoards = () => {
   const createBoardMutation = useMutation({
     mutationFn: boardsApi.createBoard,
     onSuccess: () => {
-      toast.success("Board created successfully");
+      // toast.success("Board created successfully");
       queryClient.invalidateQueries({queryKey: ["boards", user?.id]});
     },
     onError: (error: any) => {
@@ -42,7 +42,7 @@ const useBoards = () => {
   const updateBoardMutation = useMutation({
     mutationFn: ({boardId, data}: {boardId: string, data: UpdateBoardPayload}) => boardsApi.updateBoard(boardId, data),
     onSuccess: (_, {boardId}) => {
-      toast.success("Board updated successfully");
+      // toast.success("Board updated successfully");
       queryClient.invalidateQueries({ queryKey: ["board", boardId] });
       queryClient.invalidateQueries({ queryKey: ["boards", user?.id] });
     },
@@ -54,7 +54,7 @@ const useBoards = () => {
   const deleteBoardMutation = useMutation({
     mutationFn: boardsApi.deleteBoard,
     onSuccess: (_, boardId) => {
-      toast.success("Board deleted successfully");
+      // toast.success("Board deleted successfully");
       queryClient.removeQueries({ queryKey: ["board", boardId] });
       queryClient.invalidateQueries({ queryKey: ["boards", user?.id] });
     },

@@ -17,6 +17,7 @@ export interface AuthResponse {
     id: string;
     email: string;
     fullName: string;
+    avatarUrl?: string;
   };
 }
 

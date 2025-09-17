@@ -23,7 +23,7 @@ const useChecklist = (taskId: string) => {
   const createChecklistMutation = useMutation({
     mutationFn: (data: CreateChecklistPayload) => checklistApi.createChecklist(taskId, data),
     onSuccess: () => {
-      toast.success("Checklist item created successfully!");
+      // toast.success("Checklist item created successfully!");
       queryClient.invalidateQueries({ queryKey: ["task", taskId, "checklists"] });
       queryClient.invalidateQueries({ queryKey: ["task", taskId] });
     },
@@ -36,7 +36,7 @@ const useChecklist = (taskId: string) => {
     mutationFn: ({ checklistId, data }: { checklistId: string; data: UpdateChecklistPayload }) =>
       checklistApi.updateChecklist(checklistId, data),
     onSuccess: (updatedChecklist) => {
-      toast.success("Checklist item updated successfully!");
+      // toast.success("Checklist item updated successfully!");
       queryClient.invalidateQueries({ queryKey: ["task", taskId, "checklists"] });
       queryClient.invalidateQueries({ queryKey: ["checklist", updatedChecklist.id] });
       queryClient.invalidateQueries({ queryKey: ["task", taskId] });
@@ -61,7 +61,7 @@ const useChecklist = (taskId: string) => {
   const deleteChecklistMutation = useMutation({
     mutationFn: (checklistId: string) => checklistApi.deleteChecklist(checklistId),
     onSuccess: () => {
-      toast.success("Checklist item deleted successfully!");
+      // toast.success("Checklist item deleted successfully!");
       queryClient.invalidateQueries({ queryKey: ["task", taskId, "checklists"] });
       queryClient.invalidateQueries({ queryKey: ["task", taskId] });
     },

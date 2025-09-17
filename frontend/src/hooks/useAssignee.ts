@@ -15,7 +15,7 @@ const useAssignee = (taskId: string) => {
     mutationFn: (userId: string) => assigneeApi.addAssignee(taskId, userId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["task", taskId] });
-      toast.success("Assignee added successfully");
+      // toast.success("Assignee added successfully");
     },
     onError: (error: any) => {
       toast.error(`Error adding assignee: ${error.response?.data?.error}`);
@@ -26,7 +26,7 @@ const useAssignee = (taskId: string) => {
     mutationFn: (userId: string) => assigneeApi.removeAssignee(taskId, userId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["task", taskId] });
-      toast.success("Assignee removed successfully");
+      // toast.success("Assignee removed successfully");
     },
     onError: (error: any) => {
       toast.error(`Error removing assignee: ${error.response?.data?.error}`);

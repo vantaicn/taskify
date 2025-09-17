@@ -3,6 +3,7 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import BoardsPage from "./pages/BoardsPage";
 import BoardDetailsPage from "./pages/BoardDetailsPage";
+import HomePage from "./pages/HomePage";
 
 const App = () => {
   return (
@@ -11,8 +12,7 @@ const App = () => {
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/boards" element={<BoardsPage />} />
       <Route path="/boards/:boardId" element={<BoardDetailsPage />} />
-      {/* Add more routes as needed */}
-      <Route path="/" element={<div>Welcome to Taskify!</div>} />
+      <Route path="/" element={<HomePage />} />
     </Routes>
   )
 }

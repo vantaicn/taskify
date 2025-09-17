@@ -25,7 +25,13 @@ const register = async (userData) => {
     hashedPassword,
     fullName
   );
-  return newUser.toJSON();
+  
+  return {
+    id: newUser.id,
+    email: newUser.email,
+    fullName: newUser.fullName,
+    avatarUrl: newUser.avatarUrl,
+  };
 };
 
 const login = async (email, password) => {
@@ -49,7 +55,10 @@ const login = async (email, password) => {
   });
 
   return {
-    ...user.toJSON(),
+    id: user.id,
+    email: user.email,
+    fullName: user.fullName,
+    avatarUrl: user.avatarUrl,
     token: token,
   };
 };

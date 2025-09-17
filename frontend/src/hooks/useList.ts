@@ -25,7 +25,7 @@ const useList = (boardId: string) => {
   const createListMutation = useMutation({
     mutationFn: (data: CreateListPayload) => listApi.createList(boardId, data),
     onSuccess: () => {
-      toast.success("List created successfully!");
+      // toast.success("List created successfully!");
       queryClient.invalidateQueries({ queryKey: ["board", boardId] });
     },
     onError: (error: any) => {
@@ -37,7 +37,7 @@ const useList = (boardId: string) => {
     mutationFn: ({listId, title}: {listId: string; title: string}) =>
       listApi.updateListTitle(listId, title),
     onSuccess: () => {
-      toast.success("List title updated successfully!");
+      // toast.success("List title updated successfully!");
       queryClient.invalidateQueries({ queryKey: ["board", boardId] });
     },
     onError: (error: any) => {
@@ -49,7 +49,7 @@ const useList = (boardId: string) => {
     mutationFn: ({listId, position}: {listId: string; position: number}) =>
       listApi.updateListPosition(listId, position),
     onSuccess: () => {
-      toast.success("List position updated successfully!");
+      // toast.success("List position updated successfully!");
       queryClient.invalidateQueries({ queryKey: ["board", boardId] });
     },
     onError: (error: any) => {
@@ -60,7 +60,7 @@ const useList = (boardId: string) => {
   const deleteListMutation = useMutation({
     mutationFn: listApi.deleteList,
     onSuccess: () => {
-      toast.success("List deleted successfully!");
+      // toast.success("List deleted successfully!");
       queryClient.invalidateQueries({ queryKey: ["board", boardId] });
     },
     onError: (error: any) => {

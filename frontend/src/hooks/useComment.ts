@@ -16,7 +16,7 @@ const useComment = (taskId: string) => {
     mutationFn: (payload: CreateCommentPayload) => commentApi.createComment(payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["comments", taskId] });
-      toast.success("Comment added successfully");
+      // toast.success("Comment added successfully");
     },
     onError: (error: any) => {
       toast.error(`Error adding comment: ${error.response?.data?.error}`);
@@ -27,7 +27,7 @@ const useComment = (taskId: string) => {
     mutationFn: (payload: UpdateCommentPayload) => commentApi.updateComment(payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["comments", taskId] });
-      toast.success("Comment updated successfully");
+      // toast.success("Comment updated successfully");
     },
     onError: (error: any) => {
       toast.error(`Error updating comment: ${error.response?.data?.error}`);
@@ -38,7 +38,7 @@ const useComment = (taskId: string) => {
     mutationFn: (commentId: string) => commentApi.deleteComment(commentId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["comments", taskId] });
-      toast.success("Comment deleted successfully");
+      // toast.success("Comment deleted successfully");
     },
     onError: (error: any) => {
       toast.error(`Error deleting comment: ${error.response?.data?.error}`);

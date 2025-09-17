@@ -5,7 +5,14 @@ const register = async (req, res) => {
   try {
     const userData = req.body;
     const newUser = await authService.register(userData);
-    res.status(201).json(newUser);
+    res.status(201).json({
+      user: {
+        id: newUser.id,
+        email: newUser.email,
+        fullName: newUser.fullName,
+        avatarUrl: newUser.avatarUrl,
+      }
+    });
   } catch (error) {
     res.status(error.statusCode || 500).json({
       error: error.message,
@@ -21,7 +28,7 @@ const login = async (req, res) => {
       user: {
         id: result.id,
         email: result.email,
-        fullName: result.name,
+        fullName: result.fullName,
         avatarUrl: result.avatarUrl,
       },
       token: result.token,

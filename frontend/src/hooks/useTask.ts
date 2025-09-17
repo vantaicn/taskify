@@ -25,7 +25,7 @@ const useTaskList = (boardId:string, listId: string) => {
   const createTaskMutation = useMutation({
     mutationFn: (data: CreateTaskPayload) => taskApi.createTask(listId, data),
     onSuccess: () => {
-      toast.success("Task created successfully!");
+      // toast.success("Task created successfully!");
       queryClient.invalidateQueries({ queryKey: ["board", boardId] });
     },
     onError: (error: any) => {
@@ -60,7 +60,7 @@ const useTask = (boardId: string) => {
       data: UpdateTaskPayload;
     }) => taskApi.updateTask(taskId, data),
     onSuccess: (updatedTask, { taskId }) => {
-      toast.success("Task updated successfully!");
+      // toast.success("Task updated successfully!");
       queryClient.invalidateQueries({ queryKey: ["task", taskId] });
       queryClient.invalidateQueries({ queryKey: ["board", boardId] });
     },
@@ -73,7 +73,7 @@ const useTask = (boardId: string) => {
     mutationFn: ({ taskId, position }: { taskId: string; position: number }) =>
       taskApi.updateTaskPosition(taskId, position),
     onSuccess: () => {
-      toast.success("Task position updated successfully!");
+      // toast.success("Task position updated successfully!");
       queryClient.invalidateQueries({ queryKey: ["board", boardId] });
     },
     onError: (error: any) => {
@@ -96,7 +96,7 @@ const useTask = (boardId: string) => {
       position: number;
     }) => taskApi.moveTask(taskId, sourceListId, targetListId, position),
     onSuccess: () => {
-      toast.success("Task moved successfully!");
+      // toast.success("Task moved successfully!");
       queryClient.invalidateQueries({ queryKey: ["board", boardId,] });
     },
     onError: (error: any) => {
@@ -107,7 +107,7 @@ const useTask = (boardId: string) => {
   const deleteTaskMutation = useMutation({
     mutationFn: taskApi.deleteTask,
     onSuccess: () => {
-      toast.success("Task deleted successfully!");
+      // toast.success("Task deleted successfully!");
       queryClient.invalidateQueries({ queryKey: ["board", boardId] });
     },
     onError: (error: any) => {

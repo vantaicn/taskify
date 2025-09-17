@@ -20,12 +20,12 @@ import {
 } from "../ui/sidebar";
 
 const navigationItems = [
-  // { title: "Dashboard", url: "/", icon: LayoutDashboard },
+  // { title: "Home", url: "/", icon: LayoutDashboard },
   // { title: "Projects", url: "/projects", icon: FolderOpen },
   { title: "Kanban Board", url: "/boards", icon: KanbanSquare },
   { title: "Calendar", url: "/calendar", icon: Calendar },
-  // { title: "Members", url: "/members", icon: Users },
-  // { title: "Reports", url: "/reports", icon: BarChart3 },
+  { title: "Members", url: "/members", icon: Users },
+  { title: "Reports", url: "/reports", icon: BarChart3 },
 ];
 
 const AppSidebar = () => {

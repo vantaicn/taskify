@@ -23,7 +23,7 @@ const useAttachment = (taskId: string) => {
   const createAttachmentMutation = useMutation({
     mutationFn: (data: CreateAttachmentPayload) => attachmentApi.createAttachment(taskId, data),
     onSuccess: () => {
-      toast.success("File uploaded successfully!");
+      // toast.success("File uploaded successfully!");
       queryClient.invalidateQueries({ queryKey: ["task", taskId, "attachments"] });
       queryClient.invalidateQueries({ queryKey: ["task", taskId] });
     },
@@ -36,7 +36,7 @@ const useAttachment = (taskId: string) => {
     mutationFn: ({ attachmentId, data }: { attachmentId: string; data: UpdateAttachmentPayload }) =>
       attachmentApi.updateAttachment(attachmentId, data),
     onSuccess: (updatedAttachment) => {
-      toast.success("Attachment updated successfully!");
+      // toast.success("Attachment updated successfully!");
       queryClient.invalidateQueries({ queryKey: ["task", taskId, "attachments"] });
       queryClient.invalidateQueries({ queryKey: ["attachment", updatedAttachment.id] });
       queryClient.invalidateQueries({ queryKey: ["task", taskId] });
@@ -49,7 +49,7 @@ const useAttachment = (taskId: string) => {
   const deleteAttachmentMutation = useMutation({
     mutationFn: (attachmentId: string) => attachmentApi.deleteAttachment(attachmentId),
     onSuccess: () => {
-      toast.success("Attachment deleted successfully!");
+      // toast.success("Attachment deleted successfully!");
       queryClient.invalidateQueries({ queryKey: ["task", taskId, "attachments"] });
       queryClient.invalidateQueries({ queryKey: ["task", taskId] });
     },

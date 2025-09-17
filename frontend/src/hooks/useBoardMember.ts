@@ -16,7 +16,7 @@ const useMember = (boardId: string) => {
     mutationFn: (payload: CreateMemberPayload) =>
       memberApi.createMember(boardId, payload),
     onSuccess: () => {
-      toast.success("Member added successfully");
+      // toast.success("Member added successfully");
       queryClient.invalidateQueries({ queryKey: ["members", boardId] });
     },
     onError: (error: any) => {
@@ -33,7 +33,7 @@ const useMember = (boardId: string) => {
       role: "admin" | "member";
     }) => memberApi.updateMemberRole(boardId, memberId, role),
     onSuccess: () => {
-      toast.success("Member role updated successfully");
+      // toast.success("Member role updated successfully");
       queryClient.invalidateQueries({ queryKey: ["members", boardId] });
     },
     onError: (error: any) => {
@@ -44,7 +44,7 @@ const useMember = (boardId: string) => {
   const deleteMemberMutation = useMutation({
     mutationFn: (memberId: string) => memberApi.deleteMember(boardId, memberId),
     onSuccess: () => {
-      toast.success("Member removed successfully");
+      // toast.success("Member removed successfully");
       queryClient.invalidateQueries({ queryKey: ["members", boardId] });
     },
     onError: (error: any) => {
