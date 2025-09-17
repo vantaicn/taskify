@@ -97,7 +97,7 @@ const Checklist = ({
         <div className="flex items-center gap-2">
           <CheckCircle2 className="w-4 h-4 text-gray-600 dark:text-gray-400" />
           <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-            Danh sách việc cần làm
+            Checklist
           </span>
           {totalChecklist > 0 && (
             <Badge variant="secondary" className="ml-2">
@@ -154,7 +154,7 @@ const Checklist = ({
                     updateChecklistMutation.isPending || !editingTitle.trim()
                   }
                 >
-                  {updateChecklistMutation.isPending ? "..." : "Lưu"}
+                  {updateChecklistMutation.isPending ? "..." : "Save"}
                 </Button>
                 <Button
                   size="sm"
@@ -174,7 +174,7 @@ const Checklist = ({
                       : "text-gray-700 dark:text-gray-300"
                   }`}
                   onDoubleClick={() => startEditing(item.id, item.title)}
-                  title="Double-click để chỉnh sửa"
+                  title="Double-click to edit"
                 >
                   {item.title}
                 </span>
@@ -194,7 +194,7 @@ const Checklist = ({
             <Input
               value={newChecklistItem}
               onChange={(e) => setNewChecklistItem(e.target.value)}
-              placeholder="Thêm mục mới"
+              placeholder="Add new item"
               className="flex-1"
               onKeyDown={(e) => e.key === "Enter" && addChecklistItem()}
               autoFocus
@@ -207,7 +207,7 @@ const Checklist = ({
                 createChecklistMutation.isPending || !newChecklistItem.trim()
               }
             >
-              {createChecklistMutation.isPending ? "..." : "Thêm"}
+              {createChecklistMutation.isPending ? "..." : "Add"}
             </Button>
             <Button
               size="sm"
@@ -226,7 +226,7 @@ const Checklist = ({
             className="border-dashed"
           >
             <Plus className="w-4 h-4 mr-1" />
-            Thêm mục
+            Add Item
           </Button>
         )}
       </div>

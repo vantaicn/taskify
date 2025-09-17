@@ -3,16 +3,16 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const BurstCheckbox = () => {
   const [checked, setChecked] = useState(false);
-  const [burstKey, setBurstKey] = useState(0); // để reset animation
+  const [burstKey, setBurstKey] = useState(0); // to reset animation
 
   const handleToggle = () => {
     setChecked(!checked);
     if (!checked) {
-      setBurstKey(burstKey + 1); // trigger lại burst
+      setBurstKey(burstKey + 1); // trigger burst again
     }
   };
 
-  const rays = Array.from({ length: 8 }); // số tia sáng
+  const rays = Array.from({ length: 8 }); // number of light rays
 
   return (
     <div className="flex flex-col items-center gap-4 p-10">
@@ -36,7 +36,7 @@ const BurstCheckbox = () => {
         )}
       </button>
 
-      {/* Hiệu ứng burst */}
+      {/* Burst effect */}
       <AnimatePresence>
         {checked && (
           <div className="relative">

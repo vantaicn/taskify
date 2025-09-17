@@ -77,7 +77,7 @@ const DueDatePicker = ({
   const isOverdue = (date: Date) => new Date() > date;
 
   const getButtonText = (dueDate?: Date) => {
-    if (!dueDate) return "Ngày";
+    if (!dueDate) return "Date";
     return format(dueDate, "HH:mm MMM dd");
   };
 
@@ -91,9 +91,9 @@ const DueDatePicker = ({
   const getStatusLabel = (dueDate?: Date) => {
     console.log(isCompleted);
     if (!dueDate) return null;
-    if (isOverdue(dueDate)) return "Quá hạn";
-    if (isDueSoon(dueDate)) return "Sắp đến hạn";
-    if (isCompleted) return "Hoàn thành";
+    if (isOverdue(dueDate)) return "Overdue";
+    if (isDueSoon(dueDate)) return "Due Soon";
+    if (isCompleted) return "Completed";
   };
 
   const getStatusColor = (dueDate?: Date) => {
@@ -141,7 +141,7 @@ const DueDatePicker = ({
       <DialogContent className="w-auto max-w-fit">
         <DialogHeader>
           <DialogTitle className="flex items-center justify-between">
-            Chọn ngày đến hạn
+            Select Due Date
           </DialogTitle>
         </DialogHeader>
 
@@ -172,7 +172,7 @@ const DueDatePicker = ({
               disabled={!selectedDate}
               className="bg-blue-600 hover:bg-blue-700 text-white"
             >
-              Lưu
+              Save
             </Button>
             {dueDate && (
               <Button
@@ -180,7 +180,7 @@ const DueDatePicker = ({
                 onClick={handleRemove}
                 className="text-red-600 hover:bg-red-50"
               >
-                Gỡ bỏ
+                Remove
               </Button>
             )}
           </div>

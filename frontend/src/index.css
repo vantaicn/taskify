@@ -46,36 +46,36 @@
   --radius: 0.75rem;
 
   /* Light Theme */
-  --background: oklch(0.99 0.003 250); /* Gần trắng, dịu mắt */
-  --foreground: oklch(0.2 0.02 250);  /* Text đậm vừa phải */
-  --card: oklch(1 0 0); /* Trắng */
+  --background: oklch(0.99 0.003 250); /* Near white, easy on eyes */
+  --foreground: oklch(0.2 0.02 250);  /* Moderate dark text */
+  --card: oklch(1 0 0); /* White */
   --card-foreground: oklch(0.2 0.02 250);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.2 0.02 250);
 
-  --primary: oklch(0.55 0.12 230); /* Xanh lam hiện đại */
+  --primary: oklch(0.55 0.12 230); /* Modern blue */
   --primary-foreground: oklch(0.99 0.003 250);
 
-  --secondary: oklch(0.92 0.02 250); /* Xám nhạt tinh tế */
+  --secondary: oklch(0.92 0.02 250); /* Subtle light gray */
   --secondary-foreground: oklch(0.25 0.02 250);
 
-  --muted: oklch(0.96 0.01 250); /* Background nhạt cho section */
+  --muted: oklch(0.96 0.01 250); /* Light background for sections */
   --muted-foreground: oklch(0.55 0.02 250);
 
-  --accent: oklch(0.75 0.08 200); /* Xanh teal nhẹ (dùng sparingly) */
+  --accent: oklch(0.75 0.08 200); /* Light teal (use sparingly) */
   --accent-foreground: oklch(0.99 0.003 250);
 
-  --destructive: oklch(0.55 0.18 25); /* Đỏ nhẹ nhàng, không quá gắt */
+  --destructive: oklch(0.55 0.18 25); /* Gentle red, not too harsh */
 
   --border: oklch(0.9 0.01 250);
   --input: oklch(0.92 0.01 250);
   --ring: oklch(0.55 0.12 230);
 
-  /* Chart palette hiện đại */
+  /* Modern chart palette */
   --chart-1: oklch(0.6 0.12 230); /* Blue */
   --chart-2: oklch(0.65 0.12 200); /* Teal */
   --chart-3: oklch(0.7 0.12 280); /* Purple */
-  --chart-4: oklch(0.75 0.1 60);  /* Orange nhạt */
+  --chart-4: oklch(0.75 0.1 60);  /* Light orange */
   --chart-5: oklch(0.65 0.15 140); /* Green */
 
   /* Sidebar */
@@ -91,8 +91,8 @@
 
 .dark {
   /* Dark Theme */
-  --background: oklch(0.12 0.01 250); /* Gần đen, nhưng không hẳn */
-  --foreground: oklch(0.92 0.005 250); /* Trắng sạch */
+  --background: oklch(0.12 0.01 250); /* Near black, but not quite */
+  --foreground: oklch(0.92 0.005 250); /* Clean white */
 
   --card: oklch(0.16 0.01 250);
   --card-foreground: oklch(0.92 0.005 250);
@@ -100,16 +100,16 @@
   --popover: oklch(0.16 0.01 250);
   --popover-foreground: oklch(0.92 0.005 250);
 
-  --primary: oklch(0.65 0.12 230); /* Xanh lam nổi bật */
+  --primary: oklch(0.65 0.12 230); /* Prominent blue */
   --primary-foreground: oklch(0.12 0.01 250);
 
-  --secondary: oklch(0.22 0.01 250); /* Xám đậm tinh tế */
+  --secondary: oklch(0.22 0.01 250); /* Subtle dark gray */
   --secondary-foreground: oklch(0.92 0.005 250);
 
   --muted: oklch(0.18 0.01 250);
   --muted-foreground: oklch(0.7 0.01 250);
 
-  --accent: oklch(0.7 0.12 200); /* Teal dịu nhẹ */
+  --accent: oklch(0.7 0.12 200); /* Gentle teal */
   --accent-foreground: oklch(0.12 0.01 250);
 
   --destructive: oklch(0.6 0.18 25);

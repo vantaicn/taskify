@@ -52,7 +52,7 @@ const Labels = () => {
           <div className="flex items-center gap-2">
             <Tag className="w-4 h-4 text-gray-600 dark:text-gray-400" />
             <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-              Nhãn
+              Labels
             </span>
           </div>
           <div className="flex flex-wrap gap-2 pl-4">
@@ -76,7 +76,7 @@ const Labels = () => {
                 <Input
                   value={newLabelName}
                   onChange={(e: any) => setNewLabelName(e.target.value)}
-                  placeholder="Tên nhãn"
+                  placeholder="Label name"
                   className="h-8 w-32"
                   onKeyDown={(e: any) => e.key === "Enter" && addLabel()}
                 />
@@ -113,7 +113,7 @@ const Labels = () => {
                 className="border-dashed"
               >
                 <Plus className="w-4 h-4 mr-1" />
-                Thêm nhãn
+                Add Label
               </Button>
             )}
           </div>

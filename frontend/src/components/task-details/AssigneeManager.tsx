@@ -65,27 +65,27 @@ const AssigneeManager = ({ assignees, boardId, task, onAssigneeAdded, onAssignee
       .slice(0, 2);
   };
 
-  // If no assignees, show the "Thành viên" button
+  // If no assignees, show the "Members" button
   if (assignees.length === 0) {
     return (
       <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen} modal={true}>
         <PopoverTrigger asChild>
           <Button variant="outline" size="sm" className="justify-start">
             <Users className="w-4 h-4 mr-2" />
-            Thành viên
+            Members
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-80 z-[100] pointer-events-auto" align="start" sideOffset={8}>
           <div className="space-y-4 pointer-events-auto">
             <div className="flex items-center gap-2">
               <Users className="w-4 h-4" />
-              <h3 className="font-semibold">Thêm thành viên</h3>
+              <h3 className="font-semibold">Add Member</h3>
             </div>
             
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
               <Input
-                placeholder="Tìm kiếm thành viên..."
+                placeholder="Search members..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10 pointer-events-auto"
@@ -96,7 +96,7 @@ const AssigneeManager = ({ assignees, boardId, task, onAssigneeAdded, onAssignee
             <div className="max-h-60 overflow-y-auto space-y-2 pointer-events-auto">
               {availableMembers.length === 0 ? (
                 <p className="text-sm text-gray-500 text-center py-4">
-                  {searchTerm ? "Không tìm thấy thành viên" : "Không có thành viên nào"}
+                  {searchTerm ? "No members found" : "No members available"}
                 </p>
               ) : (
                 availableMembers.map((member: MemberType) => (
@@ -135,7 +135,7 @@ const AssigneeManager = ({ assignees, boardId, task, onAssigneeAdded, onAssignee
       <div className="flex items-center gap-2">
         <Users className="w-4 h-4 text-gray-600 dark:text-gray-400" />
         <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-          Thành viên
+          Members
         </span>
       </div>
       
@@ -178,20 +178,20 @@ const AssigneeManager = ({ assignees, boardId, task, onAssigneeAdded, onAssignee
                 </PopoverTrigger>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Thêm thành viên</p>
+                <p>Add Member</p>
               </TooltipContent>
             </Tooltip>
             <PopoverContent className="w-80 z-[100] pointer-events-auto" align="start" sideOffset={8}>
               <div className="space-y-4 pointer-events-auto">
                 <div className="flex items-center gap-2">
                   <Users className="w-4 h-4" />
-                  <h3 className="font-semibold">Thêm thành viên</h3>
+                  <h3 className="font-semibold">Add Member</h3>
                 </div>
                 
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
                   <Input
-                    placeholder="Tìm kiếm thành viên..."
+                    placeholder="Search members..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="pl-10 pointer-events-auto"
@@ -202,7 +202,7 @@ const AssigneeManager = ({ assignees, boardId, task, onAssigneeAdded, onAssignee
                 <div className="max-h-60 overflow-y-auto space-y-2 pointer-events-auto">
                   {availableMembers.length === 0 ? (
                     <p className="text-sm text-gray-500 text-center py-4">
-                      {searchTerm ? "Không tìm thấy thành viên" : "Tất cả thành viên đã được thêm"}
+                      {searchTerm ? "No members found" : "All members have been added"}
                     </p>
                   ) : (
                     availableMembers.map((member: MemberType) => (

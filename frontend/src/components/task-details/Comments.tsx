@@ -55,12 +55,12 @@ const TaskComments = () => {
     const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
     const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
 
-    if (diffInMinutes < 1) return "Vừa xong";
-    if (diffInMinutes < 60) return `${diffInMinutes} phút trước`;
-    if (diffInHours < 24) return `${diffInHours} giờ trước`;
-    if (diffInDays < 7) return `${diffInDays} ngày trước`;
+    if (diffInMinutes < 1) return "Just now";
+    if (diffInMinutes < 60) return `${diffInMinutes} minutes ago`;
+    if (diffInHours < 24) return `${diffInHours} hours ago`;
+    if (diffInDays < 7) return `${diffInDays} days ago`;
     
-    return new Intl.DateTimeFormat('vi-VN', {
+    return new Intl.DateTimeFormat('en-US', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
@@ -72,7 +72,7 @@ const TaskComments = () => {
       <div className="flex items-center gap-2">
         <MessageSquare className="w-4 h-4 text-gray-600 dark:text-gray-400" />
         <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-          Bình luận ({comments.length})
+          Comments ({comments.length})
         </span>
       </div>
 
@@ -86,7 +86,7 @@ const TaskComments = () => {
           <textarea
             value={newComment}
             onChange={(e: any) => setNewComment(e.target.value)}
-            placeholder="Viết bình luận... (Sử dụng @name để mention thành viên)"
+            placeholder="Write a comment... (Use @name to mention members)"
             className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 resize-none text-sm"
             onKeyDown={(e: any) => {
               if (e.key === "Enter" && e.ctrlKey) {
@@ -96,7 +96,7 @@ const TaskComments = () => {
           />
           <div className="flex justify-between items-center">
             <p className="text-xs text-gray-500 dark:text-gray-400">
-              Tip: Nhấn Ctrl + Enter để gửi nhanh
+              Tip: Press Ctrl + Enter to send quickly
             </p>
             <Button
               size="sm"
@@ -105,12 +105,12 @@ const TaskComments = () => {
               className="bg-blue-500 hover:bg-blue-600 text-white disabled:opacity-50"
             >
               <Send className="w-3 h-3 mr-1" />
-              Gửi
+              Send
             </Button>
           </div>
         </div>
       </div>
-      <div className="max-h-80 overflow-y-auto">
+      <div className="max-h-80 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-700 scrollbar-track-transparent">
         {comments.map((comment) => (
           <div
             key={comment.id}
@@ -155,14 +155,14 @@ const TaskComments = () => {
                   variant="ghost"
                   className="h-6 px-2 text-xs text-gray-500 hover:text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity"
                 >
-                  👍 Thích
+                  👍 Like
                 </Button>
                 <Button
                   size="sm"
                   variant="ghost"
                   className="h-6 px-2 text-xs text-gray-500 hover:text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity"
                 >
-                  💬 Trả lời
+                  💬 Reply
                 </Button>
               </div>
             </div>
@@ -171,9 +171,9 @@ const TaskComments = () => {
         {comments.length === 0 && (
           <div className="text-center py-8 text-gray-500 dark:text-gray-400">
             <MessageSquare className="w-8 h-8 mx-auto mb-2 opacity-50" />
-            <p className="text-sm">Chưa có bình luận nào</p>
+            <p className="text-sm">No comments yet</p>
             <p className="text-xs">
-              Hãy là người đầu tiên thảo luận về task này
+              Be the first to discuss this task
             </p>
           </div>
         )}

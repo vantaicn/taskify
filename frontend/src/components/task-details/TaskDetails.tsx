@@ -109,7 +109,7 @@ const TaskDetails = ({
 
       <div className="flex-1 flex gap-6 p-6 overflow-auto">
         {/* Main Content */}
-        <div className="flex-4 space-y-6 overflow-y-auto">
+        <div className="flex-4 space-y-6 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-700 scrollbar-track-transparent">
           {/* Action Buttons */}
           <div className="flex gap-2">
             {task && assignees?.length === 0 && (
@@ -123,7 +123,7 @@ const TaskDetails = ({
             )}
             <Button variant="outline" size="sm" className="justify-start">
               <Tag className="w-4 h-4 mr-2" />
-              Nhãn
+              Label
             </Button>
             {!dueDate && (
               <DueDatePicker
@@ -137,7 +137,7 @@ const TaskDetails = ({
             </Button> */}
             <Button variant="outline" size="sm" className="justify-start">
               <Paperclip className="w-4 h-4 mr-2" />
-              Đính kèm
+              Attachments
             </Button>
           </div>
 
@@ -160,7 +160,7 @@ const TaskDetails = ({
             <div className="space-y-3">
               <div className="flex items-center gap-2">
                 <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Ngày đến hạn đã chọn
+                  Selected Due Date
                 </span>
               </div>
               <div className="pl-4">
@@ -178,7 +178,7 @@ const TaskDetails = ({
             <div className="flex items-center gap-2">
               <FileText className="w-4 h-4 text-gray-600 dark:text-gray-400" />
               <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                Mô tả
+                Description
               </span>
             </div>
             <div className="pl-4">
@@ -188,12 +188,12 @@ const TaskDetails = ({
                     value={description}
                     onChange={(e: any) => setDescription(e.target.value)}
                     className="w-full min-h-[120px] p-3 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 resize-none"
-                    placeholder="Thêm mô tả chi tiết hơn..."
+                    placeholder="Add detailed description..."
                     autoFocus
                   />
                   <div className="flex gap-2">
                     <Button size="sm" onClick={handleSaveDescription}>
-                      Lưu
+                      Save
                     </Button>
                     <Button
                       size="sm"
@@ -203,7 +203,7 @@ const TaskDetails = ({
                         setDescription(task?.description || "");
                       }}
                     >
-                      Hủy
+                      Cancel
                     </Button>
                   </div>
                 </div>
@@ -218,7 +218,7 @@ const TaskDetails = ({
                     </p>
                   ) : (
                     <p className="text-gray-400 dark:text-gray-500 italic">
-                      Thêm mô tả chi tiết hơn...
+                      Add detailed description...
                     </p>
                   )}
                 </div>

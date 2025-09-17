@@ -139,7 +139,7 @@ const Attachments = ({
         <div className="flex items-center gap-2">
           <Paperclip className="w-4 h-4 text-gray-600 dark:text-gray-400" />
           <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-            Tệp đính kèm
+            Attachments
           </span>
           {attachments.length > 0 && (
             <Badge variant="secondary" className="ml-2">
@@ -181,7 +181,7 @@ const Attachments = ({
                       updateAttachmentMutation.isPending || !editingName.trim()
                     }
                   >
-                    {updateAttachmentMutation.isPending ? "..." : "Lưu"}
+                    {updateAttachmentMutation.isPending ? "..." : "Save"}
                   </Button>
                   <Button
                     size="sm"
@@ -265,7 +265,7 @@ const Attachments = ({
             disabled={createAttachmentMutation.isPending}
           >
             <Upload className="w-4 h-4 mr-1" />
-            {createAttachmentMutation.isPending ? "Uploading..." : "Thêm tệp"}
+            {createAttachmentMutation.isPending ? "Uploading..." : "Add File"}
           </Button>
         </div>
       </div>
