@@ -2,7 +2,7 @@ const joi = require('joi');
 
 const createBoardRequest = joi.object({
   title: joi.string().required(),
-  description: joi.string().optional(),
+  description: joi.string().optional().allow(''),
   backgroundUrl: joi.string().optional(),
 })
 
